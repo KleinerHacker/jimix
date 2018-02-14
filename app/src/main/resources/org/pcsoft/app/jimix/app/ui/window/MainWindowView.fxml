@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Menu?>
+<?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.VBox?>
+<?import org.pcsoft.app.jimix.app.ui.component.PictureEditorPane?>
+<?import javafx.scene.control.SeparatorMenuItem?>
+<?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.control.TabPane?>
+<BorderPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml" fx:id="pnlRoot"
+            fx:controller="org.pcsoft.app.jimix.app.ui.window.MainWindowView"
+            prefHeight="768" prefWidth="1024">
+    <top>
+        <VBox>
+            <MenuBar>
+                <Menu fx:id="mnuFile" text="%view.window.main.menu.file">
+                    <Menu fx:id="mnuNew" text="%view.window.main.menu.file.new">
+                        <MenuItem fx:id="miNewEmpty" text="%view.window.main.menu.file.new.empty" onAction="#onActionNewEmpty"/>
+                        <MenuItem fx:id="miNewFromClipboard" text="%view.window.main.menu.file.new.from_clipboard" onAction="#onActionFromClipboard"/>
+                        <MenuItem fx:id="miNewFromRenderer" text="%view.window.main.menu.file.new.from_renderer" onAction="#onActionFromRenderer"/>
+                    </Menu>
+                    <MenuItem fx:id="miOpen" text="%view.window.main.menu.file.open" onAction="#onActionOpen"/>
+                    <Menu fx:id="mnuOpenRecent" text="%view.window.main.menu.file.open_recent"/>
+                    <MenuItem fx:id="miClose" text="%view.window.main.menu.file.close" onAction="#onActionClose"/>
+                    <SeparatorMenuItem/>
+                    <MenuItem fx:id="miSave" text="%view.window.main.menu.file.save" onAction="#onActionSave"/>
+                    <MenuItem fx:id="miSaveAs" text="%view.window.main.menu.file.save_as" onAction="#onActionSaveAs"/>
+                    <SeparatorMenuItem/>
+                    <MenuItem fx:id="miExit" text="%view.window.main.menu.file.exit" onAction="#onActionExit"/>
+                </Menu>
+                <Menu fx:id="mnuPicture" text="%view.window.main.menu.picture">
+                    <Menu fx:id="mnuPictureEffect" text="%view.window.main.menu.picture.effect">
+                        <MenuItem fx:id="miPictureEffectManager" text="%view.window.main.menu.picture.effect.manager" onAction="#onActionPictureEffectManager"/>
+                        <SeparatorMenuItem/>
+                    </Menu>
+                    <Menu fx:id="mnuPictureRenderer" text="%view.window.main.menu.picture.renderer">
+                        <MenuItem fx:id="miPictureRendererManager" text="%view.window.main.menu.picture.renderer.manager" onAction="#onActionPictureRendererManager"/>
+                        <SeparatorMenuItem/>
+                    </Menu>
+                </Menu>
+            </MenuBar>
+            <ToolBar/>
+        </VBox>
+    </top>
+    <center>
+        <TabPane fx:id="tabPicture" tabClosingPolicy="ALL_TABS"/>
+    </center>
+</BorderPane>
