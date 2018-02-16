@@ -4,8 +4,10 @@ import de.saxsys.mvvmfx.ViewModel;
 import javafx.beans.Observable;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.ObjectBinding;
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyListProperty;
 import javafx.beans.property.ReadOnlyListWrapper;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.image.Image;
@@ -15,6 +17,7 @@ public class PictureEditorPaneViewModel implements ViewModel {
     private final ReadOnlyListProperty<JimixLevel> levelList =
             new ReadOnlyListWrapper<JimixLevel>(FXCollections.observableArrayList(param -> new Observable[] {param.maskProperty(), param.pictureProperty()}))
                     .getReadOnlyProperty();
+    private final ObjectProperty<JimixLevel> selectedLevel = new SimpleObjectProperty<>();
 
     private final ObjectBinding<Image> resultPicture;
 
@@ -33,6 +36,18 @@ public class PictureEditorPaneViewModel implements ViewModel {
 
     public ReadOnlyListProperty<JimixLevel> levelListProperty() {
         return levelList;
+    }
+
+    public JimixLevel getSelectedLevel() {
+        return selectedLevel.get();
+    }
+
+    public ObjectProperty<JimixLevel> selectedLevelProperty() {
+        return selectedLevel;
+    }
+
+    public void setSelectedLevel(JimixLevel selectedLevel) {
+        this.selectedLevel.set(selectedLevel);
     }
 
     public Image getResultPicture() {

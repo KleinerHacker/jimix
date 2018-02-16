@@ -72,4 +72,12 @@ public final class JimixProject {
     public int hashCode() {
         return Objects.hash(uuid);
     }
+
+    @Override
+    public String toString() {
+        return "JimixProject{" +
+                "uuid='" + uuid + '\'' +
+                ", file=" + file +
+                '}';
+    }
 }

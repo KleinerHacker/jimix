@@ -4,12 +4,12 @@ import de.saxsys.mvvmfx.FluentViewLoader;
 import de.saxsys.mvvmfx.ViewTuple;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
-import javafx.scene.control.ScrollPane;
+import javafx.scene.layout.BorderPane;
 import org.pcsoft.app.jimix.app.language.LanguageResources;
 import org.pcsoft.app.jimix.core.model.JimixProject;
 import org.pcsoft.app.jimix.core.plugin.type.JimixEffectHolder;
 
-public class PictureEditorPane extends ScrollPane {
+public class PictureEditorPane extends BorderPane {
 
     private final PictureEditorPaneView controller;
     private final PictureEditorPaneViewModel viewModel;

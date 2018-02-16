@@ -1,17 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
 <?import javafx.scene.image.ImageView?>
-<fx:root type="ScrollPane" xmlns="http://javafx.com/javafx"
+<?import org.pcsoft.app.jimix.core.ui.component.ToolBox?>
+<?import org.pcsoft.app.jimix.core.ui.component.ToolBoxDescriptor?>
+<fx:root type="BorderPane" xmlns="http://javafx.com/javafx"
          xmlns:fx="http://javafx.com/fxml"
          fx:controller="org.pcsoft.app.jimix.app.ui.component.PictureEditorPaneView">
-    <StackPane>
-        <ImageView fx:id="imgPicture"/>
-        <ImageView fx:id="imgMask"/>
-    </StackPane>
+    <right>
+        <ToolBox orientation="RIGHT" selectionMode="MULTIPLE">
+            <items>
+                <ToolBoxDescriptor title="Levels">
+                    <content>
+                        <ListView fx:id="lstLevel" prefWidth="300"/>
+                    </content>
+                </ToolBoxDescriptor>
+            </items>
+        </ToolBox>
+    </right>
+    <center>
+        <ScrollPane>
+            <StackPane>
+                <ImageView fx:id="imgPicture"/>
+                <ImageView fx:id="imgMask"/>
+            </StackPane>
+        </ScrollPane>
+    </center>
 </fx:root>
