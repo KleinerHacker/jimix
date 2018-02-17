@@ -9,6 +9,9 @@ import javafx.scene.control.ToggleButton;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
+/**
+ * Created by pfeifchr on 09.11.2016.
+ */
 public final class ToolBoxDescriptor implements Comparable<ToolBoxDescriptor> {
     private final IntegerProperty orderNumber = new SimpleIntegerProperty();
     private final ObjectProperty<Node> content = new SimpleObjectProperty<>();

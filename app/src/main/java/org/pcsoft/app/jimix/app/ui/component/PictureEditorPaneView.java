@@ -7,8 +7,9 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.ListView;
 import javafx.scene.image.ImageView;
-import org.pcsoft.app.jimix.core.model.JimixLevel;
-import org.pcsoft.app.jimix.core.plugin.type.JimixEffectHolder;
+import org.pcsoft.app.jimix.core.project.JimixLevel;
+import org.pcsoft.app.jimix.core.project.JimixLevelModel;
+import org.pcsoft.app.jimix.core.plugin.type.JimixEffectInstance;
 import org.pcsoft.app.jimix.core.plugin.type.JimixPixelReaderImpl;
 import org.pcsoft.app.jimix.core.plugin.type.JimixPixelWriterImpl;
 import org.pcsoft.app.jimix.plugins.api.type.JimixApplySource;
@@ -35,27 +36,14 @@ public class PictureEditorPaneView implements FxmlView<PictureEditorPaneViewMode
         imgMask.fitWidthProperty().bind(imgPicture.fitWidthProperty());
         imgMask.fitHeightProperty().bind(imgPicture.fitHeightProperty());
         imgMask.visibleProperty().bind(Bindings.createBooleanBinding(
-                () -> viewModel.getSelectedLevel() != null && viewModel.getSelectedLevel().getMask() != null,
+                () -> viewModel.getSelectedLevel() != null && viewModel.getSelectedLevel().getModel().getMask() != null,
                 viewModel.selectedLevelProperty()
         ));
         
         imgPicture.imageProperty().bind(viewModel.resultPictureProperty());
         imgMask.imageProperty().bind(Bindings.createObjectBinding(
-                () -> viewModel.getSelectedLevel() == null ? null : viewModel.getSelectedLevel().getMask(),
+                () -> viewModel.getSelectedLevel() == null ? null : viewModel.getSelectedLevel().getModel().getMask(),
                 viewModel.selectedLevelProperty()
         ));
-    }
-
-    void applyPictureEffect(final JimixEffectHolder effectHolder) {
-        final JimixLevel jimixLevel = viewModel.getLevelList().get(0);
-
-        final JimixPixelReaderImpl pixelReader = new JimixPixelReaderImpl(jimixLevel.getPicture().getPixelReader(), (int) jimixLevel.getPicture().getWidth(), (int) jimixLevel.getPicture().getHeight());
-        final JimixPixelWriterImpl pixelWriter = new JimixPixelWriterImpl((int) jimixLevel.getPicture().getWidth(), (int) jimixLevel.getPicture().getHeight());
-        try {
-            effectHolder.apply(pixelReader, pixelWriter, effectHolder.getConfigurationClass().newInstance(), JimixApplySource.Picture);
-        } catch (InstantiationException | IllegalAccessException e) {
-            e.printStackTrace();
-        }
-        jimixLevel.setPicture(pixelWriter.buildImage());
     }
 }

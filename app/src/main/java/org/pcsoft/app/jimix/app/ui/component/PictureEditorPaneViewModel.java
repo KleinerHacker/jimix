@@ -11,24 +11,18 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.image.Image;
-import org.pcsoft.app.jimix.core.model.JimixLevel;
+import org.pcsoft.app.jimix.core.project.JimixLevel;
+import org.pcsoft.app.jimix.core.project.JimixLevelModel;
 
 public class PictureEditorPaneViewModel implements ViewModel {
     private final ReadOnlyListProperty<JimixLevel> levelList =
-            new ReadOnlyListWrapper<JimixLevel>(FXCollections.observableArrayList(param -> new Observable[] {param.maskProperty(), param.pictureProperty()}))
+            new ReadOnlyListWrapper<JimixLevel>(FXCollections.observableArrayList(param -> new Observable[] {param.getModel().maskProperty()}))
                     .getReadOnlyProperty();
     private final ObjectProperty<JimixLevel> selectedLevel = new SimpleObjectProperty<>();
 
-    private final ObjectBinding<Image> resultPicture;
+    private final ObjectProperty<Image> resultPicture = new SimpleObjectProperty<>();
 
-    public PictureEditorPaneViewModel() {
-        resultPicture = Bindings.createObjectBinding(() -> {
-            if (levelList.isEmpty())
-                return null;
-
-            return levelList.get(0).getPicture();
-        }, levelList);
-    }
+    /********************************************************************************/
 
     public ObservableList<JimixLevel> getLevelList() {
         return levelList.get();
@@ -54,7 +48,11 @@ public class PictureEditorPaneViewModel implements ViewModel {
         return resultPicture.get();
     }
 
-    public ObjectBinding<Image> resultPictureProperty() {
+    public ObjectProperty<Image> resultPictureProperty() {
         return resultPicture;
+    }
+
+    public void setResultPicture(Image resultPicture) {
+        this.resultPicture.set(resultPicture);
     }
 }

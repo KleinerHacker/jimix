@@ -13,14 +13,14 @@ import org.pcsoft.app.jimix.plugins.api.type.JimixPixelWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public final class JimixEffectHolder implements JimixHolder {
-    private static final Logger LOGGER = LoggerFactory.getLogger(JimixEffectHolder.class);
+public final class JimixEffectInstance implements JimixInstance {
+    private static final Logger LOGGER = LoggerFactory.getLogger(JimixEffectInstance.class);
     private static final StopWatch STOP_WATCH = new StopWatch();
 
     private final JimixEffect instance;
     private final JimixEffectDescriptor descriptor;
 
-    public JimixEffectHolder(JimixEffect instance) throws JimixPluginException {
+    public JimixEffectInstance(JimixEffect instance) throws JimixPluginException {
         if (!instance.getClass().isAnnotationPresent(JimixEffectDescriptor.class))
             throw new JimixPluginAnnotationException("Unable to find needed annotation " + JimixEffectDescriptor.class.getName() + " on effect class " + instance.getClass().getName());
 

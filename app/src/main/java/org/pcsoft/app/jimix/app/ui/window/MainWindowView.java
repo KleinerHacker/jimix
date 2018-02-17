@@ -13,10 +13,11 @@ import javafx.stage.Stage;
 import org.pcsoft.app.jimix.app.ui.component.PictureEditorPane;
 import org.pcsoft.app.jimix.app.util.FileChooserUtils;
 import org.pcsoft.app.jimix.commons.exception.JimixProjectException;
-import org.pcsoft.app.jimix.core.model.JimixProject;
+import org.pcsoft.app.jimix.core.project.JimixProject;
+import org.pcsoft.app.jimix.core.project.ProjectManager;
 import org.pcsoft.app.jimix.core.plugin.PluginManager;
-import org.pcsoft.app.jimix.core.plugin.type.JimixEffectHolder;
-import org.pcsoft.app.jimix.core.plugin.type.JimixRendererHolder;
+import org.pcsoft.app.jimix.core.plugin.type.JimixEffectInstance;
+import org.pcsoft.app.jimix.core.plugin.type.JimixRendererInstance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -79,14 +80,14 @@ public class MainWindowView implements FxmlView<MainWindowViewModel>, Initializa
         miSave.disableProperty().bind(tabPicture.getSelectionModel().selectedItemProperty().isNull());
         miSaveAs.disableProperty().bind(tabPicture.getSelectionModel().selectedItemProperty().isNull());
 
-        for (final JimixEffectHolder effectHolder : PluginManager.getInstance().getAllEffects()) {
+        for (final JimixEffectInstance effectHolder : PluginManager.getInstance().getAllEffects()) {
             final MenuItem menuItem = new MenuItem(effectHolder.getName());
             menuItem.setUserData(effectHolder);
             menuItem.setOnAction(this::onActionPictureEffect);
             mnuPictureEffect.getItems().add(menuItem);
         }
 
-        for (final JimixRendererHolder rendererHolder : PluginManager.getInstance().getAllRenderers()) {
+        for (final JimixRendererInstance rendererHolder : PluginManager.getInstance().getAllRenderers()) {
             final MenuItem menuItem = new MenuItem(rendererHolder.getName());
             menuItem.setUserData(rendererHolder);
             menuItem.setOnAction(this::onActionPictureRenderer);
@@ -114,7 +115,10 @@ public class MainWindowView implements FxmlView<MainWindowViewModel>, Initializa
     private void createTabForProject(final JimixProject project) {
         final Tab tab = new Tab();
         tab.setUserData(project);
-        tab.textProperty().bind(Bindings.createStringBinding(() -> project.getFile().getName(), project.fileProperty()));
+        tab.textProperty().bind(Bindings.createStringBinding(
+                () -> project.getModel().getFile() != null ? project.getModel().getFile().getName() : "<unnamed>",
+                project.getModel().fileProperty()
+        ));
         tab.setContent(new PictureEditorPane(project));
         tab.setOnClosed(e -> viewModel.getProjectList().remove(project));
 
@@ -140,7 +144,8 @@ public class MainWindowView implements FxmlView<MainWindowViewModel>, Initializa
 
         for (final File file : files) {
             try {
-                viewModel.getProjectList().add(new JimixProject(file));
+                final JimixProject jimixProject = ProjectManager.getInstance().createProjectFromFile(file);
+                viewModel.getProjectList().add(jimixProject);
             } catch (JimixProjectException e) {
                 LOGGER.error("Unable to open file " + file.getAbsolutePath(), e);
                 new Alert(Alert.AlertType.ERROR, "Unable to load file " + file.getAbsolutePath(), ButtonType.OK).showAndWait();
@@ -202,13 +207,13 @@ public class MainWindowView implements FxmlView<MainWindowViewModel>, Initializa
         if (tab == null)
             return;
         final PictureEditorPane pictureEditorPane = (PictureEditorPane) tab.getContent();
-        final JimixEffectHolder effectHolder = (JimixEffectHolder) ((MenuItem) actionEvent.getSource()).getUserData();
+        final JimixEffectInstance effectHolder = (JimixEffectInstance) ((MenuItem) actionEvent.getSource()).getUserData();
 
-        pictureEditorPane.applyPictureEffect(effectHolder);
+        //TODO
     }
 
     private void onActionPictureRenderer(ActionEvent actionEvent) {
-        final JimixRendererHolder rendererHolder = (JimixRendererHolder) ((MenuItem) actionEvent.getSource()).getUserData();
+        final JimixRendererInstance rendererHolder = (JimixRendererInstance) ((MenuItem) actionEvent.getSource()).getUserData();
     }
     //</editor-fold>
 }

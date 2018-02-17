@@ -40,4 +40,18 @@ public class JimixPixelWriterImpl extends JimixPixelReaderImpl implements JimixP
 
         return image;
     }
+
+    /**
+     * Only for internal use
+     *
+     * @param pixels
+     */
+    public void setPixels(int[] pixels) {
+        if (pixels.length != getLength())
+            throw new IllegalArgumentException("Given pixel buffer has wrong length");
+
+        for (int i = 0; i < pixels.length; i++) {
+            this.pixels[i] = pixels[i];
+        }
+    }
 }

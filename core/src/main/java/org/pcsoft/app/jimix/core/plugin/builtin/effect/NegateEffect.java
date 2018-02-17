@@ -1,4 +1,4 @@
-package org.pcsoft.app.jimix.plugin.impl.base.effect;
+package org.pcsoft.app.jimix.core.plugin.builtin.effect;
 
 import org.pcsoft.app.jimix.plugins.api.JimixEffect;
 import org.pcsoft.app.jimix.plugins.api.annotation.JimixEffectDescriptor;

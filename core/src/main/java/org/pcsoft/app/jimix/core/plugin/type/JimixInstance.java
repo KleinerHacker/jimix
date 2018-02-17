@@ -1,6 +1,6 @@
 package org.pcsoft.app.jimix.core.plugin.type;
 
-public interface JimixHolder {
+public interface JimixInstance {
     String getName();
     String getDescription();
 }

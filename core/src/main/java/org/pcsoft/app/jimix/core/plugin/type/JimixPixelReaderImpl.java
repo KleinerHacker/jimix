@@ -37,4 +37,12 @@ public class JimixPixelReaderImpl extends JimixPixelBase implements JimixPixelRe
         final int index = y * width + x;
         return getPixel(index);
     }
+
+    /**
+     * Only for internal use
+     * @return
+     */
+    public int[] getPixels() {
+        return pixels;
+    }
 }

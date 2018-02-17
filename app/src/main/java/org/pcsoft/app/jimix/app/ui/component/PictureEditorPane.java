@@ -6,8 +6,9 @@ import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.scene.layout.BorderPane;
 import org.pcsoft.app.jimix.app.language.LanguageResources;
-import org.pcsoft.app.jimix.core.model.JimixProject;
-import org.pcsoft.app.jimix.core.plugin.type.JimixEffectHolder;
+import org.pcsoft.app.jimix.core.project.JimixProject;
+import org.pcsoft.app.jimix.core.project.JimixProjectModel;
+import org.pcsoft.app.jimix.core.plugin.type.JimixEffectInstance;
 
 public class PictureEditorPane extends BorderPane {
 
@@ -24,6 +25,7 @@ public class PictureEditorPane extends BorderPane {
 
         this.project = new ReadOnlyObjectWrapper<>(project).getReadOnlyProperty();
         viewTuple.getViewModel().levelListProperty().bindContent(project.levelListProperty());
+        viewTuple.getViewModel().resultPictureProperty().bind(project.resultImageProperty());
     }
 
     public JimixProject getProject() {
@@ -32,9 +34,5 @@ public class PictureEditorPane extends BorderPane {
 
     public ReadOnlyObjectProperty<JimixProject> projectProperty() {
         return project;
-    }
-
-    public void applyPictureEffect(final JimixEffectHolder effectHolder) {
-        controller.applyPictureEffect(effectHolder);
     }
 }

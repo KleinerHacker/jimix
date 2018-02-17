@@ -11,14 +11,14 @@ import org.pcsoft.app.jimix.plugins.api.type.JimixPixelWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public final class JimixBlenderHolder implements JimixHolder {
-    private static final Logger LOGGER = LoggerFactory.getLogger(JimixBlenderHolder.class);
+public final class JimixBlenderInstance implements JimixInstance {
+    private static final Logger LOGGER = LoggerFactory.getLogger(JimixBlenderInstance.class);
     private static final StopWatch STOP_WATCH = new StopWatch();
 
     private final JimixBlender instance;
     private final JimixBlenderDescriptor descriptor;
 
-    public JimixBlenderHolder(JimixBlender instance) throws JimixPluginException {
+    public JimixBlenderInstance(JimixBlender instance) throws JimixPluginException {
         if (!instance.getClass().isAnnotationPresent(JimixBlenderDescriptor.class))
             throw new JimixPluginAnnotationException("Unable to find needed annotation " + JimixBlenderDescriptor.class.getName() + " on blender class " + instance.getClass().getName());
 

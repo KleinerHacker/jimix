@@ -19,6 +19,9 @@ import javafx.scene.transform.Rotate;
 
 import java.util.*;
 
+/**
+ * Created by pfeifchr on 09.11.2016.
+ */
 public class ToolBox extends BorderPane {
     private final class ContentUpdater implements ListChangeListener<ToolBoxDescriptor> {
         @Override
