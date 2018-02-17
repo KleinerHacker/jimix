@@ -10,9 +10,6 @@ import javafx.scene.control.SelectionMode;
 
 import java.util.Collections;
 
-/**
- * Created by pfeifchr on 09.11.2016.
- */
 public class ToolBoxSelectionModel extends MultipleSelectionModel<ToolBoxDescriptor> {
     private final ReadOnlyObjectProperty<ToolBox> toolBox;
     private final ObservableList<Integer> selectedIndices = FXCollections.observableArrayList();

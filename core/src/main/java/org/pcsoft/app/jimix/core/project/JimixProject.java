@@ -1,5 +1,6 @@
 package org.pcsoft.app.jimix.core.project;
 
+import javafx.beans.Observable;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.ObjectBinding;
 import javafx.beans.property.*;
@@ -8,7 +9,8 @@ import javafx.collections.MapChangeListener;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
 import javafx.scene.image.Image;
-import org.pcsoft.app.jimix.core.image.ImageBuilder;
+import javafx.util.Callback;
+import org.pcsoft.app.jimix.core.util.ImageBuilder;
 
 import java.util.Objects;
 import java.util.UUID;
@@ -20,28 +22,28 @@ public final class JimixProject {
     private final ReadOnlyObjectProperty<UUID> uuid = new ReadOnlyObjectWrapper<>(UUID.randomUUID()).getReadOnlyProperty();
     private final ReadOnlyObjectProperty<JimixProjectModel> model;
 
-    private final ReadOnlyMapProperty<UUID, JimixLevel> levelMap =
-            new ReadOnlyMapWrapper<UUID, JimixLevel>(FXCollections.observableHashMap()).getReadOnlyProperty();
-    private final ReadOnlyListProperty<JimixLevel> levelList =
-            new ReadOnlyListWrapper<JimixLevel>(FXCollections.observableArrayList()).getReadOnlyProperty();
+    private final ReadOnlyMapProperty<UUID, JimixLayer> layerMap =
+            new ReadOnlyMapWrapper<UUID, JimixLayer>(FXCollections.observableHashMap()).getReadOnlyProperty();
+    private final ReadOnlyListProperty<JimixLayer> layerList =
+            new ReadOnlyListWrapper<>(FXCollections.observableArrayList(new JimixLayerObserverCallback())).getReadOnlyProperty();
 
     private final ObjectBinding<Image> resultImage;
 
     JimixProject(final JimixProjectModel model) {
         this.model = new ReadOnlyObjectWrapper<>(model).getReadOnlyProperty();
         //List Updater
-        levelMap.addListener((MapChangeListener<UUID, JimixLevel>) c -> {
+        layerMap.addListener((MapChangeListener<UUID, JimixLayer>) c -> {
             if (c.wasAdded()) {
-                levelList.add(c.getValueAdded());
+                layerList.add(c.getValueAdded());
             }
             if (c.wasRemoved()) {
-                levelList.remove(c.getValueRemoved());
+                layerList.remove(c.getValueRemoved());
             }
         });
 
         resultImage = Bindings.createObjectBinding(
                 () -> ImageBuilder.getInstance().buildProjectImage(this),
-                levelList
+                layerList
         );
     }
 
@@ -61,24 +63,24 @@ public final class JimixProject {
         return model;
     }
 
-    ObservableMap<UUID, JimixLevel> getLevelMap() {
-        return levelMap.get();
+    ObservableMap<UUID, JimixLayer> getLayerMap() {
+        return layerMap.get();
     }
 
-    ReadOnlyMapProperty<UUID, JimixLevel> levelMapProperty() {
-        return levelMap;
+    ReadOnlyMapProperty<UUID, JimixLayer> layerMapProperty() {
+        return layerMap;
     }
 
-    public ObservableList<JimixLevel> getLevelList() {
-        return levelList.get();
+    public ObservableList<JimixLayer> getLayerList() {
+        return layerList.get();
     }
 
-    public ReadOnlyListProperty<JimixLevel> levelListProperty() {
-        return levelList;
+    public ReadOnlyListProperty<JimixLayer> layerListProperty() {
+        return layerList;
     }
 
-    public JimixLevel getLevel(final UUID levelUUID) {
-        return levelMap.get(levelUUID);
+    public JimixLayer getLayer(final UUID layerUUID) {
+        return layerMap.get(layerUUID);
     }
 
     public Image getResultImage() {
@@ -105,5 +107,16 @@ public final class JimixProject {
     @Override
     public String toString() {
         return model.get().toString();
+    }
+
+    private static final class JimixLayerObserverCallback implements Callback<JimixLayer, Observable[]> {
+        @Override
+        public Observable[] call(JimixLayer param) {
+            return new Observable[] {
+                    param.elementListProperty(),
+                    param.getModel().maskProperty(), param.getModel().blenderProperty(), param.getModel().nameProperty(),
+                    param.getModel().filterListProperty()
+            };
+        }
     }
 }

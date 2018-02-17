@@ -12,8 +12,5 @@ public @interface JimixEffectDescriptor {
     String description();
     String iconPath() default "";
 
-    boolean usableForPictures() default true;
-    boolean usableForMasks() default false;
-
     Class<? extends JimixEffectConfiguration> configurationClass();
 }

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<?import javafx.scene.control.Label?>
+<fx:root spacing="5" type="HBox" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.pcsoft.app.jimix.app.ui.component.cell.pane.LayerTreeCellPaneView">
+    <Button text="A"/>
+    <VBox maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS">
+        <Label fx:id="lblName"/>
+    </VBox>
+</fx:root>

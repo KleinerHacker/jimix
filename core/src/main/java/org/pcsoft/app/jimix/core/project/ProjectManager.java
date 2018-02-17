@@ -38,10 +38,10 @@ public final class ProjectManager {
     public JimixProject createProjectFromImage(final Image image) {
         //Create empty project
         final JimixProject project = this.createEmptyProject((int) image.getWidth(), (int) image.getHeight());
-        //Create base level
-        final JimixLevel level = this.createLevelForProject(project);
+        //Create base layer
+        final JimixLayer layer = this.createLayerForProject(project);
         //Create image element
-        final JimixElement element = this.createImageElementForLevel(level, image);
+        final JimixElement element = this.createImageElementForLayer(layer, image);
 
         projectMap.put(project.getUuid(), project);
 
@@ -84,62 +84,62 @@ public final class ProjectManager {
     }
     //</editor-fold>
 
-    //<editor-fold desc="Level">
-    public JimixLevel createLevelForProject(final JimixProject project) {
-        return createLevelForProject(project.getUuid());
+    //<editor-fold desc="Layer">
+    public JimixLayer createLayerForProject(final JimixProject project) {
+        return createLayerForProject(project.getUuid());
     }
 
-    public JimixLevel createLevelForProject(final UUID projectUUID) {
+    public JimixLayer createLayerForProject(final UUID projectUUID) {
         if (!projectMap.containsKey(projectUUID))
             throw new IllegalArgumentException("Project with UUID " + projectUUID.toString() + " not found!");
 
         final JimixProject project = projectMap.get(projectUUID);
-        final JimixLevelModel model = new JimixLevelModel();
-        final JimixLevel level = new JimixLevel(project, model);
-        project.getLevelMap().put(level.getUuid(), level);
+        final JimixLayerModel model = new JimixLayerModel();
+        final JimixLayer layer = new JimixLayer(project, model);
+        project.getLayerMap().put(layer.getUuid(), layer);
 
-        return level;
+        return layer;
     }
 
-    public boolean removeLevelFromProject(final JimixLevel level) {
-        if (!projectMap.containsKey(level.getProject().getUuid()))
-            throw new IllegalArgumentException("Project with UUID " + level.getProject().getUuid().toString() + " not found!");
+    public boolean removeLayerFromProject(final JimixLayer layer) {
+        if (!projectMap.containsKey(layer.getProject().getUuid()))
+            throw new IllegalArgumentException("Project with UUID " + layer.getProject().getUuid().toString() + " not found!");
 
-        final JimixProject project = projectMap.get(level.getProject().getUuid());
-        if (!project.getLevelMap().containsKey(level.getUuid()))
+        final JimixProject project = projectMap.get(layer.getProject().getUuid());
+        if (!project.getLayerMap().containsKey(layer.getUuid()))
             return false;
 
-        project.getLevelMap().remove(level.getUuid());
+        project.getLayerMap().remove(layer.getUuid());
         return true;
     }
 
-    public boolean removeLevelFromProject(final JimixProject project, final UUID levelUUID) {
-        if (!project.getLevelMap().containsKey(levelUUID))
+    public boolean removeLayerFromProject(final JimixProject project, final UUID layerUUID) {
+        if (!project.getLayerMap().containsKey(layerUUID))
             return false;
 
-        project.getLevelMap().remove(levelUUID);
+        project.getLayerMap().remove(layerUUID);
         return true;
     }
     //</editor-fold>
 
     //<editor-fold desc="Element">
-    public JimixElement createImageElementForLevel(final JimixLevel level, final Image image) {
+    public JimixElement createImageElementForLayer(final JimixLayer layer, final Image image) {
         final JimixElementModel model = new JimixImageElementModel(image);
-        final JimixElement element = new JimixElement(level.getProject(), level, model);
-        level.getElementMap().put(element.getUuid(), element);
+        final JimixElement element = new JimixElement(layer.getProject(), layer, model);
+        layer.getElementMap().put(element.getUuid(), element);
 
         return element;
     }
 
-    public boolean removeElementFromLevel(final JimixLevel level, final JimixElement element) {
-        return removeElementFromLevel(level, element.getUuid());
+    public boolean removeElementFromLayer(final JimixLayer layer, final JimixElement element) {
+        return removeElementFromLayer(layer, element.getUuid());
     }
 
-    public boolean removeElementFromLevel(final JimixLevel level, final UUID elementUUID) {
-        if (!level.getElementMap().containsKey(elementUUID))
+    public boolean removeElementFromLayer(final JimixLayer layer, final UUID elementUUID) {
+        if (!layer.getElementMap().containsKey(elementUUID))
             return false;
 
-        level.getElementMap().remove(elementUUID);
+        layer.getElementMap().remove(elementUUID);
         return true;
     }
     //</editor-fold>

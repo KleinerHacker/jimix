@@ -1,6 +1,6 @@
 package org.pcsoft.app.jimix.plugins.api.type;
 
-public enum JimixApplySource {
+public enum JimixSource {
     Picture,
     Mask
 }

@@ -7,29 +7,29 @@ import org.pcsoft.app.jimix.plugins.api.type.JimixPixelWriter;
 
 import java.awt.*;
 
-@JimixBlenderDescriptor(name = "Overlay", description = "Overlay levels (default)")
+@JimixBlenderDescriptor(name = "Overlay", description = "Overlay layers (default)")
 public class OverlayBlender implements JimixBlender {
     @Override
-    public void apply(JimixPixelReader groundPixelReader, JimixPixelReader levelPixelReader, JimixPixelWriter pixelWriter) {
+    public void apply(JimixPixelReader groundPixelReader, JimixPixelReader layerPixelReader, JimixPixelWriter pixelWriter) {
         for (int i = 0; i < groundPixelReader.getLength(); i++) {
             final Color groundColor = new Color(groundPixelReader.getPixel(i), true);
-            final Color levelColor = new Color(levelPixelReader.getPixel(i), true);
+            final Color layerColor = new Color(layerPixelReader.getPixel(i), true);
 
             final float groundRed = (float)groundColor.getRed() / 255f;
             final float groundGreen = (float)groundColor.getGreen() / 255f;
             final float groundBlue = (float)groundColor.getBlue() / 255f;
 
-            final float levelRed = (float)groundColor.getRed() / 255f;
-            final float levelGreen = (float)groundColor.getGreen() / 255f;
-            final float levelBlue = (float)groundColor.getBlue() / 255f;
+            final float layerRed = (float)groundColor.getRed() / 255f;
+            final float layerGreen = (float)groundColor.getGreen() / 255f;
+            final float layerBlue = (float)groundColor.getBlue() / 255f;
 
-            final float levelAlpha = (float) levelColor.getAlpha() / 255f;
-            final float groundAlpha = 1f - levelAlpha;
+            final float layerAlpha = (float) layerColor.getAlpha() / 255f;
+            final float groundAlpha = 1f - layerAlpha;
 
             final Color mergeColor = new Color(
-                    groundRed * groundAlpha + levelRed * levelAlpha,
-                    groundGreen * groundAlpha + levelGreen * levelAlpha,
-                    groundBlue * groundAlpha + levelBlue * levelAlpha,
+                    groundRed * groundAlpha + layerRed * layerAlpha,
+                    groundGreen * groundAlpha + layerGreen * layerAlpha,
+                    groundBlue * groundAlpha + layerBlue * layerAlpha,
                     (float)groundColor.getAlpha() / 255f * groundAlpha
             );
 

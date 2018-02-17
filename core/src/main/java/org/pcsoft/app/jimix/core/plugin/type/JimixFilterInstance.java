@@ -1,13 +1,23 @@
 package org.pcsoft.app.jimix.core.plugin.type;
 
+import javafx.scene.image.Image;
+import org.apache.commons.lang.time.DurationFormatUtils;
+import org.apache.commons.lang.time.StopWatch;
 import org.pcsoft.app.jimix.commons.exception.JimixPluginAnnotationException;
 import org.pcsoft.app.jimix.commons.exception.JimixPluginException;
+import org.pcsoft.app.jimix.commons.exception.JimixPluginExecutionException;
 import org.pcsoft.app.jimix.plugins.api.JimixFilter;
 import org.pcsoft.app.jimix.plugins.api.annotation.JimixFilterDescriptor;
 import org.pcsoft.app.jimix.plugins.api.config.JimixFilterConfiguration;
 import org.pcsoft.app.jimix.plugins.api.type.JimixFilterType;
+import org.pcsoft.app.jimix.plugins.api.type.JimixSource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public final class JimixFilterInstance implements JimixInstance {
+    private static final Logger LOGGER = LoggerFactory.getLogger(JimixFilterInstance.class);
+    private static final StopWatch STOP_WATCH = new StopWatch();
+
     private final JimixFilter instance;
     private final JimixFilterDescriptor descriptor;
 
@@ -17,6 +27,42 @@ public final class JimixFilterInstance implements JimixInstance {
 
         this.instance = instance;
         this.descriptor = instance.getClass().getAnnotation(JimixFilterDescriptor.class);
+    }
+
+    public Image apply(final Image image, JimixSource source) throws JimixPluginExecutionException {
+        try {
+            return apply(image, descriptor.configurationClass().newInstance(), source);
+        } catch (InstantiationException | IllegalAccessException e) {
+            throw new JimixPluginExecutionException("Unable to find empty filter configuration constructor", e);
+        }
+    }
+
+    public Image apply(final Image image, JimixFilterConfiguration configuration, JimixSource source) throws JimixPluginExecutionException {
+        final JimixPixelReaderImpl pixelReader = new JimixPixelReaderImpl(image.getPixelReader(), (int) image.getWidth(), (int) image.getHeight());
+        final JimixPixelWriterImpl pixelWriter = new JimixPixelWriterImpl((int) image.getWidth(), (int) image.getHeight());
+
+        if (LOGGER.isTraceEnabled()) {
+            STOP_WATCH.reset();
+            STOP_WATCH.start();
+        }
+
+        try {
+            instance.apply(pixelReader, pixelWriter, configuration, source);
+        } catch (Exception e) {
+            throw new JimixPluginExecutionException("Error while running filter", e);
+        }
+
+        if (LOGGER.isTraceEnabled()) {
+            STOP_WATCH.stop();
+            LOGGER.trace("Filter run time: " + DurationFormatUtils.formatDuration(STOP_WATCH.getTime(), "ss:SSS"));
+        }
+
+        return pixelWriter.buildImage();
+    }
+
+    @Override
+    public String getIdentifier() {
+        return instance.getClass().getName();
     }
 
     @Override
@@ -39,5 +85,13 @@ public final class JimixFilterInstance implements JimixInstance {
 
     public boolean isOnTopLevel() {
         return descriptor.onTopLevel();
+    }
+
+    public boolean isUsableForPictures() {
+        return descriptor.usableForPictures();
+    }
+
+    public boolean isUsableForMasks() {
+        return descriptor.usableForMasks();
     }
 }

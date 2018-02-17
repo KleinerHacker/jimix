@@ -11,17 +11,19 @@ import org.pcsoft.app.jimix.core.plugin.builtin.blender.OverlayBlender;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class JimixLevelModel {
-    private final StringProperty name = new SimpleStringProperty("Level");
+public final class JimixLayerModel {
+    private final StringProperty name = new SimpleStringProperty("Layer");
     private final ObjectProperty<Image> mask = new SimpleObjectProperty<>();
     private final StringProperty blender = new SimpleStringProperty(OverlayBlender.class.getName());
     private final ReadOnlyListProperty<JimixElementModel> elementList =
             new ReadOnlyListWrapper<>(FXCollections.observableArrayList(new JimixElementObserverCallback())).getReadOnlyProperty();
+    private final ReadOnlyListProperty<String> filterList =
+            new ReadOnlyListWrapper<String>(FXCollections.observableArrayList()).getReadOnlyProperty();
 
-    public JimixLevelModel() {
+    public JimixLayerModel() {
     }
 
-    public JimixLevelModel(final Image image) {
+    public JimixLayerModel(final Image image) {
         elementList.add(new JimixImageElementModel(image));
     }
 
@@ -69,9 +71,17 @@ public final class JimixLevelModel {
         return elementList;
     }
 
+    public ObservableList<String> getFilterList() {
+        return filterList.get();
+    }
+
+    public ReadOnlyListProperty<String> filterListProperty() {
+        return filterList;
+    }
+
     @Override
     public String toString() {
-        return "JimixLevelModel{" +
+        return "JimixLayerModel{" +
                 "name=" + name +
                 '}';
     }

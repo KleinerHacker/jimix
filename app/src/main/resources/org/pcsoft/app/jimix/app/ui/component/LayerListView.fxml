@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.TreeView?>
+<?import javafx.scene.layout.HBox?>
+
+<?import javafx.scene.control.ToolBar?>
+<?import javafx.scene.control.Button?>
+<fx:root type="HBox" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1"
+         fx:controller="org.pcsoft.app.jimix.app.ui.component.LayerListView">
+    <TreeView fx:id="tvLayer" showRoot="false" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS"/>
+    <ToolBar orientation="VERTICAL">
+        <Button/>
+        <Button/>
+    </ToolBar>
+</fx:root>

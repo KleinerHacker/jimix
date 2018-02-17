@@ -1,17 +1,13 @@
 package org.pcsoft.app.jimix.core.project;
 
-import javafx.beans.property.ReadOnlyMapProperty;
-import javafx.beans.property.ReadOnlyMapWrapper;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableMap;
 
 import java.util.Objects;
 import java.util.UUID;
 
 /**
- * Level holder for {@link JimixElementModel}, with additional app internal information
+ * Element holder for {@link JimixElementModel}, with additional app internal information
  */
 public final class JimixElement {
     private final ReadOnlyObjectProperty<UUID> uuid = new ReadOnlyObjectWrapper<>(UUID.randomUUID()).getReadOnlyProperty();
@@ -19,11 +15,11 @@ public final class JimixElement {
 
 
     private final ReadOnlyObjectProperty<JimixProject> project;
-    private final ReadOnlyObjectProperty<JimixLevel> level;
+    private final ReadOnlyObjectProperty<JimixLayer> layer;
 
-    public JimixElement(final JimixProject project, final JimixLevel level, final JimixElementModel model) {
+    public JimixElement(final JimixProject project, final JimixLayer layer, final JimixElementModel model) {
         this.project = new ReadOnlyObjectWrapper<>(project).getReadOnlyProperty();
-        this.level = new ReadOnlyObjectWrapper<>(level).getReadOnlyProperty();
+        this.layer = new ReadOnlyObjectWrapper<>(layer).getReadOnlyProperty();
         this.model = new ReadOnlyObjectWrapper<>(model).getReadOnlyProperty();
     }
 
@@ -51,12 +47,12 @@ public final class JimixElement {
         return project;
     }
 
-    public JimixLevel getLevel() {
-        return level.get();
+    public JimixLayer getLayer() {
+        return layer.get();
     }
 
-    public ReadOnlyObjectProperty<JimixLevel> levelProperty() {
-        return level;
+    public ReadOnlyObjectProperty<JimixLayer> layerProperty() {
+        return layer;
     }
 
     @Override

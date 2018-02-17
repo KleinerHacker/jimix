@@ -4,36 +4,29 @@ import javafx.beans.Observable;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.scene.image.Image;
-import javafx.scene.image.WritableImage;
-import org.apache.commons.io.FileUtils;
-import org.pcsoft.app.jimix.commons.exception.JimixProjectException;
+import javafx.util.Callback;
 
 import java.io.File;
-import java.io.IOException;
-import java.util.Objects;
-import java.util.UUID;
 
 public final class JimixProjectModel {
     private final ObjectProperty<File> file = new SimpleObjectProperty<>();
-    private final ReadOnlyListProperty<JimixLevelModel> levelList =
-            new ReadOnlyListWrapper<JimixLevelModel>(FXCollections.observableArrayList(param -> new Observable[] {param.elementListProperty()}))
-                    .getReadOnlyProperty();
+    private final ReadOnlyListProperty<JimixLayerModel> layerList =
+            new ReadOnlyListWrapper<>(FXCollections.observableArrayList(new JimixLayerObserverCallback())).getReadOnlyProperty();
     private final IntegerProperty width = new SimpleIntegerProperty(), height = new SimpleIntegerProperty();
 
     JimixProjectModel(final int width, final int height) {
         this.width.set(width);
         this.height.set(height);
 
-        levelList.add(new JimixLevelModel());
+        layerList.add(new JimixLayerModel());
     }
 
-    ObservableList<JimixLevelModel> getLevelList() {
-        return levelList.get();
+    ObservableList<JimixLayerModel> getLayerList() {
+        return layerList.get();
     }
 
-    ReadOnlyListProperty<JimixLevelModel> levelListProperty() {
-        return levelList;
+    ReadOnlyListProperty<JimixLayerModel> layerListProperty() {
+        return layerList;
     }
 
     public File getFile() {
@@ -77,5 +70,15 @@ public final class JimixProjectModel {
         return "JimixProjectModel{" +
                 "file=" + file +
                 '}';
+    }
+
+    private static final class JimixLayerObserverCallback implements Callback<JimixLayerModel, Observable[]> {
+        @Override
+        public Observable[] call(JimixLayerModel param) {
+            return new Observable[]{
+                    param.nameProperty(), param.blenderProperty(), param.maskProperty(), param.elementListProperty(),
+                    param.filterListProperty()
+            };
+        }
     }
 }

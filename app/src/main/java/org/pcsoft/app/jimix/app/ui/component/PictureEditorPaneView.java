@@ -5,21 +5,18 @@ import de.saxsys.mvvmfx.InjectViewModel;
 import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.ListView;
 import javafx.scene.image.ImageView;
-import org.pcsoft.app.jimix.core.project.JimixLevel;
-import org.pcsoft.app.jimix.core.project.JimixLevelModel;
-import org.pcsoft.app.jimix.core.plugin.type.JimixEffectInstance;
-import org.pcsoft.app.jimix.core.plugin.type.JimixPixelReaderImpl;
-import org.pcsoft.app.jimix.core.plugin.type.JimixPixelWriterImpl;
-import org.pcsoft.app.jimix.plugins.api.type.JimixApplySource;
+import org.pcsoft.app.jimix.core.ui.component.ToolBox;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 
 public class PictureEditorPaneView implements FxmlView<PictureEditorPaneViewModel>, Initializable {
     @FXML
-    private ListView<JimixLevel> lstLevel;
+    private ToolBox toolBoxRight;
+
+    @FXML
+    private LayerList lstLayer;
     @FXML
     private ImageView imgPicture;
     @FXML
@@ -30,20 +27,22 @@ public class PictureEditorPaneView implements FxmlView<PictureEditorPaneViewMode
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        Bindings.bindContent(lstLevel.getItems(), viewModel.levelListProperty());
-        viewModel.selectedLevelProperty().bind(lstLevel.getSelectionModel().selectedItemProperty());
+        Bindings.bindContent(lstLayer.getLayerList(), viewModel.layerListProperty());
+        viewModel.selectedLayerProperty().bind(lstLayer.selectedLayerProperty());
 
         imgMask.fitWidthProperty().bind(imgPicture.fitWidthProperty());
         imgMask.fitHeightProperty().bind(imgPicture.fitHeightProperty());
         imgMask.visibleProperty().bind(Bindings.createBooleanBinding(
-                () -> viewModel.getSelectedLevel() != null && viewModel.getSelectedLevel().getModel().getMask() != null,
-                viewModel.selectedLevelProperty()
+                () -> viewModel.getSelectedLayer() != null && viewModel.getSelectedLayer().getModel().getMask() != null,
+                viewModel.selectedLayerProperty()
         ));
         
         imgPicture.imageProperty().bind(viewModel.resultPictureProperty());
         imgMask.imageProperty().bind(Bindings.createObjectBinding(
-                () -> viewModel.getSelectedLevel() == null ? null : viewModel.getSelectedLevel().getModel().getMask(),
-                viewModel.selectedLevelProperty()
+                () -> viewModel.getSelectedLayer() == null ? null : viewModel.getSelectedLayer().getModel().getMask(),
+                viewModel.selectedLayerProperty()
         ));
+
+        toolBoxRight.getSelectionModel().selectAll();
     }
 }

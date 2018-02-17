@@ -2,8 +2,6 @@ package org.pcsoft.app.jimix.app.ui.component;
 
 import de.saxsys.mvvmfx.ViewModel;
 import javafx.beans.Observable;
-import javafx.beans.binding.Bindings;
-import javafx.beans.binding.ObjectBinding;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.ReadOnlyListProperty;
 import javafx.beans.property.ReadOnlyListWrapper;
@@ -11,37 +9,36 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.image.Image;
-import org.pcsoft.app.jimix.core.project.JimixLevel;
-import org.pcsoft.app.jimix.core.project.JimixLevelModel;
+import org.pcsoft.app.jimix.core.project.JimixLayer;
 
 public class PictureEditorPaneViewModel implements ViewModel {
-    private final ReadOnlyListProperty<JimixLevel> levelList =
-            new ReadOnlyListWrapper<JimixLevel>(FXCollections.observableArrayList(param -> new Observable[] {param.getModel().maskProperty()}))
+    private final ReadOnlyListProperty<JimixLayer> layerList =
+            new ReadOnlyListWrapper<JimixLayer>(FXCollections.observableArrayList(param -> new Observable[] {param.getModel().maskProperty()}))
                     .getReadOnlyProperty();
-    private final ObjectProperty<JimixLevel> selectedLevel = new SimpleObjectProperty<>();
+    private final ObjectProperty<JimixLayer> selectedLayer = new SimpleObjectProperty<>();
 
     private final ObjectProperty<Image> resultPicture = new SimpleObjectProperty<>();
 
     /********************************************************************************/
 
-    public ObservableList<JimixLevel> getLevelList() {
-        return levelList.get();
+    public ObservableList<JimixLayer> getLayerList() {
+        return layerList.get();
     }
 
-    public ReadOnlyListProperty<JimixLevel> levelListProperty() {
-        return levelList;
+    public ReadOnlyListProperty<JimixLayer> layerListProperty() {
+        return layerList;
     }
 
-    public JimixLevel getSelectedLevel() {
-        return selectedLevel.get();
+    public JimixLayer getSelectedLayer() {
+        return selectedLayer.get();
     }
 
-    public ObjectProperty<JimixLevel> selectedLevelProperty() {
-        return selectedLevel;
+    public ObjectProperty<JimixLayer> selectedLayerProperty() {
+        return selectedLayer;
     }
 
-    public void setSelectedLevel(JimixLevel selectedLevel) {
-        this.selectedLevel.set(selectedLevel);
+    public void setSelectedLayer(JimixLayer selectedLayer) {
+        this.selectedLayer.set(selectedLayer);
     }
 
     public Image getResultPicture() {

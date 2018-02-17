@@ -4,9 +4,11 @@ import org.apache.commons.lang.StringUtils;
 import org.pcsoft.app.jimix.commons.exception.JimixPluginException;
 import org.pcsoft.app.jimix.core.plugin.type.JimixBlenderInstance;
 import org.pcsoft.app.jimix.core.plugin.type.JimixEffectInstance;
+import org.pcsoft.app.jimix.core.plugin.type.JimixFilterInstance;
 import org.pcsoft.app.jimix.core.plugin.type.JimixRendererInstance;
 import org.pcsoft.app.jimix.plugins.api.JimixBlender;
 import org.pcsoft.app.jimix.plugins.api.JimixEffect;
+import org.pcsoft.app.jimix.plugins.api.JimixFilter;
 import org.pcsoft.app.jimix.plugins.api.JimixRenderer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,6 +29,7 @@ public final class PluginManager {
     }
 
     private final Map<String, JimixEffectInstance> effectMap = new HashMap<>();
+    private final Map<String, JimixFilterInstance> filterMap = new HashMap<>();
     private final Map<String, JimixRendererInstance> rendererMap = new HashMap<>();
     private final Map<String, JimixBlenderInstance> blenderMap = new HashMap<>();
 
@@ -48,10 +51,11 @@ public final class PluginManager {
                 PluginManager.class.getClassLoader());
         
         loadEffects(classLoader);
+        loadFilter(classLoader);
         loadRenderer(classLoader);
         loadBlender(classLoader);
 
-        LOGGER.debug("Found {} effects, {} renderer, {} blender", effectMap.size(), rendererMap.size(), blenderMap.size());
+        LOGGER.debug("Found {} effects, {} filters, {} renderer, {} blender", effectMap.size(), filterMap.size(), rendererMap.size(), blenderMap.size());
     }
 
     private void loadEffects(final ClassLoader classLoader) {
@@ -60,10 +64,26 @@ public final class PluginManager {
         final ServiceLoader<JimixEffect> jimixEffects = ServiceLoader.load(JimixEffect.class, classLoader);
         for (final JimixEffect jimixEffect : jimixEffects) {
             try {
-                effectMap.put(jimixEffect.getClass().getName(), new JimixEffectInstance(jimixEffect));
-                LOGGER.trace(">>> {}", jimixEffect.getClass().getName());
+                final JimixEffectInstance jimixEffectInstance = new JimixEffectInstance(jimixEffect);
+                effectMap.put(jimixEffectInstance.getIdentifier(), jimixEffectInstance);
+                LOGGER.trace(">>> {}", jimixEffectInstance.getIdentifier());
             } catch (JimixPluginException e) {
                 LOGGER.error("Unable to load effect " + jimixEffect.getClass().getName(), e);
+            }
+        }
+    }
+
+    private void loadFilter(final ClassLoader classLoader) {
+        LOGGER.debug("> Load filter plugins");
+
+        final ServiceLoader<JimixFilter> jimixFilters = ServiceLoader.load(JimixFilter.class, classLoader);
+        for (final JimixFilter jimixFilter : jimixFilters) {
+            try {
+                final JimixFilterInstance jimixFilterInstance = new JimixFilterInstance(jimixFilter);
+                filterMap.put(jimixFilterInstance.getIdentifier(), jimixFilterInstance);
+                LOGGER.trace(">>> {}", jimixFilterInstance.getIdentifier());
+            } catch (JimixPluginException e) {
+                LOGGER.error("Unable to load filter " + jimixFilter.getClass().getName(), e);
             }
         }
     }
@@ -74,8 +94,9 @@ public final class PluginManager {
         final ServiceLoader<JimixRenderer> jimixRenderers = ServiceLoader.load(JimixRenderer.class, classLoader);
         for (final JimixRenderer jimixRenderer : jimixRenderers) {
             try {
-                rendererMap.put(jimixRenderer.getClass().getName(), new JimixRendererInstance(jimixRenderer));
-                LOGGER.trace(">>> {}", jimixRenderer.getClass().getName());
+                final JimixRendererInstance jimixRendererInstance = new JimixRendererInstance(jimixRenderer);
+                rendererMap.put(jimixRendererInstance.getIdentifier(), jimixRendererInstance);
+                LOGGER.trace(">>> {}", jimixRendererInstance.getIdentifier());
             } catch (JimixPluginException e) {
                 LOGGER.error("Unable to load renderer " + jimixRenderer.getClass().getName(), e);
             }
@@ -88,8 +109,9 @@ public final class PluginManager {
         final ServiceLoader<JimixBlender> jimixBlenders = ServiceLoader.load(JimixBlender.class, classLoader);
         for (final JimixBlender jimixBlender : jimixBlenders) {
             try {
-                blenderMap.put(jimixBlender.getClass().getName(), new JimixBlenderInstance(jimixBlender));
-                LOGGER.trace(">>> {}", jimixBlender.getClass().getName());
+                final JimixBlenderInstance jimixBlenderInstance = new JimixBlenderInstance(jimixBlender);
+                blenderMap.put(jimixBlenderInstance.getIdentifier(), jimixBlenderInstance);
+                LOGGER.trace(">>> {}", jimixBlenderInstance.getIdentifier());
             } catch (JimixPluginException e) {
                 LOGGER.error("Unable to load blender " + jimixBlender.getClass().getName(), e);
             }
@@ -102,6 +124,14 @@ public final class PluginManager {
 
     public JimixEffectInstance getEffect(final String effectClassName) {
         return effectMap.get(effectClassName);
+    }
+
+    public JimixFilterInstance[] getAllFilters() {
+        return filterMap.values().toArray(new JimixFilterInstance[filterMap.size()]);
+    }
+
+    public JimixFilterInstance getFilter(final String filterClassName) {
+        return filterMap.get(filterClassName);
     }
 
     public JimixRendererInstance[] getAllRenderers() {

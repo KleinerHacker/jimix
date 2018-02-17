@@ -14,6 +14,9 @@ public @interface JimixFilterDescriptor {
     String iconPath() default "";
     JimixFilterType type() default JimixFilterType.ColorFilter;
 
+    boolean usableForPictures() default true;
+    boolean usableForMasks() default false;
+
     boolean onTopLevel() default false;
 
     Class<? extends JimixFilterConfiguration> configurationClass();

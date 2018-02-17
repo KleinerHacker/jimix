@@ -41,6 +41,11 @@ public final class JimixBlenderInstance implements JimixInstance {
     }
 
     @Override
+    public String getIdentifier() {
+        return instance.getClass().getName();
+    }
+
+    @Override
     public String getName() {
         return descriptor.name();
     }

@@ -32,8 +32,8 @@
                     <MenuItem fx:id="miExit" text="%view.window.main.menu.file.exit" onAction="#onActionExit"/>
                 </Menu>
                 <Menu fx:id="mnuPicture" text="%view.window.main.menu.picture">
-                    <Menu fx:id="mnuPictureEffect" text="%view.window.main.menu.picture.effect">
-                        <MenuItem fx:id="miPictureEffectManager" text="%view.window.main.menu.picture.effect.manager" onAction="#onActionPictureEffectManager"/>
+                    <Menu fx:id="mnuPictureFilter" text="%view.window.main.menu.picture.filter">
+                        <MenuItem fx:id="miPictureFilterManager" text="%view.window.main.menu.picture.filter.manager" onAction="#onActionPictureFilterManager"/>
                         <SeparatorMenuItem/>
                     </Menu>
                     <Menu fx:id="mnuPictureRenderer" text="%view.window.main.menu.picture.renderer">

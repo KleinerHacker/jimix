@@ -7,7 +7,7 @@ import org.pcsoft.app.jimix.commons.exception.JimixPluginException;
 import org.pcsoft.app.jimix.plugins.api.JimixRenderer;
 import org.pcsoft.app.jimix.plugins.api.annotation.JimixRendererDescriptor;
 import org.pcsoft.app.jimix.plugins.api.config.JimixRendererConfiguration;
-import org.pcsoft.app.jimix.plugins.api.type.JimixApplySource;
+import org.pcsoft.app.jimix.plugins.api.type.JimixSource;
 import org.pcsoft.app.jimix.plugins.api.type.JimixPixelWriter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,7 +27,7 @@ public final class JimixRendererInstance implements JimixInstance {
         this.descriptor = instance.getClass().getAnnotation(JimixRendererDescriptor.class);
     }
 
-    public void apply(JimixPixelWriter pixelWriter, JimixRendererConfiguration configuration, JimixApplySource applySource) {
+    public void apply(JimixPixelWriter pixelWriter, JimixRendererConfiguration configuration, JimixSource applySource) {
         if (LOGGER.isTraceEnabled()) {
             STOP_WATCH.reset();
             STOP_WATCH.start();
@@ -39,6 +39,11 @@ public final class JimixRendererInstance implements JimixInstance {
             STOP_WATCH.stop();
             LOGGER.trace("Renderer run time: " + DurationFormatUtils.formatDuration(STOP_WATCH.getTime(), "ss:SSS"));
         }
+    }
+
+    @Override
+    public String getIdentifier() {
+        return instance.getClass().getName();
     }
 
     @Override

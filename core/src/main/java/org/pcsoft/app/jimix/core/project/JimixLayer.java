@@ -1,5 +1,6 @@
 package org.pcsoft.app.jimix.core.project;
 
+import javafx.beans.Observable;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.ObjectBinding;
 import javafx.beans.property.*;
@@ -8,27 +9,30 @@ import javafx.collections.MapChangeListener;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
 import javafx.scene.image.Image;
-import org.pcsoft.app.jimix.core.image.ImageBuilder;
+import javafx.util.Callback;
+import org.pcsoft.app.jimix.core.util.ImageBuilder;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
 /**
- * Level holder for {@link JimixLevelModel}, with additional app internal information
+ * Layer holder for {@link JimixLayerModel}, with additional app internal information
  */
-public final class JimixLevel {
+public final class JimixLayer {
     private final ReadOnlyObjectProperty<UUID> uuid = new ReadOnlyObjectWrapper<>(UUID.randomUUID()).getReadOnlyProperty();
-    private final ReadOnlyObjectProperty<JimixLevelModel> model;
+    private final ReadOnlyObjectProperty<JimixLayerModel> model;
     private final ReadOnlyMapProperty<UUID, JimixElement> elementMap =
             new ReadOnlyMapWrapper<UUID, JimixElement>(FXCollections.observableHashMap()).getReadOnlyProperty();
     private final ReadOnlyListProperty<JimixElement> elementList =
-            new ReadOnlyListWrapper<JimixElement>(FXCollections.observableArrayList()).getReadOnlyProperty();
+            new ReadOnlyListWrapper<>(FXCollections.observableArrayList(new JimixElementObserverCallback())).getReadOnlyProperty();
 
     private final ReadOnlyObjectProperty<JimixProject> project;
 
     private final ObjectBinding<Image> resultImage;
 
-    public JimixLevel(final JimixProject project, final JimixLevelModel model) {
+    public JimixLayer(final JimixProject project, final JimixLayerModel model) {
         this.project = new ReadOnlyObjectWrapper<>(project).getReadOnlyProperty();
         this.model = new ReadOnlyObjectWrapper<>(model).getReadOnlyProperty();
         //List Updater
@@ -41,9 +45,10 @@ public final class JimixLevel {
             }
         });
 
+        //Rebuild cached image if sub elements has changed
         resultImage = Bindings.createObjectBinding(
-                () -> ImageBuilder.getInstance().buildLevelImage(this),
-                elementList
+                () -> ImageBuilder.getInstance().buildLayerImage(this),
+                model.maskProperty(), model.elementListProperty(), model.filterListProperty()
         );
     }
 
@@ -63,11 +68,11 @@ public final class JimixLevel {
         return project;
     }
 
-    public JimixLevelModel getModel() {
+    public JimixLayerModel getModel() {
         return model.get();
     }
 
-    public ReadOnlyObjectProperty<JimixLevelModel> modelProperty() {
+    public ReadOnlyObjectProperty<JimixLayerModel> modelProperty() {
         return model;
     }
 
@@ -103,7 +108,7 @@ public final class JimixLevel {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        JimixLevel that = (JimixLevel) o;
+        JimixLayer that = (JimixLayer) o;
         return Objects.equals(uuid.get(), that.uuid.get());
     }
 
@@ -115,5 +120,20 @@ public final class JimixLevel {
     @Override
     public String toString() {
         return model.get().toString();
+    }
+
+    private static final class JimixElementObserverCallback implements Callback<JimixElement, Observable[]> {
+        @Override
+        public Observable[] call(JimixElement param) {
+            final List<Observable> list = new ArrayList<>();
+            list.add(param.getModel().opacityProperty());
+            list.add(param.getModel().xProperty());
+            list.add(param.getModel().yProperty());
+            if (param.getModel() instanceof JimixImageElementModel) {
+                list.add(((JimixImageElementModel) param.getModel()).valueProperty());
+            }
+
+            return list.toArray(new Observable[list.size()]);
+        }
     }
 }
