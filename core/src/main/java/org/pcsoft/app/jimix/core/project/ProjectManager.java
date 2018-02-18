@@ -3,12 +3,15 @@ package org.pcsoft.app.jimix.core.project;
 import javafx.scene.image.Image;
 import org.apache.commons.io.FileUtils;
 import org.pcsoft.app.jimix.commons.exception.JimixProjectException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.*;
 
 public final class ProjectManager {
+    private static final Logger LOGGER = LoggerFactory.getLogger(ProjectManager.class);
     private static final ProjectManager instance = new ProjectManager();
 
     public static ProjectManager getInstance() {
@@ -22,6 +25,8 @@ public final class ProjectManager {
 
     //<editor-fold desc="Project">
     public JimixProject createProjectFromFile(final File file) throws JimixProjectException {
+        LOGGER.info("Create project from file " + file.getAbsolutePath());
+
         try {
             //Load image
             final Image image = new Image(FileUtils.openInputStream(file));
@@ -36,6 +41,8 @@ public final class ProjectManager {
     }
 
     public JimixProject createProjectFromImage(final Image image) {
+        LOGGER.info("Create project from image");
+
         //Create empty project
         final JimixProject project = this.createEmptyProject((int) image.getWidth(), (int) image.getHeight());
         //Create base layer
@@ -51,6 +58,7 @@ public final class ProjectManager {
     public JimixProject createEmptyProject(final int width, final int height) {
         final JimixProjectModel model = new JimixProjectModel(width, height);
         final JimixProject jimixProject = new JimixProject(model);
+        LOGGER.info("Create empty project " + jimixProject.getUuid());
         projectMap.put(jimixProject.getUuid(), jimixProject);
 
         return jimixProject;
@@ -72,13 +80,14 @@ public final class ProjectManager {
         if (!projectMap.containsKey(projectUUID))
             return false;
 
+        LOGGER.info("Close project " + projectUUID);
         projectMap.remove(projectUUID);
         return true;
     }
 
     public JimixProject getProject(final UUID projectUUID) {
         if (!projectMap.containsKey(projectUUID))
-            throw new IllegalArgumentException("Project with UUID " + projectUUID.toString() + " not found!");
+            throw new IllegalArgumentException("Project with UUID " + projectUUID + " not found!");
 
         return projectMap.get(projectUUID);
     }
@@ -91,11 +100,12 @@ public final class ProjectManager {
 
     public JimixLayer createLayerForProject(final UUID projectUUID) {
         if (!projectMap.containsKey(projectUUID))
-            throw new IllegalArgumentException("Project with UUID " + projectUUID.toString() + " not found!");
+            throw new IllegalArgumentException("Project with UUID " + projectUUID + " not found!");
 
         final JimixProject project = projectMap.get(projectUUID);
         final JimixLayerModel model = new JimixLayerModel();
         final JimixLayer layer = new JimixLayer(project, model);
+        LOGGER.info("Create layer " + layer.getUuid() + " for project " + projectUUID);
         project.getLayerMap().put(layer.getUuid(), layer);
 
         return layer;
@@ -103,12 +113,13 @@ public final class ProjectManager {
 
     public boolean removeLayerFromProject(final JimixLayer layer) {
         if (!projectMap.containsKey(layer.getProject().getUuid()))
-            throw new IllegalArgumentException("Project with UUID " + layer.getProject().getUuid().toString() + " not found!");
+            throw new IllegalArgumentException("Project with UUID " + layer.getProject().getUuid() + " not found!");
 
         final JimixProject project = projectMap.get(layer.getProject().getUuid());
         if (!project.getLayerMap().containsKey(layer.getUuid()))
             return false;
 
+        LOGGER.info("Remove layer " + layer.getUuid() + " for project " + project.getUuid());
         project.getLayerMap().remove(layer.getUuid());
         return true;
     }
@@ -117,6 +128,7 @@ public final class ProjectManager {
         if (!project.getLayerMap().containsKey(layerUUID))
             return false;
 
+        LOGGER.info("Remove layer " + layerUUID + " for project " + project.getUuid());
         project.getLayerMap().remove(layerUUID);
         return true;
     }
@@ -126,6 +138,7 @@ public final class ProjectManager {
     public JimixElement createImageElementForLayer(final JimixLayer layer, final Image image) {
         final JimixElementModel model = new JimixImageElementModel(image);
         final JimixElement element = new JimixElement(layer.getProject(), layer, model);
+        LOGGER.info("Create image element " + element.getUuid() + " for layer " + layer.getUuid());
         layer.getElementMap().put(element.getUuid(), element);
 
         return element;
@@ -139,6 +152,7 @@ public final class ProjectManager {
         if (!layer.getElementMap().containsKey(elementUUID))
             return false;
 
+        LOGGER.info("Remove element " + elementUUID + " from layer " + layer.getUuid());
         layer.getElementMap().remove(elementUUID);
         return true;
     }

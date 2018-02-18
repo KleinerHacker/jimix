@@ -5,7 +5,6 @@
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.VBox?>
-<?import org.pcsoft.app.jimix.app.ui.component.PictureEditorPane?>
 <?import javafx.scene.control.SeparatorMenuItem?>
 <?import javafx.scene.control.ToolBar?>
 <?import javafx.scene.control.TabPane?>
@@ -31,15 +30,11 @@
                     <SeparatorMenuItem/>
                     <MenuItem fx:id="miExit" text="%view.window.main.menu.file.exit" onAction="#onActionExit"/>
                 </Menu>
-                <Menu fx:id="mnuPicture" text="%view.window.main.menu.picture">
-                    <Menu fx:id="mnuPictureFilter" text="%view.window.main.menu.picture.filter">
-                        <MenuItem fx:id="miPictureFilterManager" text="%view.window.main.menu.picture.filter.manager" onAction="#onActionPictureFilterManager"/>
-                        <SeparatorMenuItem/>
-                    </Menu>
-                    <Menu fx:id="mnuPictureRenderer" text="%view.window.main.menu.picture.renderer">
-                        <MenuItem fx:id="miPictureRendererManager" text="%view.window.main.menu.picture.renderer.manager" onAction="#onActionPictureRendererManager"/>
-                        <SeparatorMenuItem/>
-                    </Menu>
+                <Menu fx:id="mnuPicture" text="%view.window.main.menu.picture"/>
+                <Menu fx:id="mnuLayer" text="%view.window.main.menu.layer"/>
+                <Menu fx:id="mnuFilter" text="%view.window.main.menu.filter">
+                    <MenuItem fx:id="miFilterManager" text="%view.window.main.menu.filter.manager" onAction="#onActionFilterManager"/>
+                    <SeparatorMenuItem/>
                 </Menu>
             </MenuBar>
             <ToolBar/>

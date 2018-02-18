@@ -2,13 +2,12 @@ package org.pcsoft.app.jimix.app.ui.component;
 
 import de.saxsys.mvvmfx.FluentViewLoader;
 import de.saxsys.mvvmfx.ViewTuple;
+import javafx.beans.property.ListProperty;
 import javafx.beans.property.ObjectProperty;
-import javafx.beans.property.ReadOnlyListProperty;
 import javafx.collections.ObservableList;
 import javafx.scene.layout.HBox;
 import org.pcsoft.app.jimix.app.language.LanguageResources;
 import org.pcsoft.app.jimix.core.project.JimixLayer;
-import org.pcsoft.app.jimix.core.project.JimixProject;
 
 public class LayerList extends HBox {
     private final LayerListView controller;
@@ -25,8 +24,12 @@ public class LayerList extends HBox {
         return viewModel.getLayerList();
     }
 
-    public ReadOnlyListProperty<JimixLayer> layerListProperty() {
+    public ListProperty<JimixLayer> layerListProperty() {
         return viewModel.layerListProperty();
+    }
+
+    public void setLayerList(ObservableList<JimixLayer> layerList) {
+        viewModel.setLayerList(layerList);
     }
 
     public JimixLayer getSelectedLayer() {

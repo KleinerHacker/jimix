@@ -1,6 +1,7 @@
 package org.pcsoft.app.jimix.core.plugin.type;
 
 import javafx.scene.image.Image;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DurationFormatUtils;
 import org.apache.commons.lang.time.StopWatch;
 import org.pcsoft.app.jimix.commons.exception.JimixPluginAnnotationException;
@@ -14,12 +15,16 @@ import org.pcsoft.app.jimix.plugins.api.type.JimixSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.*;
+
 public final class JimixFilterInstance implements JimixInstance {
     private static final Logger LOGGER = LoggerFactory.getLogger(JimixFilterInstance.class);
     private static final StopWatch STOP_WATCH = new StopWatch();
 
+    private final String uuid = UUID.randomUUID().toString();
     private final JimixFilter instance;
     private final JimixFilterDescriptor descriptor;
+    private final ResourceBundle resourceBundle;
 
     public JimixFilterInstance(JimixFilter instance) throws JimixPluginException {
         if (!instance.getClass().isAnnotationPresent(JimixFilterDescriptor.class))
@@ -27,6 +32,15 @@ public final class JimixFilterInstance implements JimixInstance {
 
         this.instance = instance;
         this.descriptor = instance.getClass().getAnnotation(JimixFilterDescriptor.class);
+        if (!StringUtils.isEmpty(descriptor.resourceBundle())) {
+            try {
+                resourceBundle = ResourceBundle.getBundle(descriptor.resourceBundle(), Locale.getDefault(), instance.getClass().getClassLoader());
+            } catch (MissingResourceException e) {
+                throw new JimixPluginAnnotationException("Unable to find resource bundle " + descriptor.resourceBundle() + " for filter " + instance.getClass().getName(), e);
+            }
+        } else {
+            resourceBundle = null;
+        }
     }
 
     public Image apply(final Image image, JimixSource source) throws JimixPluginExecutionException {
@@ -67,11 +81,17 @@ public final class JimixFilterInstance implements JimixInstance {
 
     @Override
     public String getName() {
+        if (resourceBundle != null)
+            return resourceBundle.getString(descriptor.name());
+
         return descriptor.name();
     }
 
     @Override
     public String getDescription() {
+        if (resourceBundle != null)
+            return resourceBundle.getString(descriptor.description());
+
         return descriptor.description();
     }
 
@@ -93,5 +113,26 @@ public final class JimixFilterInstance implements JimixInstance {
 
     public boolean isUsableForMasks() {
         return descriptor.usableForMasks();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        JimixFilterInstance that = (JimixFilterInstance) o;
+        return Objects.equals(uuid, that.uuid);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(uuid);
+    }
+
+    @Override
+    public String toString() {
+        return "JimixFilterInstance{" +
+                "uuid='" + uuid + '\'' +
+                ", descriptor=" + descriptor +
+                '}';
     }
 }

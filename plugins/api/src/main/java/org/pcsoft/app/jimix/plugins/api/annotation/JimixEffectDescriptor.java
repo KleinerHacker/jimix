@@ -10,6 +10,7 @@ import java.lang.annotation.*;
 public @interface JimixEffectDescriptor {
     String name();
     String description();
+    String resourceBundle() default "";
     String iconPath() default "";
 
     Class<? extends JimixEffectConfiguration> configurationClass();

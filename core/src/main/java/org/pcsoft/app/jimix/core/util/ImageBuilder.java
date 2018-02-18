@@ -5,7 +5,6 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.image.WritableImage;
-import javafx.scene.paint.Color;
 import org.pcsoft.app.jimix.commons.exception.JimixPluginException;
 import org.pcsoft.app.jimix.commons.exception.JimixPluginExecutionException;
 import org.pcsoft.app.jimix.core.plugin.PluginManager;
@@ -61,8 +60,6 @@ public final class ImageBuilder {
 
         final Canvas canvas = new Canvas(layer.getProject().getModel().getWidth(), layer.getProject().getModel().getHeight());
         final GraphicsContext graphicsContext = canvas.getGraphicsContext2D();
-        graphicsContext.setFill(Color.RED);
-        graphicsContext.fillRect(0, 0, 100, 100);
         for (final JimixElement element : layer.getElementList()) {
             final JimixElementModel model = element.getModel();
             if (model instanceof JimixImageElementModel) {

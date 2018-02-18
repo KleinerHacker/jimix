@@ -27,7 +27,7 @@ public class PictureEditorPaneView implements FxmlView<PictureEditorPaneViewMode
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        Bindings.bindContent(lstLayer.getLayerList(), viewModel.layerListProperty());
+        lstLayer.layerListProperty().bind(viewModel.layerListProperty());
         viewModel.selectedLayerProperty().bind(lstLayer.selectedLayerProperty());
 
         imgMask.fitWidthProperty().bind(imgPicture.fitWidthProperty());

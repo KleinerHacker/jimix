@@ -50,6 +50,10 @@ public class LayerListView implements FxmlView<LayerListViewModel>, Initializabl
     }
 
     private void refreshTree() {
+        tvLayer.setRoot(null);
+        if (viewModel.getLayerList() == null || viewModel.getLayerList().isEmpty())
+            return;
+
         final ProjectTreeItem projectTreeItem = new ProjectTreeItem();
         for (final JimixLayer layer : viewModel.getLayerList()) {
             final LayerTreeItem layerTreeItem = new LayerTreeItem(layer);

@@ -122,6 +122,7 @@ public final class JimixLayer {
         return model.get().toString();
     }
 
+    //<editor-fold desc="Helper Classes">
     private static final class JimixElementObserverCallback implements Callback<JimixElement, Observable[]> {
         @Override
         public Observable[] call(JimixElement param) {
@@ -136,4 +137,5 @@ public final class JimixLayer {
             return list.toArray(new Observable[list.size()]);
         }
     }
+    //</editor-fold>
 }

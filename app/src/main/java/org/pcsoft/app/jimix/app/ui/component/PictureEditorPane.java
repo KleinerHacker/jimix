@@ -24,7 +24,7 @@ public class PictureEditorPane extends BorderPane {
         viewModel = viewTuple.getViewModel();
 
         this.project = new ReadOnlyObjectWrapper<>(project).getReadOnlyProperty();
-        viewTuple.getViewModel().layerListProperty().bindContent(project.layerListProperty());
+        viewTuple.getViewModel().layerListProperty().bind(project.layerListProperty());
         viewTuple.getViewModel().resultPictureProperty().bind(project.resultImageProperty());
     }
 

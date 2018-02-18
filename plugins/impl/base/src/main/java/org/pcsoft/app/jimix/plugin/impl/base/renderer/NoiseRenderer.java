@@ -7,7 +7,8 @@ import org.pcsoft.app.jimix.plugins.api.type.JimixPixelWriter;
 
 import java.util.Random;
 
-@JimixRendererDescriptor(name = "Noise", description = "Noise creation", usableForMasks = true, configurationClass = NoiseRendererConfiguration.class)
+@JimixRendererDescriptor(name = "plugin.renderer.noise.title", description = "plugin.renderer.noise.description", resourceBundle = "languages/plugin",
+        usableForMasks = true, configurationClass = NoiseRendererConfiguration.class)
 public class NoiseRenderer implements JimixRenderer<NoiseRendererConfiguration> {
     @Override
     public void apply(JimixPixelWriter pixelWriter, NoiseRendererConfiguration configuration, JimixSource source) {

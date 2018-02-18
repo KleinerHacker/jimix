@@ -12,6 +12,7 @@ public @interface JimixFilterDescriptor {
     String name();
     String description();
     String iconPath() default "";
+    String resourceBundle() default "";
     JimixFilterType type() default JimixFilterType.ColorFilter;
 
     boolean usableForPictures() default true;

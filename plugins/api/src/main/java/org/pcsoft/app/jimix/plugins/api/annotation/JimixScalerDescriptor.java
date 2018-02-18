@@ -8,6 +8,7 @@ import java.lang.annotation.*;
 public @interface JimixScalerDescriptor {
     String name();
     String description();
+    String resourceBundle() default "";
 
     boolean usableForPictures() default true;
     boolean usableForMasks() default true;

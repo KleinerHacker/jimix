@@ -61,13 +61,11 @@ public class MainWindowView implements FxmlView<MainWindowViewModel>, Initializa
     @FXML
     private Menu mnuPicture;
     @FXML
-    private Menu mnuPictureFilter;
+    private Menu mnuFilter;
     @FXML
-    private MenuItem miPictureFilterManager;
+    private MenuItem miFilterManager;
     @FXML
-    private Menu mnuPictureRenderer;
-    @FXML
-    private MenuItem miPictureRendererManager;
+    private Menu mnuLayer;
     //</editor-fold>
 
     @InjectViewModel
@@ -76,6 +74,8 @@ public class MainWindowView implements FxmlView<MainWindowViewModel>, Initializa
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         mnuPicture.disableProperty().bind(tabPicture.getSelectionModel().selectedItemProperty().isNull());
+        mnuLayer.disableProperty().bind(tabPicture.getSelectionModel().selectedItemProperty().isNull());
+        mnuFilter.disableProperty().bind(tabPicture.getSelectionModel().selectedItemProperty().isNull());
         miClose.disableProperty().bind(tabPicture.getSelectionModel().selectedItemProperty().isNull());
         miSave.disableProperty().bind(tabPicture.getSelectionModel().selectedItemProperty().isNull());
         miSaveAs.disableProperty().bind(tabPicture.getSelectionModel().selectedItemProperty().isNull());
@@ -84,14 +84,7 @@ public class MainWindowView implements FxmlView<MainWindowViewModel>, Initializa
             final MenuItem menuItem = new MenuItem(filterInstance.getName());
             menuItem.setUserData(filterInstance);
             menuItem.setOnAction(this::onActionPictureFilter);
-            mnuPictureFilter.getItems().add(menuItem);
-        }
-
-        for (final JimixRendererInstance rendererInstance : PluginManager.getInstance().getAllRenderers()) {
-            final MenuItem menuItem = new MenuItem(rendererInstance.getName());
-            menuItem.setUserData(rendererInstance);
-            menuItem.setOnAction(this::onActionPictureRenderer);
-            mnuPictureRenderer.getItems().add(menuItem);
+            mnuFilter.getItems().add(menuItem);
         }
 
         viewModel.getProjectList().addListener((ListChangeListener<JimixProject>) c -> {
@@ -193,7 +186,7 @@ public class MainWindowView implements FxmlView<MainWindowViewModel>, Initializa
     }
 
     @FXML
-    private void onActionPictureFilterManager(ActionEvent actionEvent) {
+    private void onActionFilterManager(ActionEvent actionEvent) {
 
     }
 
