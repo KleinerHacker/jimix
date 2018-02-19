@@ -25,6 +25,7 @@ public final class JimixFilterInstance implements JimixInstance {
     private final JimixFilter instance;
     private final JimixFilterDescriptor descriptor;
     private final ResourceBundle resourceBundle;
+    private final Image icon;
 
     public JimixFilterInstance(JimixFilter instance) throws JimixPluginException {
         if (!instance.getClass().isAnnotationPresent(JimixFilterDescriptor.class))
@@ -40,6 +41,15 @@ public final class JimixFilterInstance implements JimixInstance {
             }
         } else {
             resourceBundle = null;
+        }
+        if (!StringUtils.isEmpty(descriptor.iconPath())) {
+            try {
+                icon = new Image(instance.getClass().getResourceAsStream(descriptor.iconPath()));
+            } catch (Exception e) {
+                throw new JimixPluginAnnotationException("Unable to find icon " + descriptor.iconPath() + " for filter " + instance.getClass().getName(), e);
+            }
+        } else {
+            icon = null;
         }
     }
 
@@ -93,6 +103,10 @@ public final class JimixFilterInstance implements JimixInstance {
             return resourceBundle.getString(descriptor.description());
 
         return descriptor.description();
+    }
+
+    public Image getIcon() {
+        return icon;
     }
 
     public Class<? extends JimixFilterConfiguration> getConfigurationClass() {

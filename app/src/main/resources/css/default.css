@@ -1,0 +1,10 @@
+.button-flat {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+.button-flat:hover {
+    -fx-background-color: lightgray;
+}
+.button-flat:selected {
+    -fx-background-color: gray;
+}

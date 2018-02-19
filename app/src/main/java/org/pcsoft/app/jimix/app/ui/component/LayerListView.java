@@ -13,6 +13,7 @@ import org.pcsoft.app.jimix.core.plugin.PluginManager;
 import org.pcsoft.app.jimix.core.plugin.type.JimixFilterInstance;
 import org.pcsoft.app.jimix.core.project.JimixElement;
 import org.pcsoft.app.jimix.core.project.JimixLayer;
+import org.pcsoft.app.jimix.core.ui.util.FXTreeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -50,6 +51,9 @@ public class LayerListView implements FxmlView<LayerListViewModel>, Initializabl
     }
 
     private void refreshTree() {
+        //Save state for tree
+        final FXTreeUtils.TreeStateInfo treeState = FXTreeUtils.getTreeState(tvLayer);
+
         tvLayer.setRoot(null);
         if (viewModel.getLayerList() == null || viewModel.getLayerList().isEmpty())
             return;
@@ -87,5 +91,8 @@ public class LayerListView implements FxmlView<LayerListViewModel>, Initializabl
         if (!projectTreeItem.getChildren().isEmpty()) {
             tvLayer.getSelectionModel().select(projectTreeItem.getChildren().get(0));
         }
+
+        //Restore state for tree
+        FXTreeUtils.setTreeState(tvLayer, treeState);
     }
 }

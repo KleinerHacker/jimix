@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
-
+<?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.StackPane?>
+<?import org.pcsoft.app.jimix.app.ui.component.LayerList?>
 <?import org.pcsoft.app.jimix.core.ui.component.ToolBox?>
 <?import org.pcsoft.app.jimix.core.ui.component.ToolBoxDescriptor?>
-<?import org.pcsoft.app.jimix.app.ui.component.LayerList?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.VBox?>
 <fx:root type="BorderPane" xmlns="http://javafx.com/javafx"
          xmlns:fx="http://javafx.com/fxml"
          fx:controller="org.pcsoft.app.jimix.app.ui.component.PictureEditorPaneView">
@@ -18,12 +21,33 @@
                         <LayerList fx:id="lstLayer" prefWidth="300"/>
                     </content>
                 </ToolBoxDescriptor>
+                <ToolBoxDescriptor title="Properties">
+                    <content>
+                        <VBox prefWidth="300">
+                            <Label text="Properties"/>
+                        </VBox>
+                    </content>
+                </ToolBoxDescriptor>
             </items>
         </ToolBox>
     </right>
+    <left>
+        <ToolBox fx:id="toolBoxLeft" orientation="LEFT" selectionMode="MULTIPLE">
+            <items>
+                <ToolBoxDescriptor title="Editor">
+                    <content>
+                        <VBox prefWidth="50">
+                            <Label text="Editor"/>
+                        </VBox>
+                    </content>
+                </ToolBoxDescriptor>
+            </items>
+        </ToolBox>
+    </left>
     <center>
         <ScrollPane>
             <StackPane>
+                <Canvas fx:id="canvasGround"/>
                 <ImageView fx:id="imgPicture"/>
                 <ImageView fx:id="imgMask"/>
             </StackPane>

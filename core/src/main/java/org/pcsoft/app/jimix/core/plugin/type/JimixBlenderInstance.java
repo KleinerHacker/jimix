@@ -1,5 +1,6 @@
 package org.pcsoft.app.jimix.core.plugin.type;
 
+import javafx.scene.image.Image;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DurationFormatUtils;
 import org.apache.commons.lang.time.StopWatch;
@@ -23,6 +24,7 @@ public final class JimixBlenderInstance implements JimixInstance {
     private final JimixBlender instance;
     private final JimixBlenderDescriptor descriptor;
     private final ResourceBundle resourceBundle;
+    private final Image icon;
 
     public JimixBlenderInstance(JimixBlender instance) throws JimixPluginException {
         if (!instance.getClass().isAnnotationPresent(JimixBlenderDescriptor.class))
@@ -38,6 +40,15 @@ public final class JimixBlenderInstance implements JimixInstance {
             }
         } else {
             resourceBundle = null;
+        }
+        if (!StringUtils.isEmpty(descriptor.iconPath())) {
+            try {
+                icon = new Image(instance.getClass().getResourceAsStream(descriptor.iconPath()));
+            } catch (Exception e) {
+                throw new JimixPluginAnnotationException("Unable to find icon " + descriptor.iconPath() + " for filter " + instance.getClass().getName(), e);
+            }
+        } else {
+            icon = null;
         }
     }
 
@@ -74,5 +85,9 @@ public final class JimixBlenderInstance implements JimixInstance {
             return resourceBundle.getString(descriptor.description());
 
         return descriptor.description();
+    }
+
+    public Image getIcon() {
+        return icon;
     }
 }

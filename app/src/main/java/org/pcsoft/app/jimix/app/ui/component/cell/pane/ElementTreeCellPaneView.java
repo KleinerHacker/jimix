@@ -5,11 +5,14 @@ import de.saxsys.mvvmfx.InjectViewModel;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
+import javafx.scene.control.ToggleButton;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 
 public class ElementTreeCellPaneView implements FxmlView<ElementTreeCellPaneViewModel>, Initializable {
+    @FXML
+    private ToggleButton btnVisibility;
     @FXML
     private Label lblTitle;
 
@@ -19,5 +22,6 @@ public class ElementTreeCellPaneView implements FxmlView<ElementTreeCellPaneView
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         lblTitle.textProperty().bind(viewModel.titleProperty());
+        btnVisibility.selectedProperty().bindBidirectional(viewModel.visibilityProperty());
     }
 }

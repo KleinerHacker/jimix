@@ -22,10 +22,14 @@ public class ElementTreeCellPane extends HBox {
         viewModel = viewTuple.getViewModel();
 
         value.addListener((v, o, n) -> {
-            if (n == null)
-                return;
+            if (o != null) {
+                viewModel.visibilityProperty().unbindBidirectional(o.getModel().visibilityProperty());
+            }
 
-            viewModel.setTitle(n.getModel() instanceof JimixImageElementModel ? "Image" : "");//TODO
+            if (n != null) {
+                viewModel.setTitle(n.getModel() instanceof JimixImageElementModel ? "Image" : "");//TODO
+                viewModel.visibilityProperty().bindBidirectional(n.getModel().visibilityProperty());
+            }
         });
     }
 

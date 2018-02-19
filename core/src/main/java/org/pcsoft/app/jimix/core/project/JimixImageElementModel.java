@@ -1,5 +1,6 @@
 package org.pcsoft.app.jimix.core.project;
 
+import javafx.beans.Observable;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.image.Image;
@@ -26,5 +27,12 @@ public final class JimixImageElementModel extends JimixElementModel {
 
     public void setValue(Image value) {
         this.value.set(value);
+    }
+
+    @Override
+    protected Observable[] _getObservableValues() {
+        return new Observable[] {
+                value
+        };
     }
 }

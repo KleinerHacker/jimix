@@ -8,6 +8,9 @@
 <?import javafx.scene.control.SeparatorMenuItem?>
 <?import javafx.scene.control.ToolBar?>
 <?import javafx.scene.control.TabPane?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.input.KeyCodeCombination?>
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml" fx:id="pnlRoot"
             fx:controller="org.pcsoft.app.jimix.app.ui.window.MainWindowView"
@@ -17,23 +20,96 @@
             <MenuBar>
                 <Menu fx:id="mnuFile" text="%view.window.main.menu.file">
                     <Menu fx:id="mnuNew" text="%view.window.main.menu.file.new">
-                        <MenuItem fx:id="miNewEmpty" text="%view.window.main.menu.file.new.empty" onAction="#onActionNewEmpty"/>
-                        <MenuItem fx:id="miNewFromClipboard" text="%view.window.main.menu.file.new.from_clipboard" onAction="#onActionFromClipboard"/>
-                        <MenuItem fx:id="miNewFromRenderer" text="%view.window.main.menu.file.new.from_renderer" onAction="#onActionFromRenderer"/>
+                        <MenuItem fx:id="miNewEmpty" text="%view.window.main.menu.file.new.empty" onAction="#onActionNewEmpty">
+                            <graphic>
+                                <ImageView>
+                                    <Image url="@/icons/ic_new_empty16.png"/>
+                                </ImageView>
+                            </graphic>
+                            <accelerator>
+                                <KeyCodeCombination code="N" control="DOWN" alt="UP" shift="DOWN" meta="UP" shortcut="UP"/>
+                            </accelerator>
+                        </MenuItem>
+                        <MenuItem fx:id="miNewFromClipboard" text="%view.window.main.menu.file.new.from_clipboard" onAction="#onActionFromClipboard">
+                            <graphic>
+                                <ImageView>
+                                    <Image url="@/icons/ic_new_clipboard16.png"/>
+                                </ImageView>
+                            </graphic>
+                            <accelerator>
+                                <KeyCodeCombination code="V" control="DOWN" alt="UP" shift="DOWN" meta="UP" shortcut="UP"/>
+                            </accelerator>
+                        </MenuItem>
+                        <MenuItem fx:id="miNewFromRenderer" text="%view.window.main.menu.file.new.from_renderer" onAction="#onActionFromRenderer">
+                            <graphic>
+                                <ImageView>
+                                    <Image url="@/icons/ic_new_renderer16.png"/>
+                                </ImageView>
+                            </graphic>
+                            <accelerator>
+                                <KeyCodeCombination code="R" control="DOWN" alt="UP" shift="DOWN" meta="UP" shortcut="UP"/>
+                            </accelerator>
+                        </MenuItem>
                     </Menu>
-                    <MenuItem fx:id="miOpen" text="%view.window.main.menu.file.open" onAction="#onActionOpen"/>
-                    <Menu fx:id="mnuOpenRecent" text="%view.window.main.menu.file.open_recent"/>
-                    <MenuItem fx:id="miClose" text="%view.window.main.menu.file.close" onAction="#onActionClose"/>
+                    <MenuItem fx:id="miOpen" text="%view.window.main.menu.file.open" onAction="#onActionOpen">
+                        <graphic>
+                            <ImageView>
+                                <Image url="@/icons/ic_open16.png"/>
+                            </ImageView>
+                        </graphic>
+                        <accelerator>
+                            <KeyCodeCombination code="O" control="DOWN" alt="UP" shift="UP" meta="UP" shortcut="UP"/>
+                        </accelerator>
+                    </MenuItem>
+                    <Menu fx:id="mnuOpenRecent" text="%view.window.main.menu.file.open_recent">
+                        <graphic>
+                            <ImageView>
+                                <Image url="@/icons/ic_open_recent16.png"/>
+                            </ImageView>
+                        </graphic>
+                    </Menu>
+                    <MenuItem fx:id="miClose" text="%view.window.main.menu.file.close" onAction="#onActionClose">
+                        <graphic>
+                            <ImageView>
+                                <Image url="@/icons/ic_close16.png"/>
+                            </ImageView>
+                        </graphic>
+                        <accelerator>
+                            <KeyCodeCombination code="X" control="DOWN" alt="DOWN" shift="UP" meta="UP" shortcut="UP"/>
+                        </accelerator>
+                    </MenuItem>
                     <SeparatorMenuItem/>
-                    <MenuItem fx:id="miSave" text="%view.window.main.menu.file.save" onAction="#onActionSave"/>
-                    <MenuItem fx:id="miSaveAs" text="%view.window.main.menu.file.save_as" onAction="#onActionSaveAs"/>
+                    <MenuItem fx:id="miSave" text="%view.window.main.menu.file.save" onAction="#onActionSave">
+                        <graphic>
+                            <ImageView>
+                                <Image url="@/icons/ic_save16.png"/>
+                            </ImageView>
+                        </graphic>
+                        <accelerator>
+                            <KeyCodeCombination code="S" control="DOWN" alt="UP" shift="UP" meta="UP" shortcut="UP"/>
+                        </accelerator>
+                    </MenuItem>
+                    <MenuItem fx:id="miSaveAs" text="%view.window.main.menu.file.save_as" onAction="#onActionSaveAs">
+                        <accelerator>
+                            <KeyCodeCombination code="S" control="DOWN" alt="DOWN" shift="UP" meta="UP" shortcut="UP"/>
+                        </accelerator>
+                    </MenuItem>
                     <SeparatorMenuItem/>
                     <MenuItem fx:id="miExit" text="%view.window.main.menu.file.exit" onAction="#onActionExit"/>
                 </Menu>
                 <Menu fx:id="mnuPicture" text="%view.window.main.menu.picture"/>
                 <Menu fx:id="mnuLayer" text="%view.window.main.menu.layer"/>
                 <Menu fx:id="mnuFilter" text="%view.window.main.menu.filter">
-                    <MenuItem fx:id="miFilterManager" text="%view.window.main.menu.filter.manager" onAction="#onActionFilterManager"/>
+                    <MenuItem fx:id="miFilterManager" text="%view.window.main.menu.filter.manager" onAction="#onActionFilterManager">
+                        <graphic>
+                            <ImageView>
+                                <Image url="@/icons/ic_filter16.png"/>
+                            </ImageView>
+                        </graphic>
+                        <accelerator>
+                            <KeyCodeCombination code="F" control="DOWN" alt="DOWN" shift="DOWN" meta="UP" shortcut="UP"/>
+                        </accelerator>
+                    </MenuItem>
                     <SeparatorMenuItem/>
                 </Menu>
             </MenuBar>

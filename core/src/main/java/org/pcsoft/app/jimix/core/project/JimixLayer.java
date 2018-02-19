@@ -12,10 +12,7 @@ import javafx.scene.image.Image;
 import javafx.util.Callback;
 import org.pcsoft.app.jimix.core.util.ImageBuilder;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Layer holder for {@link JimixLayerModel}, with additional app internal information
@@ -48,7 +45,7 @@ public final class JimixLayer {
         //Rebuild cached image if sub elements has changed
         resultImage = Bindings.createObjectBinding(
                 () -> ImageBuilder.getInstance().buildLayerImage(this),
-                model.maskProperty(), model.elementListProperty(), model.filterListProperty()
+                elementList, model.filterListProperty()
         );
     }
 
@@ -127,12 +124,7 @@ public final class JimixLayer {
         @Override
         public Observable[] call(JimixElement param) {
             final List<Observable> list = new ArrayList<>();
-            list.add(param.getModel().opacityProperty());
-            list.add(param.getModel().xProperty());
-            list.add(param.getModel().yProperty());
-            if (param.getModel() instanceof JimixImageElementModel) {
-                list.add(((JimixImageElementModel) param.getModel()).valueProperty());
-            }
+            list.addAll(Arrays.asList(param.getModel().getObservableValues()));
 
             return list.toArray(new Observable[list.size()]);
         }

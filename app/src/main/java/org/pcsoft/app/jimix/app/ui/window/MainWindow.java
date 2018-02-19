@@ -2,22 +2,49 @@ package org.pcsoft.app.jimix.app.ui.window;
 
 import de.saxsys.mvvmfx.FluentViewLoader;
 import de.saxsys.mvvmfx.ViewTuple;
+import javafx.application.Platform;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.stage.Stage;
 import org.pcsoft.app.jimix.app.language.LanguageResources;
+import org.pcsoft.app.jimix.commons.exception.JimixProjectException;
+import org.pcsoft.app.jimix.core.project.JimixProject;
+import org.pcsoft.app.jimix.core.project.ProjectManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.File;
 
 public class MainWindow extends Stage {
+    private static final Logger LOGGER = LoggerFactory.getLogger(MainWindow.class);
 
     private final MainWindowView controller;
     private final MainWindowViewModel viewModel;
 
-    public MainWindow() {
+    public MainWindow(final File file) {
         setTitle(LanguageResources.getText("app.title"));
 
         final ViewTuple<MainWindowView, MainWindowViewModel> viewTuple =
                 FluentViewLoader.fxmlView(MainWindowView.class).resourceBundle(LanguageResources.getBundle()).load();
         controller = viewTuple.getCodeBehind();
         viewModel = viewTuple.getViewModel();
+
+        if (file != null && (!file.exists() || file.isDirectory())) {
+            LOGGER.error("Unable to find file " + file.getAbsolutePath());
+            new Alert(Alert.AlertType.ERROR, "Unable to find file " + file.getAbsolutePath(), ButtonType.OK).showAndWait();
+            Platform.exit();
+            System.exit(-1);
+        }
+        if (file != null) {
+            try {
+                final JimixProject jimixProject = ProjectManager.getInstance().createProjectFromFile(file);
+                viewModel.getProjectList().add(jimixProject);
+            } catch (JimixProjectException e) {
+                LOGGER.error("Unable to open file " + file.getAbsolutePath(), e);
+                new Alert(Alert.AlertType.ERROR, "Unable to load file " + file.getAbsolutePath(), ButtonType.OK).showAndWait();
+            }
+        }
 
         setScene(new Scene(viewTuple.getView()));
     }

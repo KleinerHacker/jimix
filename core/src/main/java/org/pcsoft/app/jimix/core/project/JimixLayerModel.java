@@ -11,8 +11,9 @@ import org.pcsoft.app.jimix.core.plugin.builtin.blender.OverlayBlender;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class JimixLayerModel {
+public final class JimixLayerModel extends JimixModel {
     private final StringProperty name = new SimpleStringProperty("Layer");
+    private final BooleanProperty visibility = new SimpleBooleanProperty(true);
     private final ObjectProperty<Image> mask = new SimpleObjectProperty<>();
     private final StringProperty blender = new SimpleStringProperty(OverlayBlender.class.getName());
     private final ReadOnlyListProperty<JimixElementModel> elementList =
@@ -37,6 +38,18 @@ public final class JimixLayerModel {
 
     public void setName(String name) {
         this.name.set(name);
+    }
+
+    public boolean isVisibility() {
+        return visibility.get();
+    }
+
+    public BooleanProperty visibilityProperty() {
+        return visibility;
+    }
+
+    public void setVisibility(boolean visibility) {
+        this.visibility.set(visibility);
     }
 
     public Image getMask() {
@@ -77,6 +90,13 @@ public final class JimixLayerModel {
 
     public ReadOnlyListProperty<String> filterListProperty() {
         return filterList;
+    }
+
+    @Override
+    Observable[] getObservableValues() {
+        return new Observable[] {
+                name, visibility, mask, blender, elementList, filterList
+        };
     }
 
     @Override

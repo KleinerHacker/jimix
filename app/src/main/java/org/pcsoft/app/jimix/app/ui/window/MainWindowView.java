@@ -8,6 +8,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import org.pcsoft.app.jimix.app.ui.component.PictureEditorPane;
@@ -82,6 +83,9 @@ public class MainWindowView implements FxmlView<MainWindowViewModel>, Initializa
 
         for (final JimixFilterInstance filterInstance : PluginManager.getInstance().getAllFilters()) {
             final MenuItem menuItem = new MenuItem(filterInstance.getName());
+            if (filterInstance.getIcon() != null) {
+                menuItem.setGraphic(new ImageView(filterInstance.getIcon()));
+            }
             menuItem.setUserData(filterInstance);
             menuItem.setOnAction(this::onActionPictureFilter);
             mnuFilter.getItems().add(menuItem);
@@ -115,7 +119,15 @@ public class MainWindowView implements FxmlView<MainWindowViewModel>, Initializa
         tab.setContent(new PictureEditorPane(project));
         tab.setOnClosed(e -> viewModel.getProjectList().remove(project));
 
+        final Tooltip tooltip = new Tooltip();
+        tooltip.textProperty().bind(Bindings.createStringBinding(
+                () -> project.getModel().getFile() != null ? project.getModel().getFile().getAbsolutePath() : null,
+                project.getModel().fileProperty()
+        ));
+        tab.setTooltip(tooltip);
+
         tabPicture.getTabs().add(tab);
+        tabPicture.getSelectionModel().select(tab);
     }
 
     private void removeTabForProject(final JimixProject project) {

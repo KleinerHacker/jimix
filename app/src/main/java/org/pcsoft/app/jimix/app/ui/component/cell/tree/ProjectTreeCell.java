@@ -1,6 +1,7 @@
 package org.pcsoft.app.jimix.app.ui.component.cell.tree;
 
 import javafx.scene.control.TreeCell;
+import javafx.scene.image.ImageView;
 import org.pcsoft.app.jimix.app.item.tree.*;
 import org.pcsoft.app.jimix.app.ui.component.cell.pane.ElementTreeCellPane;
 import org.pcsoft.app.jimix.app.ui.component.cell.pane.LayerTreeCellPane;
@@ -29,6 +30,7 @@ public class ProjectTreeCell extends TreeCell<Object> {
                 setText("Elements");
             } else if (getTreeItem() instanceof FilterTreeItem && item instanceof JimixFilterInstance) {
                 setText(((JimixFilterInstance) item).getName());//TODO
+                setGraphic(new ImageView(((JimixFilterInstance) item).getIcon()));
             } else if (getTreeItem() instanceof FilterRootTreeItem) {
                 setText("Filters");
             }

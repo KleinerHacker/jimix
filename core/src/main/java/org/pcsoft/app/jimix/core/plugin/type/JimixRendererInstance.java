@@ -1,5 +1,6 @@
 package org.pcsoft.app.jimix.core.plugin.type;
 
+import javafx.scene.image.Image;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DurationFormatUtils;
 import org.apache.commons.lang.time.StopWatch;
@@ -24,6 +25,7 @@ public final class JimixRendererInstance implements JimixInstance {
     private final JimixRenderer instance;
     private final JimixRendererDescriptor descriptor;
     private final ResourceBundle resourceBundle;
+    private final Image icon;
 
     public JimixRendererInstance(JimixRenderer instance) throws JimixPluginException {
         if (!instance.getClass().isAnnotationPresent(JimixRendererDescriptor.class))
@@ -39,6 +41,15 @@ public final class JimixRendererInstance implements JimixInstance {
             }
         } else {
             resourceBundle = null;
+        }
+        if (!StringUtils.isEmpty(descriptor.iconPath())) {
+            try {
+                icon = new Image(instance.getClass().getResourceAsStream(descriptor.iconPath()));
+            } catch (Exception e) {
+                throw new JimixPluginAnnotationException("Unable to find icon " + descriptor.iconPath() + " for filter " + instance.getClass().getName(), e);
+            }
+        } else {
+            icon = null;
         }
     }
 
@@ -75,6 +86,10 @@ public final class JimixRendererInstance implements JimixInstance {
             return resourceBundle.getString(descriptor.description());
 
         return descriptor.description();
+    }
+
+    public Image getIcon() {
+        return icon;
     }
 
     public Class<? extends JimixRendererConfiguration> getConfigurationClass() {

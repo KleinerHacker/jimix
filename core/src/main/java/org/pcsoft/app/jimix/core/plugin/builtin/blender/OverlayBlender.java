@@ -7,7 +7,7 @@ import org.pcsoft.app.jimix.plugins.api.type.JimixPixelWriter;
 
 import java.awt.*;
 
-@JimixBlenderDescriptor(name = "Overlay", description = "Overlay layers (default)")
+@JimixBlenderDescriptor(name = "Overlay", description = "Overlay layers (default)", iconPath = "/icons/ic_blender_overlay16.png")
 public class OverlayBlender implements JimixBlender {
     @Override
     public void apply(JimixPixelReader groundPixelReader, JimixPixelReader layerPixelReader, JimixPixelWriter pixelWriter) {

@@ -15,6 +15,6 @@ public class FilterRootTreeItem extends TreeItem<Object> {
 
     @Override
     public int hashCode() {
-        return Objects.hash(getParent());
+        return Objects.hash(getParent(), getClass());
     }
 }

@@ -12,12 +12,12 @@ import org.slf4j.LoggerFactory;
 import java.io.File;
 import java.io.IOException;
 import java.lang.management.ManagementFactory;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 public class App extends MvvmfxCdiApplication {
     private static final Logger LOGGER = LoggerFactory.getLogger(App.class);
+    private static File fileToOpen = null;
 
     public static void main(String[] args) {
         LOGGER.info("Startup Jimix");
@@ -26,14 +26,19 @@ public class App extends MvvmfxCdiApplication {
         LOGGER.info(">>> Java Opts   : " + ManagementFactory.getRuntimeMXBean().getInputArguments());
         LOGGER.info(">>> Detected OS : " + SystemUtils.OS_NAME + " (Version: " + SystemUtils.OS_VERSION + ")");
 
+        //Detect args
+        final List<File> pluginPathList = new ArrayList<>();
+        for (final String arg : args) {
+            if (arg.toLowerCase().startsWith("--pluginpath=")) {
+                pluginPathList.add(new File(arg.substring(13)));
+            } else {
+                fileToOpen = new File(arg);
+            }
+        }
+        pluginPathList.add(JimixConstants.DEFAULT_PLUGIN_PATH);
+
         LOGGER.info("Load plugins...");
         try {
-            final List<File> pluginPathList = Stream.of(args)
-                    .filter(arg -> arg.toLowerCase().startsWith("--pluginpath="))
-                    .map(arg -> arg.substring(13))
-                    .map(File::new)
-                    .collect(Collectors.toList());
-            pluginPathList.add(JimixConstants.DEFAULT_PLUGIN_PATH);
             PluginManager.getInstance().init(pluginPathList);
         } catch (IOException e) {
             LOGGER.error("FATAL: Unable to load any plugin, app is closed immediately", e);
@@ -46,6 +51,6 @@ public class App extends MvvmfxCdiApplication {
 
     @Override
     public void startMvvmfx(Stage stage) throws Exception {
-        new MainWindow().show();
+        new MainWindow(fileToOpen).show();
     }
 }

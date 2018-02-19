@@ -12,8 +12,7 @@ import javafx.scene.image.Image;
 import javafx.util.Callback;
 import org.pcsoft.app.jimix.core.util.ImageBuilder;
 
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Project host for the {@link JimixProjectModel} self, with additional app internal information
@@ -112,11 +111,11 @@ public final class JimixProject {
     private static final class JimixLayerObserverCallback implements Callback<JimixLayer, Observable[]> {
         @Override
         public Observable[] call(JimixLayer param) {
-            return new Observable[] {
-                    param.elementListProperty(),
-                    param.getModel().maskProperty(), param.getModel().blenderProperty(), param.getModel().nameProperty(),
-                    param.getModel().filterListProperty()
-            };
+            final List<Observable> list = new ArrayList<>();
+            list.add(param.elementListProperty());
+            list.addAll(Arrays.asList(param.getModel().getObservableValues()));
+
+            return list.toArray(new Observable[list.size()]);
         }
     }
 }

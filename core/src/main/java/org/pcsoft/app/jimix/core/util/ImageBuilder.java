@@ -5,6 +5,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.image.WritableImage;
+import javafx.scene.paint.Color;
 import org.pcsoft.app.jimix.commons.exception.JimixPluginException;
 import org.pcsoft.app.jimix.commons.exception.JimixPluginExecutionException;
 import org.pcsoft.app.jimix.core.plugin.PluginManager;
@@ -30,6 +31,9 @@ public final class ImageBuilder {
     public Image buildProjectImage(final JimixProject project) {
         Image image = new WritableImage(project.getModel().getWidth(), project.getModel().getHeight());
         for (final JimixLayer layer : project.getLayerList()) {
+            if (!layer.getModel().isVisibility())
+                continue;
+
             JimixBlenderInstance blender = PluginManager.getInstance().getBlender(layer.getModel().getBlender());
             if (blender == null) {
                 LOGGER.warn("Unable to get blender " + layer.getModel().getBlender() + ", use default instead");
@@ -59,15 +63,20 @@ public final class ImageBuilder {
         final WritableImage image = new WritableImage(layer.getProject().getModel().getWidth(), layer.getProject().getModel().getHeight());
 
         final Canvas canvas = new Canvas(layer.getProject().getModel().getWidth(), layer.getProject().getModel().getHeight());
-        final GraphicsContext graphicsContext = canvas.getGraphicsContext2D();
+        final GraphicsContext gc = canvas.getGraphicsContext2D();
         for (final JimixElement element : layer.getElementList()) {
+            if (!element.getModel().isVisibility())
+                continue;
+
             final JimixElementModel model = element.getModel();
             if (model instanceof JimixImageElementModel) {
-                graphicsContext.drawImage(((JimixImageElementModel) model).getValue(), element.getModel().getX(), element.getModel().getY(),
+                gc.drawImage(((JimixImageElementModel) model).getValue(), element.getModel().getX(), element.getModel().getY(),
                         element.getModel().getWidth(), element.getModel().getHeight());
             }
         }
-        canvas.snapshot(new SnapshotParameters(), image);
+        final SnapshotParameters snapshotParameters = new SnapshotParameters();
+        snapshotParameters.setFill(Color.TRANSPARENT);
+        canvas.snapshot(snapshotParameters, image);
 
         Image resultImage = image;
         for (final String filterClassName : layer.getModel().getFilterList()) {

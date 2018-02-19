@@ -8,7 +8,7 @@ import javafx.util.Callback;
 
 import java.io.File;
 
-public final class JimixProjectModel {
+public final class JimixProjectModel extends JimixModel {
     private final ObjectProperty<File> file = new SimpleObjectProperty<>();
     private final ReadOnlyListProperty<JimixLayerModel> layerList =
             new ReadOnlyListWrapper<>(FXCollections.observableArrayList(new JimixLayerObserverCallback())).getReadOnlyProperty();
@@ -63,6 +63,13 @@ public final class JimixProjectModel {
 
     public void setHeight(int height) {
         this.height.set(height);
+    }
+
+    @Override
+    Observable[] getObservableValues() {
+        return new Observable[] {
+                file, layerList, width, height
+        };
     }
 
     @Override

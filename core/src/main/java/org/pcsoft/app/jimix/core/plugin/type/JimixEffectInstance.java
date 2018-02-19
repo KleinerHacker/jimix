@@ -23,6 +23,7 @@ public final class JimixEffectInstance implements JimixInstance {
     private final JimixEffect instance;
     private final JimixEffectDescriptor descriptor;
     private final ResourceBundle resourceBundle;
+    private final Image icon;
 
     public JimixEffectInstance(JimixEffect instance) throws JimixPluginException {
         if (!instance.getClass().isAnnotationPresent(JimixEffectDescriptor.class))
@@ -38,6 +39,15 @@ public final class JimixEffectInstance implements JimixInstance {
             }
         } else {
             resourceBundle = null;
+        }
+        if (!StringUtils.isEmpty(descriptor.iconPath())) {
+            try {
+                icon = new Image(instance.getClass().getResourceAsStream(descriptor.iconPath()));
+            } catch (Exception e) {
+                throw new JimixPluginAnnotationException("Unable to find icon " + descriptor.iconPath() + " for filter " + instance.getClass().getName(), e);
+            }
+        } else {
+            icon = null;
         }
     }
 
@@ -79,6 +89,10 @@ public final class JimixEffectInstance implements JimixInstance {
             return resourceBundle.getString(descriptor.description());
 
         return descriptor.description();
+    }
+
+    public Image getIcon() {
+        return icon;
     }
 
     public Class<? extends JimixEffectConfiguration> getConfigurationClass() {
