@@ -1,6 +1,7 @@
 .button-flat {
     -fx-background-color: transparent;
     -fx-border-color: transparent;
+    -fx-padding: 2px;
 }
 .button-flat:hover {
     -fx-background-color: lightgray;
