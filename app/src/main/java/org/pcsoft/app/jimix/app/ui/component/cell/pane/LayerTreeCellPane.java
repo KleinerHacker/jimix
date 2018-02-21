@@ -9,7 +9,6 @@ import org.pcsoft.app.jimix.app.language.LanguageResources;
 import org.pcsoft.app.jimix.core.project.JimixLayer;
 
 public class LayerTreeCellPane extends HBox {
-
     private final LayerTreeCellPaneView controller;
     private final LayerTreeCellPaneViewModel viewModel;
 
@@ -29,6 +28,7 @@ public class LayerTreeCellPane extends HBox {
             if (n != null) {
                 viewModel.setName(n.getModel().getName());
                 viewModel.visibilityProperty().bindBidirectional(n.getModel().visibilityProperty());
+                viewModel.previewProperty().bind(n.resultImageProperty());
             }
         });
     }

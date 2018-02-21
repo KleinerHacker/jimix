@@ -7,7 +7,7 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.HBox?>
 <fx:root type="HBox" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1"
-         fx:controller="org.pcsoft.app.jimix.app.ui.component.LayerListView">
+         fx:controller="org.pcsoft.app.jimix.app.ui.component.LayerListView" >
     <TreeView fx:id="tvLayer" showRoot="false" maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS"/>
     <ToolBar orientation="VERTICAL" minWidth="40" maxWidth="40" prefWidth="40">
         <Button>

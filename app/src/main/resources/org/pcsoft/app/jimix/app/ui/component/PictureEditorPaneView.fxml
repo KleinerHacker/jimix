@@ -10,6 +10,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import org.pcsoft.framework.jfex.toolbox.ToolBox?>
 <?import org.pcsoft.framework.jfex.toolbox.ToolBoxDescriptor?>
+<?import org.controlsfx.control.PropertySheet?>
 <fx:root type="BorderPane" xmlns="http://javafx.com/javafx"
          xmlns:fx="http://javafx.com/fxml"
          fx:controller="org.pcsoft.app.jimix.app.ui.component.PictureEditorPaneView">
@@ -23,9 +24,7 @@
                 </ToolBoxDescriptor>
                 <ToolBoxDescriptor title="Properties">
                     <content>
-                        <VBox prefWidth="300">
-                            <Label text="Properties"/>
-                        </VBox>
+                        <PropertySheet fx:id="propSheet" mode="CATEGORY"/>
                     </content>
                 </ToolBoxDescriptor>
             </items>

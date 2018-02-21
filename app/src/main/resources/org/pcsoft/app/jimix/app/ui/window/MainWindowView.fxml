@@ -11,6 +11,7 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.input.KeyCodeCombination?>
+<?import javafx.scene.control.CheckMenuItem?>
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml" fx:id="pnlRoot"
             fx:controller="org.pcsoft.app.jimix.app.ui.window.MainWindowView"
@@ -111,6 +112,15 @@
                         </accelerator>
                     </MenuItem>
                     <SeparatorMenuItem/>
+                </Menu>
+                <Menu fx:id="mnuView" text="%view.window.main.menu.view">
+                    <Menu fx:id="mnuTheme" text="%view.window.main.menu.view.theme">
+                        <CheckMenuItem fx:id="miThemeDefault" text="%view.window.main.menu.view.theme.default" selected="true" onAction="#onActionThemeDefault"/>
+                        <CheckMenuItem fx:id="miThemeDark" text="%view.window.main.menu.view.theme.dark" onAction="#onActionThemeDark"/>
+                    </Menu>
+                </Menu>
+                <Menu fx:id="mnuHelp" text="%view.window.main.menu.help">
+                    <MenuItem fx:id="miAbout" text="%view.window.main.menu.help.about" onAction="#onActionAbout"/>
                 </Menu>
             </MenuBar>
             <ToolBar/>

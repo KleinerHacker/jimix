@@ -6,12 +6,15 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.control.ToggleButton;
+import javafx.scene.image.ImageView;
 import org.pcsoft.app.jimix.app.ex.InvertBooleanProperty;
 
 import java.net.URL;
 import java.util.ResourceBundle;
 
 public class LayerTreeCellPaneView implements FxmlView<LayerTreeCellPaneViewModel>, Initializable {
+    @FXML
+    private ImageView imgPreview;
     @FXML
     private ToggleButton btnVisibility;
     @FXML
@@ -24,5 +27,6 @@ public class LayerTreeCellPaneView implements FxmlView<LayerTreeCellPaneViewMode
     public void initialize(URL location, ResourceBundle resources) {
         lblName.textProperty().bind(viewModel.nameProperty());
         btnVisibility.selectedProperty().bindBidirectional(new InvertBooleanProperty(viewModel.visibilityProperty()));
+        imgPreview.imageProperty().bind(viewModel.previewProperty());
     }
 }

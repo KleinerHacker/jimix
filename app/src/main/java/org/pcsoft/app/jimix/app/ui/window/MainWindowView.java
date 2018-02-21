@@ -12,6 +12,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import org.pcsoft.app.jimix.app.ui.component.PictureEditorPane;
+import org.pcsoft.app.jimix.app.ui.splash.JimixSplash;
 import org.pcsoft.app.jimix.app.util.FileChooserUtils;
 import org.pcsoft.app.jimix.commons.exception.JimixProjectException;
 import org.pcsoft.app.jimix.core.plugin.PluginManager;
@@ -67,6 +68,18 @@ public class MainWindowView implements FxmlView<MainWindowViewModel>, Initializa
     private MenuItem miFilterManager;
     @FXML
     private Menu mnuLayer;
+    @FXML
+    private Menu mnuHelp;
+    @FXML
+    private MenuItem miAbout;
+    @FXML
+    private Menu mnuView;
+    @FXML
+    private Menu mnuTheme;
+    @FXML
+    private CheckMenuItem miThemeDefault;
+    @FXML
+    private CheckMenuItem miThemeDark;
     //</editor-fold>
 
     @InjectViewModel
@@ -214,13 +227,38 @@ public class MainWindowView implements FxmlView<MainWindowViewModel>, Initializa
         final PictureEditorPane pictureEditorPane = (PictureEditorPane) tab.getContent();
         final JimixFilterInstance filterInstance = (JimixFilterInstance) ((MenuItem) actionEvent.getSource()).getUserData();
 
-        pictureEditorPane.getSelectedLayer().getModel().getFilterList().add(filterInstance.getIdentifier());
+        pictureEditorPane.getSelectedTopLayer().getModel().getFilterList().add(filterInstance.getIdentifier());
     }
 
     private void onActionPictureRenderer(ActionEvent actionEvent) {
         final JimixRendererInstance rendererInstance = (JimixRendererInstance) ((MenuItem) actionEvent.getSource()).getUserData();
 
         //TODO
+    }
+
+    @FXML
+    private void onActionAbout(ActionEvent actionEvent) {
+        JimixSplash.show(false);
+    }
+
+    @FXML
+    private void onActionThemeDefault(ActionEvent actionEvent) {
+        miThemeDefault.setSelected(true);
+        miThemeDark.setSelected(false);
+
+        pnlRoot.getStylesheets().setAll(
+                "/css/default.css"
+        );
+    }
+
+    @FXML
+    private void onActionThemeDark(ActionEvent actionEvent) {
+        miThemeDark.setSelected(true);
+        miThemeDefault.setSelected(false);
+
+        pnlRoot.getStylesheets().setAll(
+                "/css/modena_dark.css"
+        );
     }
     //</editor-fold>
 }

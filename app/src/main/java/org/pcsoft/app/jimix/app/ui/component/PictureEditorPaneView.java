@@ -3,15 +3,26 @@ package org.pcsoft.app.jimix.app.ui.component;
 import de.saxsys.mvvmfx.FxmlView;
 import de.saxsys.mvvmfx.InjectViewModel;
 import javafx.beans.binding.Bindings;
+import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
+import org.controlsfx.control.PropertySheet;
+import org.controlsfx.property.BeanProperty;
+import org.pcsoft.app.jimix.app.ex.SimpleProperty;
+import org.pcsoft.app.jimix.core.project.JimixElement;
+import org.pcsoft.app.jimix.core.project.JimixElementModel;
+import org.pcsoft.app.jimix.core.project.JimixLayer;
+import org.pcsoft.app.jimix.core.project.JimixLayerModel;
 import org.pcsoft.framework.jfex.toolbox.ToolBox;
 
+import java.beans.IntrospectionException;
+import java.beans.PropertyDescriptor;
 import java.net.URL;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class PictureEditorPaneView implements FxmlView<PictureEditorPaneViewModel>, Initializable {
@@ -28,6 +39,8 @@ public class PictureEditorPaneView implements FxmlView<PictureEditorPaneViewMode
     private ImageView imgMask;
     @FXML
     private Canvas canvasGround;
+    @FXML
+    private PropertySheet propSheet;
 
     @InjectViewModel
     private PictureEditorPaneViewModel viewModel;
@@ -35,13 +48,13 @@ public class PictureEditorPaneView implements FxmlView<PictureEditorPaneViewMode
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         lstLayer.layerListProperty().bind(viewModel.layerListProperty());
-        viewModel.selectedLayerProperty().bind(lstLayer.selectedLayerProperty());
+        viewModel.selectedTopLayerProperty().bind(lstLayer.selectedTopLayerProperty());
 
         imgMask.fitWidthProperty().bind(imgPicture.fitWidthProperty());
         imgMask.fitHeightProperty().bind(imgPicture.fitHeightProperty());
         imgMask.visibleProperty().bind(Bindings.createBooleanBinding(
-                () -> viewModel.getSelectedLayer() != null && viewModel.getSelectedLayer().getModel().getMask() != null,
-                viewModel.selectedLayerProperty()
+                () -> viewModel.getSelectedTopLayer() != null && viewModel.getSelectedTopLayer().getModel().getMask() != null,
+                viewModel.selectedTopLayerProperty()
         ));
 
         canvasGround.widthProperty().bind(Bindings.createDoubleBinding(
@@ -58,12 +71,15 @@ public class PictureEditorPaneView implements FxmlView<PictureEditorPaneViewMode
 
         imgPicture.imageProperty().bind(viewModel.resultPictureProperty());
         imgMask.imageProperty().bind(Bindings.createObjectBinding(
-                () -> viewModel.getSelectedLayer() == null ? null : viewModel.getSelectedLayer().getModel().getMask(),
-                viewModel.selectedLayerProperty()
+                () -> viewModel.getSelectedTopLayer() == null ? null : viewModel.getSelectedTopLayer().getModel().getMask(),
+                viewModel.selectedTopLayerProperty()
         ));
 
         toolBoxRight.getSelectionModel().selectAll();
         toolBoxLeft.getSelectionModel().selectAll();
+
+        lstLayer.selectedLayerProperty().addListener((v, o, n) -> refreshProperties());
+        lstLayer.selectedElementProperty().addListener((v, o, n) -> refreshProperties());
     }
 
     private void refreshTransparentGround() {
@@ -79,5 +95,35 @@ public class PictureEditorPaneView implements FxmlView<PictureEditorPaneViewMode
                 }
             }
         }
+    }
+
+    private void refreshProperties() {
+        propSheet.getItems().clear();
+
+        if (lstLayer.getSelectedLayer() != null) {
+            refreshPropertiesForLayer(lstLayer.getSelectedLayer());
+        } else if (lstLayer.getSelectedElement() != null) {
+            refreshPropertiesForElement(lstLayer.getSelectedElement());
+        }
+    }
+
+    private void refreshPropertiesForElement(final JimixElement element) {
+        propSheet.getItems().addAll(
+                new SimpleProperty<>(Integer.class, "X", "Left position of image", "Alignment",
+                        () -> element.getModel().getX(), v -> element.getModel().setX(v)),
+                new SimpleProperty<>(Integer.class, "Y", "Top position of image", "Alignment",
+                        () -> element.getModel().getY(), v -> element.getModel().setY(v)),
+                new SimpleProperty<>(Integer.class, "Width", "Width of image", "Alignment",
+                        () -> element.getModel().getWidth(), v -> element.getModel().setWidth(v)),
+                new SimpleProperty<>(Integer.class, "Height", "Height of image", "Alignment",
+                        () -> element.getModel().getHeight(), v -> element.getModel().setHeight(v))
+        );
+    }
+
+    private void refreshPropertiesForLayer(final JimixLayer layer) {
+        propSheet.getItems().addAll(
+                new SimpleProperty<>(String.class, "Name", "Name of layer", "Default",
+                        () -> layer.getModel().getName(), v -> layer.getModel().setName(v))
+        );
     }
 }

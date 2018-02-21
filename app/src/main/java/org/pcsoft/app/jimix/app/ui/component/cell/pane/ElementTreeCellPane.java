@@ -29,6 +29,9 @@ public class ElementTreeCellPane extends HBox {
             if (n != null) {
                 viewModel.setTitle(n.getModel() instanceof JimixImageElementModel ? "Image" : "");//TODO
                 viewModel.visibilityProperty().bindBidirectional(n.getModel().visibilityProperty());
+                if (n.getModel() instanceof JimixImageElementModel) {
+                    viewModel.previewProperty().bind(((JimixImageElementModel) n.getModel()).valueProperty());
+                }
             }
         });
     }

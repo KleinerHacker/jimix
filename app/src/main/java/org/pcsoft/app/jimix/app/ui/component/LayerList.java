@@ -7,6 +7,7 @@ import javafx.beans.property.ObjectProperty;
 import javafx.collections.ObservableList;
 import javafx.scene.layout.HBox;
 import org.pcsoft.app.jimix.app.language.LanguageResources;
+import org.pcsoft.app.jimix.core.project.JimixElement;
 import org.pcsoft.app.jimix.core.project.JimixLayer;
 
 public class LayerList extends HBox {
@@ -32,6 +33,18 @@ public class LayerList extends HBox {
         viewModel.setLayerList(layerList);
     }
 
+    public JimixLayer getSelectedTopLayer() {
+        return viewModel.getSelectedTopLayer();
+    }
+
+    public ObjectProperty<JimixLayer> selectedTopLayerProperty() {
+        return viewModel.selectedTopLayerProperty();
+    }
+
+    public void setSelectedTopLayer(JimixLayer selectedTopLayer) {
+        viewModel.setSelectedTopLayer(selectedTopLayer);
+    }
+
     public JimixLayer getSelectedLayer() {
         return viewModel.getSelectedLayer();
     }
@@ -42,5 +55,17 @@ public class LayerList extends HBox {
 
     public void setSelectedLayer(JimixLayer selectedLayer) {
         viewModel.setSelectedLayer(selectedLayer);
+    }
+
+    public JimixElement getSelectedElement() {
+        return viewModel.getSelectedElement();
+    }
+
+    public ObjectProperty<JimixElement> selectedElementProperty() {
+        return viewModel.selectedElementProperty();
+    }
+
+    public void setSelectedElement(JimixElement selectedElement) {
+        viewModel.setSelectedElement(selectedElement);
     }
 }

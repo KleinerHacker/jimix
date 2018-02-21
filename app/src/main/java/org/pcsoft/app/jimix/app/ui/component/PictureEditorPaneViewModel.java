@@ -7,11 +7,12 @@ import javafx.beans.property.SimpleListProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ObservableList;
 import javafx.scene.image.Image;
+import org.pcsoft.app.jimix.core.project.JimixElement;
 import org.pcsoft.app.jimix.core.project.JimixLayer;
 
 public class PictureEditorPaneViewModel implements ViewModel {
     private final ListProperty<JimixLayer> layerList = new SimpleListProperty<>();
-    private final ObjectProperty<JimixLayer> selectedLayer = new SimpleObjectProperty<>();
+    private final ObjectProperty<JimixLayer> selectedTopLayer = new SimpleObjectProperty<>();
 
     private final ObjectProperty<Image> resultPicture = new SimpleObjectProperty<>();
 
@@ -29,16 +30,16 @@ public class PictureEditorPaneViewModel implements ViewModel {
         this.layerList.set(layerList);
     }
 
-    public JimixLayer getSelectedLayer() {
-        return selectedLayer.get();
+    public JimixLayer getSelectedTopLayer() {
+        return selectedTopLayer.get();
     }
 
-    public ObjectProperty<JimixLayer> selectedLayerProperty() {
-        return selectedLayer;
+    public ObjectProperty<JimixLayer> selectedTopLayerProperty() {
+        return selectedTopLayer;
     }
 
-    public void setSelectedLayer(JimixLayer selectedLayer) {
-        this.selectedLayer.set(selectedLayer);
+    public void setSelectedTopLayer(JimixLayer selectedTopLayer) {
+        this.selectedTopLayer.set(selectedTopLayer);
     }
 
     public Image getResultPicture() {
