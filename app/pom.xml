@@ -29,11 +29,6 @@
             <artifactId>jimix-core</artifactId>
             <version>${project.version}</version>
         </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>jimix-ui-core</artifactId>
-            <version>${project.version}</version>
-        </dependency>
 
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
@@ -56,6 +51,10 @@
         <dependency>
             <groupId>de.saxsys</groupId>
             <artifactId>mvvmfx-cdi</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.github.kleinerhacker</groupId>
+            <artifactId>jfex</artifactId>
         </dependency>
     </dependencies>
 </project>

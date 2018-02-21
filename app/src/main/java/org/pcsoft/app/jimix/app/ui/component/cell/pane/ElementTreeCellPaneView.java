@@ -2,12 +2,11 @@ package org.pcsoft.app.jimix.app.ui.component.cell.pane;
 
 import de.saxsys.mvvmfx.FxmlView;
 import de.saxsys.mvvmfx.InjectViewModel;
-import javafx.beans.property.SimpleBooleanProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.control.ToggleButton;
-import org.pcsoft.app.jimix.core.ui.property.InvertBooleanProperty;
+import org.pcsoft.app.jimix.app.ex.InvertBooleanProperty;
 
 import java.net.URL;
 import java.util.ResourceBundle;

@@ -1,4 +1,4 @@
-package org.pcsoft.app.jimix.core.ui.property;
+package org.pcsoft.app.jimix.app.ex;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;

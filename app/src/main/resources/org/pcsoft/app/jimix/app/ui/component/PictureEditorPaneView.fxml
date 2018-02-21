@@ -6,10 +6,10 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.StackPane?>
 <?import org.pcsoft.app.jimix.app.ui.component.LayerList?>
-<?import org.pcsoft.app.jimix.core.ui.component.ToolBox?>
-<?import org.pcsoft.app.jimix.core.ui.component.ToolBoxDescriptor?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.VBox?>
+<?import org.pcsoft.framework.jfex.toolbox.ToolBox?>
+<?import org.pcsoft.framework.jfex.toolbox.ToolBoxDescriptor?>
 <fx:root type="BorderPane" xmlns="http://javafx.com/javafx"
          xmlns:fx="http://javafx.com/fxml"
          fx:controller="org.pcsoft.app.jimix.app.ui.component.PictureEditorPaneView">

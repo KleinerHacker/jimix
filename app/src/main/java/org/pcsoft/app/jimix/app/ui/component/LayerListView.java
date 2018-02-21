@@ -13,7 +13,7 @@ import org.pcsoft.app.jimix.core.plugin.PluginManager;
 import org.pcsoft.app.jimix.core.plugin.type.JimixFilterInstance;
 import org.pcsoft.app.jimix.core.project.JimixElement;
 import org.pcsoft.app.jimix.core.project.JimixLayer;
-import org.pcsoft.app.jimix.core.ui.util.FXTreeUtils;
+import org.pcsoft.framework.jfex.util.FXTreeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

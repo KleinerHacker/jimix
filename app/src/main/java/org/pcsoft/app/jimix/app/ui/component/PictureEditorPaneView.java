@@ -9,7 +9,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
-import org.pcsoft.app.jimix.core.ui.component.ToolBox;
+import org.pcsoft.framework.jfex.toolbox.ToolBox;
 
 import java.net.URL;
 import java.util.ResourceBundle;
