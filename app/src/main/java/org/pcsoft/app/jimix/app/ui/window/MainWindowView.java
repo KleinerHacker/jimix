@@ -2,13 +2,22 @@ package org.pcsoft.app.jimix.app.ui.window;
 
 import de.saxsys.mvvmfx.FxmlView;
 import de.saxsys.mvvmfx.InjectViewModel;
+import javafx.application.Platform;
+import javafx.beans.Observable;
 import javafx.beans.binding.Bindings;
+import javafx.beans.binding.BooleanBinding;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuItem;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.Clipboard;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import org.pcsoft.app.jimix.app.ui.component.PictureEditorPane;
@@ -16,13 +25,15 @@ import org.pcsoft.app.jimix.app.ui.splash.JimixSplash;
 import org.pcsoft.app.jimix.app.util.FileChooserUtils;
 import org.pcsoft.app.jimix.commons.exception.JimixProjectException;
 import org.pcsoft.app.jimix.core.plugin.PluginManager;
+import org.pcsoft.app.jimix.core.plugin.type.JimixClipboardProviderInstance;
 import org.pcsoft.app.jimix.core.plugin.type.JimixFilterInstance;
-import org.pcsoft.app.jimix.core.plugin.type.JimixRendererInstance;
 import org.pcsoft.app.jimix.core.project.JimixProject;
 import org.pcsoft.app.jimix.core.project.ProjectManager;
+import org.pcsoft.framework.jfex.property.ExtendedWrapperProperty;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.awt.*;
 import java.io.File;
 import java.net.URL;
 import java.util.List;
@@ -80,6 +91,37 @@ public class MainWindowView implements FxmlView<MainWindowViewModel>, Initializa
     private CheckMenuItem miThemeDefault;
     @FXML
     private CheckMenuItem miThemeDark;
+    @FXML
+    private Menu mnuEdit;
+    @FXML
+    private MenuItem miUndo;
+    @FXML
+    private MenuItem miRedo;
+    @FXML
+    private MenuItem miCut;
+    @FXML
+    private MenuItem miCopy;
+    @FXML
+    private Menu mnuPaste;
+    //</editor-fold>
+
+    //<editor-fold desc="Toolbar">
+    @FXML
+    private Button btnNewEmpty;
+    @FXML
+    private Button btnOpen;
+    @FXML
+    private Button btnClose;
+    @FXML
+    private Button btnUndo;
+    @FXML
+    private Button btnRedo;
+    @FXML
+    private Button btnCut;
+    @FXML
+    private Button btnCopy;
+    @FXML
+    private Button btnDefaultPaste;
     //</editor-fold>
 
     @InjectViewModel
@@ -89,10 +131,21 @@ public class MainWindowView implements FxmlView<MainWindowViewModel>, Initializa
     public void initialize(URL location, ResourceBundle resources) {
         mnuPicture.disableProperty().bind(tabPicture.getSelectionModel().selectedItemProperty().isNull());
         mnuLayer.disableProperty().bind(tabPicture.getSelectionModel().selectedItemProperty().isNull());
-        mnuFilter.disableProperty().bind(tabPicture.getSelectionModel().selectedItemProperty().isNull());
+        mnuFilter.disableProperty().bind(new TopLayerBooleanProperty());
         miClose.disableProperty().bind(tabPicture.getSelectionModel().selectedItemProperty().isNull());
         miSave.disableProperty().bind(tabPicture.getSelectionModel().selectedItemProperty().isNull());
         miSaveAs.disableProperty().bind(tabPicture.getSelectionModel().selectedItemProperty().isNull());
+        mnuEdit.disableProperty().bind(tabPicture.getSelectionModel().selectedItemProperty().isNull());
+        mnuPaste.disableProperty().bind(new TopLayerBooleanProperty().or(new MenuEmptyBooleanProperty()));
+
+        btnNewEmpty.disableProperty().bind(miNewEmpty.disableProperty().or(mnuFile.disableProperty()));
+        btnOpen.disableProperty().bind(miOpen.disableProperty().or(mnuFile.disableProperty()));
+        btnClose.disableProperty().bind(miClose.disableProperty().or(mnuFile.disableProperty()));
+        btnUndo.disableProperty().bind(miUndo.disableProperty().or(mnuEdit.disableProperty()));
+        btnRedo.disableProperty().bind(miRedo.disableProperty().or(mnuEdit.disableProperty()));
+        btnCut.disableProperty().bind(miCut.disableProperty().or(mnuEdit.disableProperty()));
+        btnCopy.disableProperty().bind(miCopy.disableProperty().or(mnuEdit.disableProperty()));
+        btnDefaultPaste.disableProperty().bind(mnuPaste.disableProperty().or(mnuEdit.disableProperty()));
 
         for (final JimixFilterInstance filterInstance : PluginManager.getInstance().getAllFilters()) {
             final MenuItem menuItem = new MenuItem(filterInstance.getName());
@@ -102,6 +155,23 @@ public class MainWindowView implements FxmlView<MainWindowViewModel>, Initializa
             menuItem.setUserData(filterInstance);
             menuItem.setOnAction(this::onActionPictureFilter);
             mnuFilter.getItems().add(menuItem);
+        }
+
+        for (final JimixClipboardProviderInstance clipboardProviderInstance : PluginManager.getInstance().getAllClipboardProviders()) {
+            final MenuItem menuItem = new MenuItem(clipboardProviderInstance.getName());
+            if (clipboardProviderInstance.getIcon() != null) {
+                menuItem.setGraphic(new ImageView(clipboardProviderInstance.getIcon()));
+            }
+            menuItem.setUserData(clipboardProviderInstance);
+            menuItem.setOnAction(this::onActionPasteFromClipboard);
+            Toolkit.getDefaultToolkit().getSystemClipboard().addFlavorListener(e -> Platform.runLater(() -> {
+                final boolean accept = clipboardProviderInstance.acceptClipboardContent(Clipboard.getSystemClipboard());
+                LOGGER.debug("Clipboard content has changed, accept from " + clipboardProviderInstance.getIdentifier() + ": " + accept);
+
+                menuItem.setVisible(accept);
+            }));
+            menuItem.setVisible(clipboardProviderInstance.acceptClipboardContent(Clipboard.getSystemClipboard()));
+            mnuPaste.getItems().add(menuItem);
         }
 
         viewModel.getProjectList().addListener((ListChangeListener<JimixProject>) c -> {
@@ -230,10 +300,15 @@ public class MainWindowView implements FxmlView<MainWindowViewModel>, Initializa
         pictureEditorPane.getSelectedTopLayer().getModel().getFilterList().add(filterInstance.getIdentifier());
     }
 
-    private void onActionPictureRenderer(ActionEvent actionEvent) {
-        final JimixRendererInstance rendererInstance = (JimixRendererInstance) ((MenuItem) actionEvent.getSource()).getUserData();
+    private void onActionPasteFromClipboard(ActionEvent actionEvent) {
+        final JimixClipboardProviderInstance instance = (JimixClipboardProviderInstance) ((MenuItem) actionEvent.getSource()).getUserData();
 
-        //TODO
+        final Tab tab = tabPicture.getSelectionModel().getSelectedItem();
+        if (tab == null)
+            return;
+        final PictureEditorPane pictureEditorPane = (PictureEditorPane) tab.getContent();
+
+        ProjectManager.getInstance().createElementFromClipboardForLayer(pictureEditorPane.getSelectedTopLayer(), instance);
     }
 
     @FXML
@@ -259,6 +334,115 @@ public class MainWindowView implements FxmlView<MainWindowViewModel>, Initializa
         pnlRoot.getStylesheets().setAll(
                 "/css/modena_dark.css"
         );
+    }
+
+    @FXML
+    private void onActionUndo(ActionEvent actionEvent) {
+
+    }
+
+    @FXML
+    private void onActionRedo(ActionEvent actionEvent) {
+
+    }
+
+    @FXML
+    private void onActionCut(ActionEvent actionEvent) {
+
+    }
+
+    @FXML
+    private void onActionCopy(ActionEvent actionEvent) {
+
+    }
+
+    @FXML
+    private void onActionDefaultPaste(ActionEvent actionEvent) {
+        if (mnuPaste.getItems().isEmpty())
+            return;
+
+        final MenuItem defaultMenuItem = mnuPaste.getItems().stream()
+                .filter(MenuItem::isVisible)
+                .findFirst().orElse(null);
+        if (defaultMenuItem == null)
+            return;
+
+        defaultMenuItem.getOnAction().handle(new ActionEvent(defaultMenuItem, Event.NULL_SOURCE_TARGET));
+    }
+    //</editor-fold>
+
+    //<editor-fold desc="Local Helper Properties">
+    private final class TopLayerBooleanProperty extends ExtendedWrapperProperty<Boolean> {
+        private TopLayerBooleanProperty() {
+            super(tabPicture.getSelectionModel().selectedItemProperty());
+
+            tabPicture.getSelectionModel().selectedItemProperty().addListener((v, o, n) -> {
+                if (o != null) {
+                    ((PictureEditorPane) o.getContent()).selectedTopLayerProperty().removeListener(this::invalidated);
+                }
+                if (n != null) {
+                    ((PictureEditorPane) n.getContent()).selectedTopLayerProperty().addListener(this::invalidated);
+                }
+            });
+        }
+
+        public BooleanBinding or(ObservableValue<Boolean> value) {
+            return Bindings.createBooleanBinding(() -> getValue() || value.getValue(), this, value);
+        }
+
+        @Override
+        protected Boolean getPseudoValue() {
+            return tabPicture.getSelectionModel().getSelectedItem() == null ||
+                    ((PictureEditorPane) tabPicture.getSelectionModel().getSelectedItem().getContent()).getSelectedTopLayer() == null;
+        }
+
+        @Override
+        protected void setPseudoValue(Boolean value) {
+            throw new RuntimeException("Not Supported");
+        }
+
+        private void invalidated(Observable obs) {
+            fireValueChangedEvent();
+        }
+    }
+
+    private final class MenuEmptyBooleanProperty extends ExtendedWrapperProperty<Boolean> {
+        private MenuEmptyBooleanProperty() {
+            super(mnuPaste.getItems());
+
+            mnuPaste.getItems().addListener((ListChangeListener<MenuItem>) c -> {
+                while (c.next()) {
+                    if (c.wasAdded()) {
+                        for (final MenuItem menuItem : c.getAddedSubList()) {
+                            menuItem.visibleProperty().addListener(this::invalidated);
+                        }
+                    }
+                    if (c.wasRemoved()) {
+                        for (final MenuItem menuItem : c.getRemoved()) {
+                            menuItem.visibleProperty().removeListener(this::invalidated);
+                        }
+                    }
+                }
+            });
+        }
+
+        public BooleanBinding or(ObservableValue<Boolean> value) {
+            return Bindings.createBooleanBinding(() -> getValue() || value.getValue(), this, value);
+        }
+
+        @Override
+        protected Boolean getPseudoValue() {
+            return mnuPaste.getItems().isEmpty() || mnuPaste.getItems().stream().noneMatch(MenuItem::isVisible);
+        }
+
+        @Override
+        protected void setPseudoValue(Boolean value) {
+            throw new RuntimeException("Not Supported");
+        }
+
+        private void invalidated(Observable obs) {
+            fireValueChangedEvent();
+        }
     }
     //</editor-fold>
 }

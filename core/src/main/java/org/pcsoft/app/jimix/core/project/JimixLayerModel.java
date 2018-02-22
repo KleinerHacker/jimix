@@ -7,11 +7,14 @@ import javafx.collections.ObservableList;
 import javafx.scene.image.Image;
 import javafx.util.Callback;
 import org.pcsoft.app.jimix.core.plugin.builtin.blender.OverlayBlender;
+import org.pcsoft.app.jimix.core.plugin.builtin.model.JimixImageElementModel;
+import org.pcsoft.app.jimix.plugins.api.model.JimixElementModel;
+import org.pcsoft.app.jimix.plugins.api.model.JimixModel;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public final class JimixLayerModel extends JimixModel {
+public final class JimixLayerModel implements JimixModel {
     private final StringProperty name = new SimpleStringProperty("Layer");
     private final BooleanProperty visibility = new SimpleBooleanProperty(true);
     private final ObjectProperty<Image> mask = new SimpleObjectProperty<>();
@@ -93,7 +96,7 @@ public final class JimixLayerModel extends JimixModel {
     }
 
     @Override
-    Observable[] getObservableValues() {
+    public Observable[] getObservableValues() {
         return new Observable[] {
                 name, visibility, mask, blender, elementList, filterList
         };

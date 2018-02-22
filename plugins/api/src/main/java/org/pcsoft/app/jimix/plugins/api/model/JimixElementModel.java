@@ -1,10 +1,10 @@
-package org.pcsoft.app.jimix.core.project;
+package org.pcsoft.app.jimix.plugins.api.model;
 
 import javafx.beans.Observable;
 import javafx.beans.property.*;
 import org.apache.commons.lang.ArrayUtils;
 
-public abstract class JimixElementModel extends JimixModel {
+public abstract class JimixElementModel implements JimixModel {
     private final FloatProperty opacity = new SimpleFloatProperty(1f);
     private final IntegerProperty x = new SimpleIntegerProperty(0), y = new SimpleIntegerProperty(0);
     private final IntegerProperty width = new SimpleIntegerProperty(), height = new SimpleIntegerProperty();
@@ -83,7 +83,7 @@ public abstract class JimixElementModel extends JimixModel {
     }
 
     @Override
-    final Observable[] getObservableValues() {
+    public final Observable[] getObservableValues() {
         return (Observable[]) ArrayUtils.addAll(new Observable[] {
                 opacity, x, y, width, height, visibility
         }, _getObservableValues());

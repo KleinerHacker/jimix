@@ -12,6 +12,10 @@
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.input.KeyCodeCombination?>
 <?import javafx.scene.control.CheckMenuItem?>
+<?import javafx.scene.input.KeyCharacterCombination?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Tooltip?>
+<?import javafx.scene.control.Separator?>
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml" fx:id="pnlRoot"
             fx:controller="org.pcsoft.app.jimix.app.ui.window.MainWindowView"
@@ -98,6 +102,56 @@
                     <SeparatorMenuItem/>
                     <MenuItem fx:id="miExit" text="%view.window.main.menu.file.exit" onAction="#onActionExit"/>
                 </Menu>
+                <Menu fx:id="mnuEdit" text="%view.window.main.menu.edit">
+                    <MenuItem fx:id="miUndo" text="%view.window.main.menu.edit.undo" onAction="#onActionUndo">
+                        <graphic>
+                            <ImageView>
+                                <Image url="@/icons/ic_undo16.png"/>
+                            </ImageView>
+                        </graphic>
+                        <accelerator>
+                            <KeyCodeCombination code="Z" control="DOWN" alt="UP" shift="UP" meta="UP" shortcut="UP"/>
+                        </accelerator>
+                    </MenuItem>
+                    <MenuItem fx:id="miRedo" text="%view.window.main.menu.edit.redo" onAction="#onActionRedo">
+                        <graphic>
+                            <ImageView>
+                                <Image url="@/icons/ic_redo16.png"/>
+                            </ImageView>
+                        </graphic>
+                        <accelerator>
+                            <KeyCodeCombination code="Y" control="DOWN" alt="UP" shift="UP" meta="UP" shortcut="UP"/>
+                        </accelerator>
+                    </MenuItem>
+                    <SeparatorMenuItem/>
+                    <MenuItem fx:id="miCut" text="%view.window.main.menu.edit.cut" onAction="#onActionCut">
+                        <graphic>
+                            <ImageView>
+                                <Image url="@/icons/ic_cut16.png"/>
+                            </ImageView>
+                        </graphic>
+                        <accelerator>
+                            <KeyCodeCombination code="X" control="DOWN" alt="UP" shift="UP" meta="UP" shortcut="UP"/>
+                        </accelerator>
+                    </MenuItem>
+                    <MenuItem fx:id="miCopy" text="%view.window.main.menu.edit.copy" onAction="#onActionCopy">
+                        <graphic>
+                            <ImageView>
+                                <Image url="@/icons/ic_copy16.png"/>
+                            </ImageView>
+                        </graphic>
+                        <accelerator>
+                            <KeyCodeCombination code="C" control="DOWN" alt="UP" shift="UP" meta="UP" shortcut="UP"/>
+                        </accelerator>
+                    </MenuItem>
+                    <Menu fx:id="mnuPaste" text="%view.window.main.menu.edit.paste">
+                        <graphic>
+                            <ImageView>
+                                <Image url="@/icons/ic_paste16.png"/>
+                            </ImageView>
+                        </graphic>
+                    </Menu>
+                </Menu>
                 <Menu fx:id="mnuPicture" text="%view.window.main.menu.picture"/>
                 <Menu fx:id="mnuLayer" text="%view.window.main.menu.layer"/>
                 <Menu fx:id="mnuFilter" text="%view.window.main.menu.filter">
@@ -123,7 +177,90 @@
                     <MenuItem fx:id="miAbout" text="%view.window.main.menu.help.about" onAction="#onActionAbout"/>
                 </Menu>
             </MenuBar>
-            <ToolBar/>
+            <ToolBar>
+                <Button fx:id="btnNewEmpty" onAction="#onActionNewEmpty">
+                    <graphic>
+                        <ImageView>
+                            <Image url="@/icons/ic_new_empty16.png"/>
+                        </ImageView>
+                    </graphic>
+                    <tooltip>
+                        <Tooltip text="%view.window.main.menu.file.new.empty"/>
+                    </tooltip>
+                </Button>
+                <Button fx:id="btnOpen" onAction="#onActionOpen">
+                    <graphic>
+                        <ImageView>
+                            <Image url="@/icons/ic_open16.png"/>
+                        </ImageView>
+                    </graphic>
+                    <tooltip>
+                        <Tooltip text="%view.window.main.menu.file.open"/>
+                    </tooltip>
+                </Button>
+                <Button fx:id="btnClose" onAction="#onActionClose">
+                    <graphic>
+                        <ImageView>
+                            <Image url="@/icons/ic_close16.png"/>
+                        </ImageView>
+                    </graphic>
+                    <tooltip>
+                        <Tooltip text="%view.window.main.menu.file.close"/>
+                    </tooltip>
+                </Button>
+                <Separator/>
+                <Button fx:id="btnUndo" onAction="#onActionUndo">
+                    <graphic>
+                        <ImageView>
+                            <Image url="@/icons/ic_undo16.png"/>
+                        </ImageView>
+                    </graphic>
+                    <tooltip>
+                        <Tooltip text="%view.window.main.menu.edit.undo"/>
+                    </tooltip>
+                </Button>
+                <Button fx:id="btnRedo" onAction="#onActionRedo">
+                    <graphic>
+                        <ImageView>
+                            <Image url="@/icons/ic_redo16.png"/>
+                        </ImageView>
+                    </graphic>
+                    <tooltip>
+                        <Tooltip text="%view.window.main.menu.edit.redo"/>
+                    </tooltip>
+                </Button>
+                <Separator/>
+                <Button fx:id="btnCut" onAction="#onActionCut">
+                    <graphic>
+                        <ImageView>
+                            <Image url="@/icons/ic_cut16.png"/>
+                        </ImageView>
+                    </graphic>
+                    <tooltip>
+                        <Tooltip text="%view.window.main.menu.edit.cut"/>
+                    </tooltip>
+                </Button>
+                <Button fx:id="btnCopy" onAction="#onActionCopy">
+                    <graphic>
+                        <ImageView>
+                            <Image url="@/icons/ic_copy16.png"/>
+                        </ImageView>
+                    </graphic>
+                    <tooltip>
+                        <Tooltip text="%view.window.main.menu.edit.copy"/>
+                    </tooltip>
+                </Button>
+                <Button fx:id="btnDefaultPaste" onAction="#onActionDefaultPaste">
+                    <graphic>
+                        <ImageView>
+                            <Image url="@/icons/ic_paste16.png"/>
+                        </ImageView>
+                    </graphic>
+                    <tooltip>
+                        <Tooltip text="%view.window.main.menu.edit.paste"/>
+                    </tooltip>
+                </Button>
+            </ToolBar>
         </VBox>
     </top>
     <center>

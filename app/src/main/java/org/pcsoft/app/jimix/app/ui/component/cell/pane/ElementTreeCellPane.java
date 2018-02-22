@@ -7,7 +7,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.layout.HBox;
 import org.pcsoft.app.jimix.app.language.LanguageResources;
 import org.pcsoft.app.jimix.core.project.JimixElement;
-import org.pcsoft.app.jimix.core.project.JimixImageElementModel;
+import org.pcsoft.app.jimix.core.plugin.builtin.model.JimixImageElementModel;
 
 public class ElementTreeCellPane extends HBox {
     private final ElementTreeCellPaneView controller;

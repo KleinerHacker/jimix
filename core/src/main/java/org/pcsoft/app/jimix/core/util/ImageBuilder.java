@@ -10,9 +10,13 @@ import org.pcsoft.app.jimix.commons.exception.JimixPluginException;
 import org.pcsoft.app.jimix.commons.exception.JimixPluginExecutionException;
 import org.pcsoft.app.jimix.core.plugin.PluginManager;
 import org.pcsoft.app.jimix.core.plugin.builtin.blender.OverlayBlender;
+import org.pcsoft.app.jimix.core.plugin.builtin.model.JimixImageElementModel;
 import org.pcsoft.app.jimix.core.plugin.type.JimixBlenderInstance;
 import org.pcsoft.app.jimix.core.plugin.type.JimixFilterInstance;
-import org.pcsoft.app.jimix.core.project.*;
+import org.pcsoft.app.jimix.core.project.JimixElement;
+import org.pcsoft.app.jimix.core.project.JimixLayer;
+import org.pcsoft.app.jimix.core.project.JimixProject;
+import org.pcsoft.app.jimix.plugins.api.model.JimixElementModel;
 import org.pcsoft.app.jimix.plugins.api.type.JimixSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -64,6 +68,7 @@ public final class ImageBuilder {
 
         final Canvas canvas = new Canvas(layer.getProject().getModel().getWidth(), layer.getProject().getModel().getHeight());
         final GraphicsContext gc = canvas.getGraphicsContext2D();
+        //gc.setGlobalBlendMode(BlendMode.OVERLAY);
         for (final JimixElement element : layer.getElementList()) {
             if (!element.getModel().isVisibility())
                 continue;

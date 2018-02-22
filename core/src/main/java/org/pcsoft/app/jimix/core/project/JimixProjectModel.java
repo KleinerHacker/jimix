@@ -5,10 +5,11 @@ import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.util.Callback;
+import org.pcsoft.app.jimix.plugins.api.model.JimixModel;
 
 import java.io.File;
 
-public final class JimixProjectModel extends JimixModel {
+public final class JimixProjectModel implements JimixModel {
     private final ObjectProperty<File> file = new SimpleObjectProperty<>();
     private final ReadOnlyListProperty<JimixLayerModel> layerList =
             new ReadOnlyListWrapper<>(FXCollections.observableArrayList(new JimixLayerObserverCallback())).getReadOnlyProperty();
@@ -66,7 +67,7 @@ public final class JimixProjectModel extends JimixModel {
     }
 
     @Override
-    Observable[] getObservableValues() {
+    public Observable[] getObservableValues() {
         return new Observable[] {
                 file, layerList, width, height
         };

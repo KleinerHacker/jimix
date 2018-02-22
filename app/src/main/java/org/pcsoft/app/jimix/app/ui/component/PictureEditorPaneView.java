@@ -3,7 +3,6 @@ package org.pcsoft.app.jimix.app.ui.component;
 import de.saxsys.mvvmfx.FxmlView;
 import de.saxsys.mvvmfx.InjectViewModel;
 import javafx.beans.binding.Bindings;
-import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.canvas.Canvas;
@@ -11,18 +10,12 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import org.controlsfx.control.PropertySheet;
-import org.controlsfx.property.BeanProperty;
 import org.pcsoft.app.jimix.app.ex.SimpleProperty;
 import org.pcsoft.app.jimix.core.project.JimixElement;
-import org.pcsoft.app.jimix.core.project.JimixElementModel;
 import org.pcsoft.app.jimix.core.project.JimixLayer;
-import org.pcsoft.app.jimix.core.project.JimixLayerModel;
 import org.pcsoft.framework.jfex.toolbox.ToolBox;
 
-import java.beans.IntrospectionException;
-import java.beans.PropertyDescriptor;
 import java.net.URL;
-import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class PictureEditorPaneView implements FxmlView<PictureEditorPaneViewModel>, Initializable {

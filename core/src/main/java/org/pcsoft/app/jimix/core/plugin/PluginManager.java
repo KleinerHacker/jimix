@@ -2,14 +2,8 @@ package org.pcsoft.app.jimix.core.plugin;
 
 import org.apache.commons.lang.StringUtils;
 import org.pcsoft.app.jimix.commons.exception.JimixPluginException;
-import org.pcsoft.app.jimix.core.plugin.type.JimixBlenderInstance;
-import org.pcsoft.app.jimix.core.plugin.type.JimixEffectInstance;
-import org.pcsoft.app.jimix.core.plugin.type.JimixFilterInstance;
-import org.pcsoft.app.jimix.core.plugin.type.JimixRendererInstance;
-import org.pcsoft.app.jimix.plugins.api.JimixBlender;
-import org.pcsoft.app.jimix.plugins.api.JimixEffect;
-import org.pcsoft.app.jimix.plugins.api.JimixFilter;
-import org.pcsoft.app.jimix.plugins.api.JimixRenderer;
+import org.pcsoft.app.jimix.core.plugin.type.*;
+import org.pcsoft.app.jimix.plugins.api.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,6 +26,7 @@ public final class PluginManager {
     private final Map<String, JimixFilterInstance> filterMap = new HashMap<>();
     private final Map<String, JimixRendererInstance> rendererMap = new HashMap<>();
     private final Map<String, JimixBlenderInstance> blenderMap = new HashMap<>();
+    private final Map<String, JimixClipboardProviderInstance> clipboardProviderMap = new HashMap<>();
 
     private PluginManager() {
     }
@@ -54,8 +49,10 @@ public final class PluginManager {
         loadFilter(classLoader);
         loadRenderer(classLoader);
         loadBlender(classLoader);
+        loadClipboardProvider(classLoader);
 
-        LOGGER.debug("Found {} effects, {} filters, {} renderer, {} blender", effectMap.size(), filterMap.size(), rendererMap.size(), blenderMap.size());
+        LOGGER.debug("Found {} effects, {} filters, {} renderer, {} blender, {} clipboard providers",
+                effectMap.size(), filterMap.size(), rendererMap.size(), blenderMap.size(), clipboardProviderMap.size());
     }
 
     private void loadEffects(final ClassLoader classLoader) {
@@ -118,6 +115,21 @@ public final class PluginManager {
         }
     }
 
+    private void loadClipboardProvider(final ClassLoader classLoader) {
+        LOGGER.debug("> Load clipboard provider plugins");
+
+        final ServiceLoader<JimixClipboardProvider> jimixClipboardProviders = ServiceLoader.load(JimixClipboardProvider.class, classLoader);
+        for (final JimixClipboardProvider jimixClipboardProvider : jimixClipboardProviders) {
+            try {
+                final JimixClipboardProviderInstance jimixClipboardProviderInstance = new JimixClipboardProviderInstance(jimixClipboardProvider);
+                clipboardProviderMap.put(jimixClipboardProviderInstance.getIdentifier(), jimixClipboardProviderInstance);
+                LOGGER.trace(">>> {}", jimixClipboardProviderInstance.getIdentifier());
+            } catch (JimixPluginException e) {
+                LOGGER.error("Unable to load clipboard provider " + jimixClipboardProvider.getClass().getName(), e);
+            }
+        }
+    }
+
     public JimixEffectInstance[] getAllEffects() {
         return effectMap.values().toArray(new JimixEffectInstance[effectMap.size()]);
     }
@@ -148,5 +160,13 @@ public final class PluginManager {
 
     public JimixBlenderInstance getBlender(final String blenderClassName) {
         return blenderMap.get(blenderClassName);
+    }
+
+    public JimixClipboardProviderInstance[] getAllClipboardProviders() {
+        return clipboardProviderMap.values().toArray(new JimixClipboardProviderInstance[clipboardProviderMap.size()]);
+    }
+
+    public JimixClipboardProviderInstance getClipboardProvider(final String clipboardProviderClassName) {
+        return clipboardProviderMap.get(clipboardProviderClassName);
     }
 }

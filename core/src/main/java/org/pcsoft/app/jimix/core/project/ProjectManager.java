@@ -1,8 +1,12 @@
 package org.pcsoft.app.jimix.core.project;
 
 import javafx.scene.image.Image;
+import javafx.scene.input.Clipboard;
 import org.apache.commons.io.FileUtils;
 import org.pcsoft.app.jimix.commons.exception.JimixProjectException;
+import org.pcsoft.app.jimix.core.plugin.builtin.model.JimixImageElementModel;
+import org.pcsoft.app.jimix.core.plugin.type.JimixClipboardProviderInstance;
+import org.pcsoft.app.jimix.plugins.api.model.JimixElementModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -135,6 +139,15 @@ public final class ProjectManager {
     //</editor-fold>
 
     //<editor-fold desc="Element">
+    public JimixElement createElementFromClipboardForLayer(final JimixLayer layer, final JimixClipboardProviderInstance instance) {
+        final JimixElementModel model = instance.createElementFromClipboard(Clipboard.getSystemClipboard());
+        final JimixElement element = new JimixElement(layer.getProject(), layer, model);
+        LOGGER.info("Create element " + element.getUuid() + " from clipboard for layer " + layer.getUuid());
+        layer.getElementMap().put(element.getUuid(), element);
+
+        return element;
+    }
+
     public JimixElement createImageElementForLayer(final JimixLayer layer, final Image image) {
         final JimixElementModel model = new JimixImageElementModel(image);
         final JimixElement element = new JimixElement(layer.getProject(), layer, model);

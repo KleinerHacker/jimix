@@ -1,9 +1,10 @@
-package org.pcsoft.app.jimix.core.project;
+package org.pcsoft.app.jimix.core.plugin.builtin.model;
 
 import javafx.beans.Observable;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.image.Image;
+import org.pcsoft.app.jimix.plugins.api.model.JimixElementModel;
 
 public final class JimixImageElementModel extends JimixElementModel {
     private final ObjectProperty<Image> value = new SimpleObjectProperty<>();
