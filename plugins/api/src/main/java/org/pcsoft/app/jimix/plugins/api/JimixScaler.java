@@ -1,9 +1,8 @@
 package org.pcsoft.app.jimix.plugins.api;
 
+import javafx.scene.image.Image;
 import org.pcsoft.app.jimix.plugins.api.type.JimixSource;
-import org.pcsoft.app.jimix.plugins.api.type.JimixPixelReader;
-import org.pcsoft.app.jimix.plugins.api.type.JimixPixelWriter;
 
 public interface JimixScaler {
-    void apply(final JimixPixelReader pixelReader, final JimixPixelWriter pixelWriter, final JimixSource source);
+    Image apply(final Image image, final int targetWidth, int targetHeight, final JimixSource source) throws Exception;
 }

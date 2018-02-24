@@ -6,10 +6,10 @@ import org.apache.commons.lang.time.DurationFormatUtils;
 import org.apache.commons.lang.time.StopWatch;
 import org.pcsoft.app.jimix.commons.exception.JimixPluginAnnotationException;
 import org.pcsoft.app.jimix.commons.exception.JimixPluginException;
+import org.pcsoft.app.jimix.commons.exception.JimixPluginExecutionException;
 import org.pcsoft.app.jimix.plugins.api.JimixRenderer;
 import org.pcsoft.app.jimix.plugins.api.annotation.JimixRendererDescriptor;
 import org.pcsoft.app.jimix.plugins.api.config.JimixRendererConfiguration;
-import org.pcsoft.app.jimix.plugins.api.type.JimixPixelWriter;
 import org.pcsoft.app.jimix.plugins.api.type.JimixSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -53,18 +53,26 @@ public final class JimixRendererInstance implements JimixInstance {
         }
     }
 
-    public void apply(JimixPixelWriter pixelWriter, JimixRendererConfiguration configuration, JimixSource applySource) {
+    public Image apply(int width, int height, JimixRendererConfiguration configuration, JimixSource applySource) throws JimixPluginExecutionException {
+        final Image resultImage;
+
         if (LOGGER.isTraceEnabled()) {
             STOP_WATCH.reset();
             STOP_WATCH.start();
         }
 
-        instance.apply(pixelWriter, configuration, applySource);
+        try {
+            resultImage = instance.apply(width, height, configuration, applySource);
+        } catch (Exception e) {
+            throw new JimixPluginExecutionException("Error while running renderer", e);
+        }
 
         if (LOGGER.isTraceEnabled()) {
             STOP_WATCH.stop();
             LOGGER.trace("Renderer run time: " + DurationFormatUtils.formatDuration(STOP_WATCH.getTime(), "ss:SSS"));
         }
+
+        return resultImage;
     }
 
     @Override

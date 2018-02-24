@@ -8,6 +8,7 @@ import javafx.scene.image.Image;
 import javafx.util.Callback;
 import org.pcsoft.app.jimix.core.plugin.builtin.blender.OverlayBlender;
 import org.pcsoft.app.jimix.core.plugin.builtin.model.JimixImageElementModel;
+import org.pcsoft.app.jimix.plugins.api.annotation.JimixProperty;
 import org.pcsoft.app.jimix.plugins.api.model.JimixElementModel;
 import org.pcsoft.app.jimix.plugins.api.model.JimixModel;
 
@@ -15,7 +16,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public final class JimixLayerModel implements JimixModel {
+    @JimixProperty(fieldType = String.class, name = "Name", description = "Name of layer", category = "Default")
     private final StringProperty name = new SimpleStringProperty("Layer");
+    @JimixProperty(fieldType = Float.class, name = "Opacity", description = "Opacity of layer", category = "View")
+    private final FloatProperty opacity = new SimpleFloatProperty(1f);
     private final BooleanProperty visibility = new SimpleBooleanProperty(true);
     private final ObjectProperty<Image> mask = new SimpleObjectProperty<>();
     private final StringProperty blender = new SimpleStringProperty(OverlayBlender.class.getName());
@@ -41,6 +45,18 @@ public final class JimixLayerModel implements JimixModel {
 
     public void setName(String name) {
         this.name.set(name);
+    }
+
+    public float getOpacity() {
+        return opacity.get();
+    }
+
+    public FloatProperty opacityProperty() {
+        return opacity;
+    }
+
+    public void setOpacity(float opacity) {
+        this.opacity.set(opacity);
     }
 
     public boolean isVisibility() {
@@ -98,7 +114,7 @@ public final class JimixLayerModel implements JimixModel {
     @Override
     public Observable[] getObservableValues() {
         return new Observable[] {
-                name, visibility, mask, blender, elementList, filterList
+                name, opacity, visibility, mask, blender, elementList, filterList
         };
     }
 

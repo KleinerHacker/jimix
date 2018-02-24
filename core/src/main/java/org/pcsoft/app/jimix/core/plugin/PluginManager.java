@@ -26,6 +26,7 @@ public final class PluginManager {
     private final Map<String, JimixFilterInstance> filterMap = new HashMap<>();
     private final Map<String, JimixRendererInstance> rendererMap = new HashMap<>();
     private final Map<String, JimixBlenderInstance> blenderMap = new HashMap<>();
+    private final Map<String, JimixScalerInstance> scalerMap = new HashMap<>();
     private final Map<String, JimixClipboardProviderInstance> clipboardProviderMap = new HashMap<>();
 
     private PluginManager() {
@@ -49,10 +50,11 @@ public final class PluginManager {
         loadFilter(classLoader);
         loadRenderer(classLoader);
         loadBlender(classLoader);
+        loadScaler(classLoader);
         loadClipboardProvider(classLoader);
 
-        LOGGER.debug("Found {} effects, {} filters, {} renderer, {} blender, {} clipboard providers",
-                effectMap.size(), filterMap.size(), rendererMap.size(), blenderMap.size(), clipboardProviderMap.size());
+        LOGGER.debug("Found {} effects, {} filters, {} renderer, {} blender, {} scaler, {} clipboard providers",
+                effectMap.size(), filterMap.size(), rendererMap.size(), blenderMap.size(), scalerMap.size(), clipboardProviderMap.size());
     }
 
     private void loadEffects(final ClassLoader classLoader) {
@@ -115,6 +117,21 @@ public final class PluginManager {
         }
     }
 
+    private void loadScaler(final ClassLoader classLoader) {
+        LOGGER.debug("> Load scaler plugins");
+
+        final ServiceLoader<JimixScaler> jimixScalers = ServiceLoader.load(JimixScaler.class, classLoader);
+        for (final JimixScaler jimixScaler : jimixScalers) {
+            try {
+                final JimixScalerInstance jimixScalerInstance = new JimixScalerInstance(jimixScaler);
+                scalerMap.put(jimixScalerInstance.getIdentifier(), jimixScalerInstance);
+                LOGGER.trace(">>> {}", jimixScalerInstance.getIdentifier());
+            } catch (JimixPluginException e) {
+                LOGGER.error("Unable to load scaler " + jimixScaler.getClass().getName(), e);
+            }
+        }
+    }
+
     private void loadClipboardProvider(final ClassLoader classLoader) {
         LOGGER.debug("> Load clipboard provider plugins");
 
@@ -160,6 +177,14 @@ public final class PluginManager {
 
     public JimixBlenderInstance getBlender(final String blenderClassName) {
         return blenderMap.get(blenderClassName);
+    }
+
+    public JimixScalerInstance[] getAllScalers() {
+        return scalerMap.values().toArray(new JimixScalerInstance[scalerMap.size()]);
+    }
+
+    public JimixScalerInstance getScaler(final String scalerClassName) {
+        return scalerMap.get(scalerClassName);
     }
 
     public JimixClipboardProviderInstance[] getAllClipboardProviders() {

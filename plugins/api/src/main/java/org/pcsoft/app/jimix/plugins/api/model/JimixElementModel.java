@@ -3,11 +3,19 @@ package org.pcsoft.app.jimix.plugins.api.model;
 import javafx.beans.Observable;
 import javafx.beans.property.*;
 import org.apache.commons.lang.ArrayUtils;
+import org.pcsoft.app.jimix.plugins.api.annotation.JimixProperty;
 
 public abstract class JimixElementModel implements JimixModel {
+    @JimixProperty(fieldType = Float.class, name = "Opacity", description = "Opacity of element", category = "View")
     private final FloatProperty opacity = new SimpleFloatProperty(1f);
-    private final IntegerProperty x = new SimpleIntegerProperty(0), y = new SimpleIntegerProperty(0);
-    private final IntegerProperty width = new SimpleIntegerProperty(), height = new SimpleIntegerProperty();
+    @JimixProperty(fieldType = Integer.class, name = "X", description = "Left position of element", category = "Alignment")
+    private final IntegerProperty x = new SimpleIntegerProperty(0);
+    @JimixProperty(fieldType = Integer.class, name = "Y", description = "Top position of element", category = "Alignment")
+    private final IntegerProperty y = new SimpleIntegerProperty(0);
+    @JimixProperty(fieldType = Integer.class, name = "Width", description = "Width of element", category = "Alignment")
+    private final IntegerProperty width = new SimpleIntegerProperty();
+    @JimixProperty(fieldType = Integer.class, name = "Height", description = "Height of element", category = "Alignment")
+    private final IntegerProperty height = new SimpleIntegerProperty();
     private final BooleanProperty visibility = new SimpleBooleanProperty(true);
 
     public int getX() {

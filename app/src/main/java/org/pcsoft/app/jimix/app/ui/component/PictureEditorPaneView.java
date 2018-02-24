@@ -10,9 +10,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import org.controlsfx.control.PropertySheet;
-import org.pcsoft.app.jimix.app.ex.SimpleProperty;
-import org.pcsoft.app.jimix.core.project.JimixElement;
-import org.pcsoft.app.jimix.core.project.JimixLayer;
+import org.pcsoft.app.jimix.app.util.PropertyUtils;
 import org.pcsoft.framework.jfex.toolbox.ToolBox;
 
 import java.net.URL;
@@ -94,29 +92,9 @@ public class PictureEditorPaneView implements FxmlView<PictureEditorPaneViewMode
         propSheet.getItems().clear();
 
         if (lstLayer.getSelectedLayer() != null) {
-            refreshPropertiesForLayer(lstLayer.getSelectedLayer());
+            PropertyUtils.addProperties(propSheet, lstLayer.getSelectedLayer().getModel());
         } else if (lstLayer.getSelectedElement() != null) {
-            refreshPropertiesForElement(lstLayer.getSelectedElement());
+            PropertyUtils.addProperties(propSheet, lstLayer.getSelectedElement().getModel());
         }
-    }
-
-    private void refreshPropertiesForElement(final JimixElement element) {
-        propSheet.getItems().addAll(
-                new SimpleProperty<>(Integer.class, "X", "Left position of image", "Alignment",
-                        () -> element.getModel().getX(), v -> element.getModel().setX(v)),
-                new SimpleProperty<>(Integer.class, "Y", "Top position of image", "Alignment",
-                        () -> element.getModel().getY(), v -> element.getModel().setY(v)),
-                new SimpleProperty<>(Integer.class, "Width", "Width of image", "Alignment",
-                        () -> element.getModel().getWidth(), v -> element.getModel().setWidth(v)),
-                new SimpleProperty<>(Integer.class, "Height", "Height of image", "Alignment",
-                        () -> element.getModel().getHeight(), v -> element.getModel().setHeight(v))
-        );
-    }
-
-    private void refreshPropertiesForLayer(final JimixLayer layer) {
-        propSheet.getItems().addAll(
-                new SimpleProperty<>(String.class, "Name", "Name of layer", "Default",
-                        () -> layer.getModel().getName(), v -> layer.getModel().setName(v))
-        );
     }
 }

@@ -7,8 +7,9 @@ import org.apache.commons.lang.time.StopWatch;
 import org.pcsoft.app.jimix.commons.exception.JimixPluginAnnotationException;
 import org.pcsoft.app.jimix.commons.exception.JimixPluginException;
 import org.pcsoft.app.jimix.commons.exception.JimixPluginExecutionException;
-import org.pcsoft.app.jimix.plugins.api.JimixBlender;
-import org.pcsoft.app.jimix.plugins.api.annotation.JimixBlenderDescriptor;
+import org.pcsoft.app.jimix.plugins.api.JimixScaler;
+import org.pcsoft.app.jimix.plugins.api.annotation.JimixScalerDescriptor;
+import org.pcsoft.app.jimix.plugins.api.type.JimixSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -16,42 +17,32 @@ import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
 
-public final class JimixBlenderInstance implements JimixInstance {
-    private static final Logger LOGGER = LoggerFactory.getLogger(JimixBlenderInstance.class);
+public final class JimixScalerInstance implements JimixInstance {
+    private static final Logger LOGGER = LoggerFactory.getLogger(JimixScalerInstance.class);
     private static final StopWatch STOP_WATCH = new StopWatch();
 
-    private final JimixBlender instance;
-    private final JimixBlenderDescriptor descriptor;
+    private final JimixScaler instance;
+    private final JimixScalerDescriptor descriptor;
     private final ResourceBundle resourceBundle;
-    private final Image icon;
 
-    public JimixBlenderInstance(JimixBlender instance) throws JimixPluginException {
-        if (!instance.getClass().isAnnotationPresent(JimixBlenderDescriptor.class))
-            throw new JimixPluginAnnotationException("Unable to find needed annotation " + JimixBlenderDescriptor.class.getName() + " on blender class " + instance.getClass().getName());
+    public JimixScalerInstance(JimixScaler instance) throws JimixPluginException {
+        if (!instance.getClass().isAnnotationPresent(JimixScalerDescriptor.class))
+            throw new JimixPluginAnnotationException("Unable to find needed annotation " + JimixScalerDescriptor.class.getName() + " on scaler class " + instance.getClass().getName());
 
         this.instance = instance;
-        this.descriptor = instance.getClass().getAnnotation(JimixBlenderDescriptor.class);
+        this.descriptor = instance.getClass().getAnnotation(JimixScalerDescriptor.class);
         if (!StringUtils.isEmpty(descriptor.resourceBundle())) {
             try {
                 resourceBundle = ResourceBundle.getBundle(descriptor.resourceBundle(), Locale.getDefault(), instance.getClass().getClassLoader());
             } catch (MissingResourceException e) {
-                throw new JimixPluginAnnotationException("Unable to find resource bundle " + descriptor.resourceBundle() + " for blender " + instance.getClass().getName(), e);
+                throw new JimixPluginAnnotationException("Unable to find resource bundle " + descriptor.resourceBundle() + " for scaler " + instance.getClass().getName(), e);
             }
         } else {
             resourceBundle = null;
         }
-        if (!StringUtils.isEmpty(descriptor.iconPath())) {
-            try {
-                icon = new Image(instance.getClass().getResourceAsStream(descriptor.iconPath()));
-            } catch (Exception e) {
-                throw new JimixPluginAnnotationException("Unable to find icon " + descriptor.iconPath() + " for filter " + instance.getClass().getName(), e);
-            }
-        } else {
-            icon = null;
-        }
     }
 
-    public Image apply(Image groundImage, Image layerImage, double opacity) throws JimixPluginExecutionException {
+    public Image apply(Image image, int targetWidth, int targetHeight, JimixSource source) throws JimixPluginExecutionException {
         final Image resultImage;
 
         if (LOGGER.isTraceEnabled()) {
@@ -60,14 +51,14 @@ public final class JimixBlenderInstance implements JimixInstance {
         }
 
         try {
-            resultImage = instance.apply(groundImage, layerImage, opacity);
+            resultImage = instance.apply(image, targetWidth, targetHeight, source);
         } catch (Exception e) {
-            throw new JimixPluginExecutionException("Error while running blender", e);
+            throw new JimixPluginExecutionException("Error while running renderer", e);
         }
 
         if (LOGGER.isTraceEnabled()) {
             STOP_WATCH.stop();
-            LOGGER.trace("Blender run time: " + DurationFormatUtils.formatDuration(STOP_WATCH.getTime(), "ss:SSS"));
+            LOGGER.trace("Scaler run time: " + DurationFormatUtils.formatDuration(STOP_WATCH.getTime(), "ss:SSS"));
         }
 
         return resultImage;
@@ -94,7 +85,11 @@ public final class JimixBlenderInstance implements JimixInstance {
         return descriptor.description();
     }
 
-    public Image getIcon() {
-        return icon;
+    public boolean usableForPictures() {
+        return descriptor.usableForPictures();
+    }
+
+    public boolean usableForMasks() {
+        return descriptor.usableForMasks();
     }
 }

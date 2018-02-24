@@ -1,39 +1,26 @@
 package org.pcsoft.app.jimix.core.plugin.builtin.blender;
 
+import javafx.scene.SnapshotParameters;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
+import javafx.scene.paint.Color;
 import org.pcsoft.app.jimix.plugins.api.JimixBlender;
 import org.pcsoft.app.jimix.plugins.api.annotation.JimixBlenderDescriptor;
-import org.pcsoft.app.jimix.plugins.api.type.JimixPixelReader;
-import org.pcsoft.app.jimix.plugins.api.type.JimixPixelWriter;
-
-import java.awt.*;
 
 @JimixBlenderDescriptor(name = "Overlay", description = "Overlay layers (default)", iconPath = "/icons/ic_blender_overlay16.png")
 public class OverlayBlender implements JimixBlender {
     @Override
-    public void apply(JimixPixelReader groundPixelReader, JimixPixelReader layerPixelReader, JimixPixelWriter pixelWriter) {
-        for (int i = 0; i < groundPixelReader.getLength(); i++) {
-            final Color groundColor = new Color(groundPixelReader.getPixel(i), true);
-            final Color layerColor = new Color(layerPixelReader.getPixel(i), true);
+    public Image apply(Image groundImage, Image layerImage, double opacity) throws Exception {
+        final Canvas canvas = new Canvas(groundImage.getWidth(), groundImage.getHeight());
+        final GraphicsContext gc = canvas.getGraphicsContext2D();
 
-            final float groundRed = (float)groundColor.getRed() / 255f;
-            final float groundGreen = (float)groundColor.getGreen() / 255f;
-            final float groundBlue = (float)groundColor.getBlue() / 255f;
+        gc.drawImage(groundImage, 0, 0);
+        gc.setGlobalAlpha(opacity);
+        gc.drawImage(layerImage, 0, 0);
 
-            final float layerRed = (float)groundColor.getRed() / 255f;
-            final float layerGreen = (float)groundColor.getGreen() / 255f;
-            final float layerBlue = (float)groundColor.getBlue() / 255f;
-
-            final float layerAlpha = (float) layerColor.getAlpha() / 255f;
-            final float groundAlpha = 1f - layerAlpha;
-
-            final Color mergeColor = new Color(
-                    groundRed * groundAlpha + layerRed * layerAlpha,
-                    groundGreen * groundAlpha + layerGreen * layerAlpha,
-                    groundBlue * groundAlpha + layerBlue * layerAlpha,
-                    (float)groundColor.getAlpha() / 255f * groundAlpha
-            );
-
-            pixelWriter.setPixel(i, mergeColor.getRGB());
-        }
+        final SnapshotParameters params = new SnapshotParameters();
+        params.setFill(Color.TRANSPARENT);
+        return canvas.snapshot(params, null);
     }
 }

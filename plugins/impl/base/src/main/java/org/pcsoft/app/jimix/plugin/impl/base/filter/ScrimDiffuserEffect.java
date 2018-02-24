@@ -1,18 +1,18 @@
 package org.pcsoft.app.jimix.plugin.impl.base.filter;
 
-import org.pcsoft.app.jimix.plugins.api.JimixFilter;
+import org.pcsoft.app.jimix.plugins.api.JimixFilterBase;
 import org.pcsoft.app.jimix.plugins.api.annotation.JimixFilterDescriptor;
-import org.pcsoft.app.jimix.plugins.api.type.JimixSource;
 import org.pcsoft.app.jimix.plugins.api.type.JimixPixelReader;
 import org.pcsoft.app.jimix.plugins.api.type.JimixPixelWriter;
+import org.pcsoft.app.jimix.plugins.api.type.JimixSource;
 
 import java.awt.*;
 
 @JimixFilterDescriptor(name = "plugin.filter.scrim_diffuser.title", description = "plugin.filter.scrim_diffuser.description", resourceBundle = "languages/plugin",
         usableForMasks = true, configurationClass = ScrimDiffuserConfiguration.class)
-public class ScrimDiffuserEffect implements JimixFilter<ScrimDiffuserConfiguration> {
+public class ScrimDiffuserEffect extends JimixFilterBase<ScrimDiffuserConfiguration> {
     @Override
-    public void apply(JimixPixelReader pixelReader, JimixPixelWriter pixelWriter, ScrimDiffuserConfiguration configuration, JimixSource source) {
+    protected void apply(JimixPixelReader pixelReader, JimixPixelWriter pixelWriter, ScrimDiffuserConfiguration configuration, JimixSource source) {
         for (int y = 0; y < pixelReader.getHeight(); y++) {
             for (int x = 0; x < pixelReader.getWidth(); x++) {
                 final int startX = Math.max(0, x - configuration.getRadius());

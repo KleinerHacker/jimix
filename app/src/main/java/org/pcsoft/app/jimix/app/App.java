@@ -58,6 +58,7 @@ public class App extends MvvmfxCdiApplication {
     public void startMvvmfx(Stage stage) throws Exception {
         splashHolder.dismiss();
 
-        new MainWindow(fileToOpen).show();
+        final MainWindow mainWindow = new MainWindow(fileToOpen);
+        mainWindow.show();
     }
 }

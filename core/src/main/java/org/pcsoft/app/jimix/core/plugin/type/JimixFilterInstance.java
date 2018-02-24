@@ -62,8 +62,7 @@ public final class JimixFilterInstance implements JimixInstance {
     }
 
     public Image apply(final Image image, JimixFilterConfiguration configuration, JimixSource source) throws JimixPluginExecutionException {
-        final JimixPixelReaderImpl pixelReader = new JimixPixelReaderImpl(image.getPixelReader(), (int) image.getWidth(), (int) image.getHeight());
-        final JimixPixelWriterImpl pixelWriter = new JimixPixelWriterImpl((int) image.getWidth(), (int) image.getHeight());
+        final Image resultImage;
 
         if (LOGGER.isTraceEnabled()) {
             STOP_WATCH.reset();
@@ -71,7 +70,7 @@ public final class JimixFilterInstance implements JimixInstance {
         }
 
         try {
-            instance.apply(pixelReader, pixelWriter, configuration, source);
+            resultImage = instance.apply(image, configuration, source);
         } catch (Exception e) {
             throw new JimixPluginExecutionException("Error while running filter", e);
         }
@@ -81,7 +80,7 @@ public final class JimixFilterInstance implements JimixInstance {
             LOGGER.trace("Filter run time: " + DurationFormatUtils.formatDuration(STOP_WATCH.getTime(), "ss:SSS"));
         }
 
-        return pixelWriter.buildImage();
+        return resultImage;
     }
 
     @Override

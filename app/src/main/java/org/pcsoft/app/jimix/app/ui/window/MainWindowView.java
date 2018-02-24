@@ -226,7 +226,7 @@ public class MainWindowView implements FxmlView<MainWindowViewModel>, Initializa
     //<editor-fold desc="Menu Action">
     @FXML
     private void onActionOpen(ActionEvent actionEvent) {
-        final List<File> files = FileChooserUtils.showOpenPictureFileChooser(pnlRoot.getScene().getWindow());
+        final List<File> files = FileChooserUtils.showOpenPictureFileChooser();
         if (files == null || files.isEmpty())
             return;
 

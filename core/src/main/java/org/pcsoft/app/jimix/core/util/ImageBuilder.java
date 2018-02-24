@@ -11,8 +11,10 @@ import org.pcsoft.app.jimix.commons.exception.JimixPluginExecutionException;
 import org.pcsoft.app.jimix.core.plugin.PluginManager;
 import org.pcsoft.app.jimix.core.plugin.builtin.blender.OverlayBlender;
 import org.pcsoft.app.jimix.core.plugin.builtin.model.JimixImageElementModel;
+import org.pcsoft.app.jimix.core.plugin.builtin.scaler.DefaultScaler;
 import org.pcsoft.app.jimix.core.plugin.type.JimixBlenderInstance;
 import org.pcsoft.app.jimix.core.plugin.type.JimixFilterInstance;
+import org.pcsoft.app.jimix.core.plugin.type.JimixScalerInstance;
 import org.pcsoft.app.jimix.core.project.JimixElement;
 import org.pcsoft.app.jimix.core.project.JimixLayer;
 import org.pcsoft.app.jimix.core.project.JimixProject;
@@ -40,7 +42,7 @@ public final class ImageBuilder {
 
             JimixBlenderInstance blender = PluginManager.getInstance().getBlender(layer.getModel().getBlender());
             if (blender == null) {
-                LOGGER.warn("Unable to get blender " + layer.getModel().getBlender() + ", use default instead");
+                LOGGER.warn("Unable to get blender " + layer.getModel().getBlender() + " for project image building, use default instead");
                 try {
                     blender = new JimixBlenderInstance(new OverlayBlender()); //Default as fallback
                 } catch (JimixPluginException e) {
@@ -49,15 +51,11 @@ public final class ImageBuilder {
             }
             final Image layerImage = layer.getResultImage();
 
-            /*final JimixPixelWriterImpl pixelWriter = new JimixPixelWriterImpl(project.getModel().getWidth(), project.getModel().getHeight());
-            blender.apply(
-                    new JimixPixelReaderImpl(image.getPixelReader(), (int) image.getWidth(), (int) image.getHeight()),
-                    new JimixPixelReaderImpl(layerImage.getPixelReader(), (int) layerImage.getWidth(), (int) layerImage.getHeight()),
-                    pixelWriter
-            );
-
-            image = pixelWriter.buildImage();*/
-            image = layerImage;
+            try {
+                image = blender.apply(image, layerImage, layer.getModel().getOpacity());
+            } catch (JimixPluginExecutionException e) {
+                LOGGER.error("Unable to run blender", e);
+            }
         }
 
         return image;
@@ -68,15 +66,34 @@ public final class ImageBuilder {
 
         final Canvas canvas = new Canvas(layer.getProject().getModel().getWidth(), layer.getProject().getModel().getHeight());
         final GraphicsContext gc = canvas.getGraphicsContext2D();
-        //gc.setGlobalBlendMode(BlendMode.OVERLAY);
         for (final JimixElement element : layer.getElementList()) {
             if (!element.getModel().isVisibility())
                 continue;
 
+            gc.setGlobalAlpha(element.getModel().getOpacity());
+
             final JimixElementModel model = element.getModel();
             if (model instanceof JimixImageElementModel) {
-                gc.drawImage(((JimixImageElementModel) model).getValue(), element.getModel().getX(), element.getModel().getY(),
-                        element.getModel().getWidth(), element.getModel().getHeight());
+                final JimixImageElementModel jimixImageElementModel = (JimixImageElementModel) model;
+                JimixScalerInstance scaler = PluginManager.getInstance().getScaler(jimixImageElementModel.getScaler());
+                if (scaler == null) {
+                    LOGGER.warn("Unable to get scaler " + jimixImageElementModel.getScaler() + " for layer image building, use default instead");
+                    try {
+                        scaler = new JimixScalerInstance(new DefaultScaler()); //Default as fallback
+                    } catch (JimixPluginException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+
+                Image scaledImage;
+                try {
+                    scaledImage = scaler.apply(jimixImageElementModel.getValue(), model.getWidth(), model.getHeight(), JimixSource.Picture);
+                } catch (JimixPluginExecutionException e) {
+                    LOGGER.error("unable to scale image", e);
+                    scaledImage = jimixImageElementModel.getValue(); //Ignore scaling, use builtin JavaFX Scaling
+                }
+                gc.drawImage(scaledImage, jimixImageElementModel.getX(), jimixImageElementModel.getY(),
+                        jimixImageElementModel.getWidth(), jimixImageElementModel.getHeight());
             }
         }
         final SnapshotParameters snapshotParameters = new SnapshotParameters();

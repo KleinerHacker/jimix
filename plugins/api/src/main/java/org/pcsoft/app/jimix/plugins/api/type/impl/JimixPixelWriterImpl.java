@@ -1,4 +1,4 @@
-package org.pcsoft.app.jimix.core.plugin.type;
+package org.pcsoft.app.jimix.plugins.api.type.impl;
 
 import javafx.scene.image.Image;
 import javafx.scene.image.PixelFormat;

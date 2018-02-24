@@ -6,6 +6,7 @@ import org.apache.commons.lang.time.DurationFormatUtils;
 import org.apache.commons.lang.time.StopWatch;
 import org.pcsoft.app.jimix.commons.exception.JimixPluginAnnotationException;
 import org.pcsoft.app.jimix.commons.exception.JimixPluginException;
+import org.pcsoft.app.jimix.commons.exception.JimixPluginExecutionException;
 import org.pcsoft.app.jimix.plugins.api.JimixEffect;
 import org.pcsoft.app.jimix.plugins.api.annotation.JimixEffectDescriptor;
 import org.pcsoft.app.jimix.plugins.api.config.JimixEffectConfiguration;
@@ -51,23 +52,26 @@ public final class JimixEffectInstance implements JimixInstance {
         }
     }
 
-    public Image apply(final Image image, JimixEffectConfiguration configuration) {
-        final JimixPixelReaderImpl pixelReader = new JimixPixelReaderImpl(image.getPixelReader(), (int) image.getWidth(), (int) image.getHeight());
-        final JimixPixelWriterImpl pixelWriter = new JimixPixelWriterImpl((int) image.getWidth(), (int) image.getHeight());
+    public Image apply(final Image image, JimixEffectConfiguration configuration) throws JimixPluginExecutionException {
+        final Image resultImage;
 
         if (LOGGER.isTraceEnabled()) {
             STOP_WATCH.reset();
             STOP_WATCH.start();
         }
 
-        instance.apply(pixelReader, pixelWriter, configuration);
+        try {
+            resultImage = instance.apply(image, configuration);
+        } catch (Exception e) {
+            throw new JimixPluginExecutionException("Error while running effect", e);
+        }
 
         if (LOGGER.isTraceEnabled()) {
             STOP_WATCH.stop();
             LOGGER.trace("Effect run time: " + DurationFormatUtils.formatDuration(STOP_WATCH.getTime(), "ss:SSS"));
         }
 
-        return pixelWriter.buildImage();
+        return resultImage;
     }
 
     @Override

@@ -1,17 +1,17 @@
 package org.pcsoft.app.jimix.plugin.impl.base.renderer;
 
-import org.pcsoft.app.jimix.plugins.api.JimixRenderer;
+import org.pcsoft.app.jimix.plugins.api.JimixRendererBase;
 import org.pcsoft.app.jimix.plugins.api.annotation.JimixRendererDescriptor;
-import org.pcsoft.app.jimix.plugins.api.type.JimixSource;
 import org.pcsoft.app.jimix.plugins.api.type.JimixPixelWriter;
+import org.pcsoft.app.jimix.plugins.api.type.JimixSource;
 
 import java.util.Random;
 
 @JimixRendererDescriptor(name = "plugin.renderer.noise.title", description = "plugin.renderer.noise.description", resourceBundle = "languages/plugin",
         usableForMasks = true, configurationClass = NoiseRendererConfiguration.class)
-public class NoiseRenderer implements JimixRenderer<NoiseRendererConfiguration> {
+public class NoiseRenderer extends JimixRendererBase<NoiseRendererConfiguration> {
     @Override
-    public void apply(JimixPixelWriter pixelWriter, NoiseRendererConfiguration configuration, JimixSource source) {
+    protected void apply(JimixPixelWriter pixelWriter, NoiseRendererConfiguration configuration, JimixSource source) {
         final Random random;
         if (configuration.getRandomBaseValue() != null) {
             random = new Random(configuration.getRandomBaseValue());

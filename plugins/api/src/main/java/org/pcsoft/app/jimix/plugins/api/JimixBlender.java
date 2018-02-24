@@ -1,8 +1,7 @@
 package org.pcsoft.app.jimix.plugins.api;
 
-import org.pcsoft.app.jimix.plugins.api.type.JimixPixelReader;
-import org.pcsoft.app.jimix.plugins.api.type.JimixPixelWriter;
+import javafx.scene.image.Image;
 
 public interface JimixBlender {
-    void apply(JimixPixelReader groundPixelReader, JimixPixelReader layerPixelReader, JimixPixelWriter pixelWriter);
+    Image apply(final Image groundImage, final Image layerImage, final double opacity) throws Exception;
 }
