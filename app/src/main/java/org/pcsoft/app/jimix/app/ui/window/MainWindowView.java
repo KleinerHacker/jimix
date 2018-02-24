@@ -8,18 +8,21 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.Clipboard;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
+import org.apache.commons.io.FilenameUtils;
 import org.pcsoft.app.jimix.app.ui.component.PictureEditorPane;
 import org.pcsoft.app.jimix.app.ui.splash.JimixSplash;
 import org.pcsoft.app.jimix.app.util.FileChooserUtils;
@@ -30,11 +33,15 @@ import org.pcsoft.app.jimix.core.plugin.type.JimixFilterInstance;
 import org.pcsoft.app.jimix.core.project.JimixProject;
 import org.pcsoft.app.jimix.core.project.ProjectManager;
 import org.pcsoft.framework.jfex.property.ExtendedWrapperProperty;
+import org.pcsoft.framework.jfex.threading.JfxUiThreadPool;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -47,6 +54,13 @@ public class MainWindowView implements FxmlView<MainWindowViewModel>, Initializa
 
     @FXML
     private TabPane tabPicture;
+
+    //<editor-fold desc="Status Bar">
+    @FXML
+    private ProgressIndicator pbProgress;
+    @FXML
+    private Label lblProgress;
+    //</editor-fold>
 
     //<editor-fold desc="Menu">
     @FXML
@@ -230,15 +244,27 @@ public class MainWindowView implements FxmlView<MainWindowViewModel>, Initializa
         if (files == null || files.isEmpty())
             return;
 
-        for (final File file : files) {
+        pbProgress.setVisible(true);
+        lblProgress.setText("Open files...");
+        lblProgress.setVisible(true);
+        JfxUiThreadPool.submit(() -> {
             try {
-                final JimixProject jimixProject = ProjectManager.getInstance().createProjectFromFile(file);
-                viewModel.getProjectList().add(jimixProject);
-            } catch (JimixProjectException e) {
-                LOGGER.error("Unable to open file " + file.getAbsolutePath(), e);
-                new Alert(Alert.AlertType.ERROR, "Unable to load file " + file.getAbsolutePath(), ButtonType.OK).showAndWait();
+                for (final File file : files) {
+                    try {
+                        final JimixProject jimixProject = ProjectManager.getInstance().createProjectFromFile(file);
+                        Platform.runLater(() -> viewModel.getProjectList().add(jimixProject));
+                    } catch (JimixProjectException e) {
+                        LOGGER.error("Unable to open file " + file.getAbsolutePath(), e);
+                        Platform.runLater(() -> new Alert(Alert.AlertType.ERROR, "Unable to load file " + file.getAbsolutePath(), ButtonType.OK).showAndWait());
+                    }
+                }
+            } finally {
+                Platform.runLater(() -> {
+                    pbProgress.setVisible(false);
+                    lblProgress.setVisible(false);
+                });
             }
-        }
+        });
     }
 
     @FXML
@@ -267,12 +293,30 @@ public class MainWindowView implements FxmlView<MainWindowViewModel>, Initializa
 
     @FXML
     private void onActionSave(ActionEvent actionEvent) {
+        final Tab tab = tabPicture.getSelectionModel().getSelectedItem();
+        if (tab == null)
+            return;
+        final JimixProject project = ((PictureEditorPane) tab.getContent()).getProject();
 
+        if (project.getModel().getFile() == null) {
+            onActionSaveAs(actionEvent);
+        } else {
+            savePicture(project, project.getModel().getFile());
+        }
     }
 
     @FXML
     private void onActionSaveAs(ActionEvent actionEvent) {
+        final Tab tab = tabPicture.getSelectionModel().getSelectedItem();
+        if (tab == null)
+            return;
+        final JimixProject project = ((PictureEditorPane) tab.getContent()).getProject();
 
+        final File file = FileChooserUtils.showSavePictureFileChooser();
+        if (file == null)
+            return;
+
+        savePicture(project, file);
     }
 
     @FXML
@@ -369,10 +413,11 @@ public class MainWindowView implements FxmlView<MainWindowViewModel>, Initializa
 
         defaultMenuItem.getOnAction().handle(new ActionEvent(defaultMenuItem, Event.NULL_SOURCE_TARGET));
     }
-    //</editor-fold>
 
+    //</editor-fold>
     //<editor-fold desc="Local Helper Properties">
     private final class TopLayerBooleanProperty extends ExtendedWrapperProperty<Boolean> {
+
         private TopLayerBooleanProperty() {
             super(tabPicture.getSelectionModel().selectedItemProperty());
 
@@ -385,7 +430,6 @@ public class MainWindowView implements FxmlView<MainWindowViewModel>, Initializa
                 }
             });
         }
-
         public BooleanBinding or(ObservableValue<Boolean> value) {
             return Bindings.createBooleanBinding(() -> getValue() || value.getValue(), this, value);
         }
@@ -404,9 +448,10 @@ public class MainWindowView implements FxmlView<MainWindowViewModel>, Initializa
         private void invalidated(Observable obs) {
             fireValueChangedEvent();
         }
-    }
 
+    }
     private final class MenuEmptyBooleanProperty extends ExtendedWrapperProperty<Boolean> {
+
         private MenuEmptyBooleanProperty() {
             super(mnuPaste.getItems());
 
@@ -425,7 +470,6 @@ public class MainWindowView implements FxmlView<MainWindowViewModel>, Initializa
                 }
             });
         }
-
         public BooleanBinding or(ObservableValue<Boolean> value) {
             return Bindings.createBooleanBinding(() -> getValue() || value.getValue(), this, value);
         }
@@ -443,6 +487,28 @@ public class MainWindowView implements FxmlView<MainWindowViewModel>, Initializa
         private void invalidated(Observable obs) {
             fireValueChangedEvent();
         }
+
     }
     //</editor-fold>
+
+    private void savePicture(JimixProject project, File file) {
+        pbProgress.setVisible(true);
+        lblProgress.setText("Save to file...");
+        lblProgress.setVisible(true);
+        JfxUiThreadPool.submit(() -> {
+            try {
+                final BufferedImage bufferedImage = SwingFXUtils.fromFXImage(project.getResultImage(), null);
+                ImageIO.write(bufferedImage, FilenameUtils.getExtension(file.getAbsolutePath()), file);
+                Platform.runLater(() -> project.getModel().setFile(file));
+            } catch (IOException e) {
+                LOGGER.error("Unable to save image", e);
+                Platform.runLater(() -> new Alert(Alert.AlertType.ERROR, "Unable to save image: " + e.getMessage(), ButtonType.OK).showAndWait());
+            } finally {
+                Platform.runLater(() -> {
+                    pbProgress.setVisible(false);
+                    lblProgress.setVisible(false);
+                });
+            }
+        });
+    }
 }

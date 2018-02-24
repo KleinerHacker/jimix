@@ -16,6 +16,11 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.control.Separator?>
+<?import org.controlsfx.control.StatusBar?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.control.ProgressIndicator?>
+<?import javafx.scene.control.Label?>
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml" fx:id="pnlRoot"
             fx:controller="org.pcsoft.app.jimix.app.ui.window.MainWindowView"
@@ -266,4 +271,14 @@
     <center>
         <TabPane fx:id="tabPicture" tabClosingPolicy="ALL_TABS"/>
     </center>
+    <bottom>
+        <StatusBar text="">
+            <rightItems>
+                <HBox spacing="5">
+                    <Label fx:id="lblProgress" visible="false" managed="${lblProgress.visible}"/>
+                    <ProgressIndicator fx:id="pbProgress" visible="false" managed="${pbProgress.visible}"/>
+                </HBox>
+            </rightItems>
+        </StatusBar>
+    </bottom>
 </BorderPane>
