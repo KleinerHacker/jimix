@@ -12,6 +12,7 @@ import javafx.scene.image.Image;
 import javafx.util.Callback;
 import org.pcsoft.app.jimix.core.util.ImageBuilder;
 
+import java.io.File;
 import java.util.*;
 
 /**
@@ -20,6 +21,7 @@ import java.util.*;
 public final class JimixProject {
     private final ReadOnlyObjectProperty<UUID> uuid = new ReadOnlyObjectWrapper<>(UUID.randomUUID()).getReadOnlyProperty();
     private final ReadOnlyObjectProperty<JimixProjectModel> model;
+    private final ObjectProperty<File> file = new SimpleObjectProperty<>();
 
     private final ReadOnlyMapProperty<UUID, JimixLayer> layerMap =
             new ReadOnlyMapWrapper<UUID, JimixLayer>(FXCollections.observableHashMap()).getReadOnlyProperty();
@@ -52,6 +54,18 @@ public final class JimixProject {
 
     public ReadOnlyObjectProperty<UUID> uuidProperty() {
         return uuid;
+    }
+
+    public File getFile() {
+        return file.get();
+    }
+
+    public ObjectProperty<File> fileProperty() {
+        return file;
+    }
+
+    public void setFile(File file) {
+        this.file.set(file);
     }
 
     public JimixProjectModel getModel() {

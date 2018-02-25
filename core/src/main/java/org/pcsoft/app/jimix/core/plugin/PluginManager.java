@@ -28,6 +28,7 @@ public final class PluginManager {
     private final Map<String, JimixBlenderInstance> blenderMap = new HashMap<>();
     private final Map<String, JimixScalerInstance> scalerMap = new HashMap<>();
     private final Map<String, JimixClipboardProviderInstance> clipboardProviderMap = new HashMap<>();
+    private final Map<String, JimixFileTypeProviderInstance> fileTypeProviderMap = new HashMap<>();
 
     private PluginManager() {
     }
@@ -52,9 +53,11 @@ public final class PluginManager {
         loadBlender(classLoader);
         loadScaler(classLoader);
         loadClipboardProvider(classLoader);
+        loadFileTypeProvider(classLoader);
 
-        LOGGER.debug("Found {} effects, {} filters, {} renderer, {} blender, {} scaler, {} clipboard providers",
-                effectMap.size(), filterMap.size(), rendererMap.size(), blenderMap.size(), scalerMap.size(), clipboardProviderMap.size());
+        LOGGER.debug("Found {} effects, {} filters, {} renderer, {} blender, {} scaler, {} clipboard providers, {} file type providers",
+                effectMap.size(), filterMap.size(), rendererMap.size(), blenderMap.size(), scalerMap.size(), clipboardProviderMap.size(),
+                fileTypeProviderMap.size());
     }
 
     private void loadEffects(final ClassLoader classLoader) {
@@ -147,6 +150,21 @@ public final class PluginManager {
         }
     }
 
+    private void loadFileTypeProvider(final ClassLoader classLoader) {
+        LOGGER.debug("> Load file type provider plugins");
+
+        final ServiceLoader<JimixFileTypeProvider> jimixFileTypeProviders = ServiceLoader.load(JimixFileTypeProvider.class, classLoader);
+        for (final JimixFileTypeProvider jimixFileTypeProvider : jimixFileTypeProviders) {
+            try {
+                final JimixFileTypeProviderInstance jimixFileTypeProviderInstance = new JimixFileTypeProviderInstance(jimixFileTypeProvider);
+                fileTypeProviderMap.put(jimixFileTypeProviderInstance.getIdentifier(), jimixFileTypeProviderInstance);
+                LOGGER.trace(">>> {}", jimixFileTypeProviderInstance.getIdentifier());
+            } catch (JimixPluginException e) {
+                LOGGER.error("Unable to load file type provider " + jimixFileTypeProvider.getClass().getName(), e);
+            }
+        }
+    }
+
     public JimixEffectInstance[] getAllEffects() {
         return effectMap.values().toArray(new JimixEffectInstance[effectMap.size()]);
     }
@@ -193,5 +211,13 @@ public final class PluginManager {
 
     public JimixClipboardProviderInstance getClipboardProvider(final String clipboardProviderClassName) {
         return clipboardProviderMap.get(clipboardProviderClassName);
+    }
+
+    public JimixFileTypeProviderInstance[] getAllFileTypeProviders() {
+        return fileTypeProviderMap.values().toArray(new JimixFileTypeProviderInstance[fileTypeProviderMap.size()]);
+    }
+
+    public JimixFileTypeProviderInstance getFileTypeProvider(final String fileTypeProviderClassName) {
+        return fileTypeProviderMap.get(fileTypeProviderClassName);
     }
 }

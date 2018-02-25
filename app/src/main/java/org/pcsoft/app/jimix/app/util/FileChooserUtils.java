@@ -2,6 +2,8 @@ package org.pcsoft.app.jimix.app.util;
 
 import javafx.stage.FileChooser;
 import org.pcsoft.app.jimix.app.language.LanguageResources;
+import org.pcsoft.app.jimix.core.plugin.PluginManager;
+import org.pcsoft.app.jimix.core.plugin.type.JimixFileTypeProviderInstance;
 import org.pcsoft.framework.jfex.util.FXChooserUtils;
 
 import java.io.File;
@@ -21,24 +23,20 @@ public final class FileChooserUtils {
     }
 
     private static List<FileChooser.ExtensionFilter> buildExtensionFilter(boolean allowAllFilter) {
-        final ArrayList<FileChooser.ExtensionFilter> filters = new ArrayList<>(Arrays.asList(
-                new FileChooser.ExtensionFilter(
-                        LanguageResources.getText("dlg.project.extension.bmp"), "*.bmp"
-                ),
-                new FileChooser.ExtensionFilter(
-                        LanguageResources.getText("dlg.project.extension.jpg"), "*.jpg", "*.jpeg"
-                ),
-                new FileChooser.ExtensionFilter(
-                        LanguageResources.getText("dlg.project.extension.png"), "*.png"
-                ),
-                new FileChooser.ExtensionFilter(
-                        LanguageResources.getText("dlg.project.extension.jxp"), "*.jxp"
-                )
-        ));
+        final JimixFileTypeProviderInstance[] fileTypeProviders = PluginManager.getInstance().getAllFileTypeProviders();
+        final ArrayList<FileChooser.ExtensionFilter> filters = new ArrayList<>();
+
+        for (final JimixFileTypeProviderInstance fileTypeProvider : fileTypeProviders) {
+            filters.add(new FileChooser.ExtensionFilter(fileTypeProvider.getDescription(), fileTypeProvider.getExtensions()));
+        }
+
         if (allowAllFilter) {
-            filters.add(0, new FileChooser.ExtensionFilter(
-                    LanguageResources.getText("dlg.project.extension.all"), "*.bmp", "*.jpg", "*.jpeg", "*.png", "*.jmx"
-            ));
+            final List<String> extensions = new ArrayList<>();
+            for (final JimixFileTypeProviderInstance fileTypeProvider : fileTypeProviders) {
+                extensions.addAll(Arrays.asList(fileTypeProvider.getExtensions()));
+            }
+
+            filters.add(0, new FileChooser.ExtensionFilter(LanguageResources.getText("dlg.project.extension.all"), extensions));
         }
 
         return filters;

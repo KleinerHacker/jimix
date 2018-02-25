@@ -8,7 +8,7 @@ import org.pcsoft.app.jimix.plugins.api.type.JimixSource;
 
 import java.awt.*;
 
-@JimixFilterDescriptor(name = "Negative", description = "Negate", iconPath = "/icons/ic_filter_negative16.png",
+@JimixFilterDescriptor(name = "Negative", description = "Negate", iconPath = "/builtin/icons/ic_filter_negative16.png",
         usableForMasks = true, configurationClass = NegateEffectConfiguration.class)
 public class NegateEffect extends JimixFilterBase<NegateEffectConfiguration> {
     @Override

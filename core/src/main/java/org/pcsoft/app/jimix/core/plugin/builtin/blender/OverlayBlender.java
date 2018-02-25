@@ -8,7 +8,7 @@ import javafx.scene.paint.Color;
 import org.pcsoft.app.jimix.plugins.api.JimixBlender;
 import org.pcsoft.app.jimix.plugins.api.annotation.JimixBlenderDescriptor;
 
-@JimixBlenderDescriptor(name = "Overlay", description = "Overlay layers (default)", iconPath = "/icons/ic_blender_overlay16.png")
+@JimixBlenderDescriptor(name = "Overlay", description = "Overlay layers (default)", iconPath = "/builtin/icons/ic_blender_overlay16.png")
 public class OverlayBlender implements JimixBlender {
     @Override
     public Image apply(Image groundImage, Image layerImage, double opacity) throws Exception {

@@ -18,6 +18,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.Clipboard;
 import javafx.scene.layout.BorderPane;
@@ -26,12 +27,14 @@ import org.apache.commons.io.FilenameUtils;
 import org.pcsoft.app.jimix.app.ui.component.PictureEditorPane;
 import org.pcsoft.app.jimix.app.ui.splash.JimixSplash;
 import org.pcsoft.app.jimix.app.util.FileChooserUtils;
-import org.pcsoft.app.jimix.commons.exception.JimixProjectException;
 import org.pcsoft.app.jimix.core.plugin.PluginManager;
 import org.pcsoft.app.jimix.core.plugin.type.JimixClipboardProviderInstance;
+import org.pcsoft.app.jimix.core.plugin.type.JimixFileTypeProviderInstance;
 import org.pcsoft.app.jimix.core.plugin.type.JimixFilterInstance;
 import org.pcsoft.app.jimix.core.project.JimixProject;
 import org.pcsoft.app.jimix.core.project.ProjectManager;
+import org.pcsoft.app.jimix.core.tooling.RecentFileManager;
+import org.pcsoft.app.jimix.core.util.FileTypeUtils;
 import org.pcsoft.framework.jfex.property.ExtendedWrapperProperty;
 import org.pcsoft.framework.jfex.threading.JfxUiThreadPool;
 import org.slf4j.Logger;
@@ -43,6 +46,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.Collections;
 import java.util.List;
 import java.util.ResourceBundle;
 
@@ -161,6 +165,9 @@ public class MainWindowView implements FxmlView<MainWindowViewModel>, Initializa
         btnCopy.disableProperty().bind(miCopy.disableProperty().or(mnuEdit.disableProperty()));
         btnDefaultPaste.disableProperty().bind(mnuPaste.disableProperty().or(mnuEdit.disableProperty()));
 
+        refreshRecentMenu();
+        RecentFileManager.getInstance().addListener((ListChangeListener<File>) c -> refreshRecentMenu());
+
         for (final JimixFilterInstance filterInstance : PluginManager.getInstance().getAllFilters()) {
             final MenuItem menuItem = new MenuItem(filterInstance.getName());
             if (filterInstance.getIcon() != null) {
@@ -206,20 +213,30 @@ public class MainWindowView implements FxmlView<MainWindowViewModel>, Initializa
         });
     }
 
+    private void refreshRecentMenu() {
+        mnuOpenRecent.getItems().clear();
+        for (final File file : RecentFileManager.getInstance().getFiles()) {
+            final MenuItem menuItem = new MenuItem(file.getName());
+            menuItem.setUserData(file);
+            menuItem.setOnAction(this::onActionOpenRecent);
+            mnuOpenRecent.getItems().add(menuItem);
+        }
+    }
+
     private void createTabForProject(final JimixProject project) {
         final Tab tab = new Tab();
         tab.setUserData(project);
         tab.textProperty().bind(Bindings.createStringBinding(
-                () -> project.getModel().getFile() != null ? project.getModel().getFile().getName() : "<unnamed>",
-                project.getModel().fileProperty()
+                () -> project.getFile() != null ? project.getFile().getName() : "<unnamed>",
+                project.fileProperty()
         ));
         tab.setContent(new PictureEditorPane(project));
         tab.setOnClosed(e -> viewModel.getProjectList().remove(project));
 
         final Tooltip tooltip = new Tooltip();
         tooltip.textProperty().bind(Bindings.createStringBinding(
-                () -> project.getModel().getFile() != null ? project.getModel().getFile().getAbsolutePath() : null,
-                project.getModel().fileProperty()
+                () -> project.getFile() != null ? project.getFile().getAbsolutePath() : null,
+                project.fileProperty()
         ));
         tab.setTooltip(tooltip);
 
@@ -244,27 +261,8 @@ public class MainWindowView implements FxmlView<MainWindowViewModel>, Initializa
         if (files == null || files.isEmpty())
             return;
 
-        pbProgress.setVisible(true);
-        lblProgress.setText("Open files...");
-        lblProgress.setVisible(true);
-        JfxUiThreadPool.submit(() -> {
-            try {
-                for (final File file : files) {
-                    try {
-                        final JimixProject jimixProject = ProjectManager.getInstance().createProjectFromFile(file);
-                        Platform.runLater(() -> viewModel.getProjectList().add(jimixProject));
-                    } catch (JimixProjectException e) {
-                        LOGGER.error("Unable to open file " + file.getAbsolutePath(), e);
-                        Platform.runLater(() -> new Alert(Alert.AlertType.ERROR, "Unable to load file " + file.getAbsolutePath(), ButtonType.OK).showAndWait());
-                    }
-                }
-            } finally {
-                Platform.runLater(() -> {
-                    pbProgress.setVisible(false);
-                    lblProgress.setVisible(false);
-                });
-            }
-        });
+        openPicture(files);
+        RecentFileManager.getInstance().addFiles(files);
     }
 
     @FXML
@@ -298,10 +296,10 @@ public class MainWindowView implements FxmlView<MainWindowViewModel>, Initializa
             return;
         final JimixProject project = ((PictureEditorPane) tab.getContent()).getProject();
 
-        if (project.getModel().getFile() == null) {
+        if (project.getFile() == null) {
             onActionSaveAs(actionEvent);
         } else {
-            savePicture(project, project.getModel().getFile());
+            savePicture(project, project.getFile());
         }
     }
 
@@ -316,7 +314,13 @@ public class MainWindowView implements FxmlView<MainWindowViewModel>, Initializa
         if (file == null)
             return;
 
+        final File oldFile = project.getFile();
         savePicture(project, file);
+
+        if (oldFile != null) {
+            RecentFileManager.getInstance().removeFile(oldFile);
+        }
+        RecentFileManager.getInstance().addFile(file);
     }
 
     @FXML
@@ -414,7 +418,76 @@ public class MainWindowView implements FxmlView<MainWindowViewModel>, Initializa
         defaultMenuItem.getOnAction().handle(new ActionEvent(defaultMenuItem, Event.NULL_SOURCE_TARGET));
     }
 
+    private void onActionOpenRecent(ActionEvent actionEvent) {
+        final File file = (File) ((MenuItem)actionEvent.getSource()).getUserData();
+        openPicture(Collections.singletonList(file));
+        RecentFileManager.getInstance().addFile(file);
+    }
+
     //</editor-fold>
+
+    private void savePicture(JimixProject project, File file) {
+        pbProgress.setVisible(true);
+        lblProgress.setText("Save to file...");
+        lblProgress.setVisible(true);
+        JfxUiThreadPool.submit(() -> {
+            try {
+                final BufferedImage bufferedImage = SwingFXUtils.fromFXImage(project.getResultImage(), null);
+                ImageIO.write(bufferedImage, FilenameUtils.getExtension(file.getAbsolutePath()), file);
+                Platform.runLater(() -> project.setFile(file));
+            } catch (IOException e) {
+                LOGGER.error("Unable to save image", e);
+                Platform.runLater(() -> new Alert(Alert.AlertType.ERROR, "Unable to save image: " + e.getMessage(), ButtonType.OK).showAndWait());
+            } finally {
+                Platform.runLater(() -> {
+                    pbProgress.setVisible(false);
+                    lblProgress.setVisible(false);
+                });
+            }
+        });
+    }
+
+    //TODO: Open file only, if not opened yet
+    private void openPicture(List<File> files) {
+        pbProgress.setVisible(true);
+        lblProgress.setText("Open files...");
+        lblProgress.setVisible(true);
+        JfxUiThreadPool.submit(() -> {
+            try {
+                for (final File file : files) {
+                    final Tab pictureTab = tabPicture.getTabs().stream()
+                            .filter(tab -> ((PictureEditorPane)tab.getContent()).getProject().getFile().equals(file))
+                            .findFirst().orElse(null);
+                    if (pictureTab != null) {
+                        tabPicture.getSelectionModel().select(pictureTab);
+                        continue;
+                    }
+
+                    try {
+                        final JimixFileTypeProviderInstance fileTypeProvider = FileTypeUtils.find(file);
+                        if (fileTypeProvider == null) {
+                            LOGGER.error("Unable to find any file type provider to open file " + file);
+                            Platform.runLater(() -> new Alert(Alert.AlertType.ERROR, "Unable to find provider to open file", ButtonType.OK).showAndWait());
+                            continue;
+                        }
+                        final Image image = fileTypeProvider.load(file);
+                        final JimixProject jimixProject = ProjectManager.getInstance().createProjectFromImage(image);
+                        jimixProject.setFile(file);
+                        Platform.runLater(() -> viewModel.getProjectList().add(jimixProject));
+                    } catch (IOException e) {
+                        LOGGER.error("Unable to open file " + file.getAbsolutePath(), e);
+                        Platform.runLater(() -> new Alert(Alert.AlertType.ERROR, "Unable to load file " + file.getAbsolutePath(), ButtonType.OK).showAndWait());
+                    }
+                }
+            } finally {
+                Platform.runLater(() -> {
+                    pbProgress.setVisible(false);
+                    lblProgress.setVisible(false);
+                });
+            }
+        });
+    }
+
     //<editor-fold desc="Local Helper Properties">
     private final class TopLayerBooleanProperty extends ExtendedWrapperProperty<Boolean> {
 
@@ -430,6 +503,7 @@ public class MainWindowView implements FxmlView<MainWindowViewModel>, Initializa
                 }
             });
         }
+
         public BooleanBinding or(ObservableValue<Boolean> value) {
             return Bindings.createBooleanBinding(() -> getValue() || value.getValue(), this, value);
         }
@@ -450,6 +524,7 @@ public class MainWindowView implements FxmlView<MainWindowViewModel>, Initializa
         }
 
     }
+
     private final class MenuEmptyBooleanProperty extends ExtendedWrapperProperty<Boolean> {
 
         private MenuEmptyBooleanProperty() {
@@ -470,6 +545,7 @@ public class MainWindowView implements FxmlView<MainWindowViewModel>, Initializa
                 }
             });
         }
+
         public BooleanBinding or(ObservableValue<Boolean> value) {
             return Bindings.createBooleanBinding(() -> getValue() || value.getValue(), this, value);
         }
@@ -490,25 +566,4 @@ public class MainWindowView implements FxmlView<MainWindowViewModel>, Initializa
 
     }
     //</editor-fold>
-
-    private void savePicture(JimixProject project, File file) {
-        pbProgress.setVisible(true);
-        lblProgress.setText("Save to file...");
-        lblProgress.setVisible(true);
-        JfxUiThreadPool.submit(() -> {
-            try {
-                final BufferedImage bufferedImage = SwingFXUtils.fromFXImage(project.getResultImage(), null);
-                ImageIO.write(bufferedImage, FilenameUtils.getExtension(file.getAbsolutePath()), file);
-                Platform.runLater(() -> project.getModel().setFile(file));
-            } catch (IOException e) {
-                LOGGER.error("Unable to save image", e);
-                Platform.runLater(() -> new Alert(Alert.AlertType.ERROR, "Unable to save image: " + e.getMessage(), ButtonType.OK).showAndWait());
-            } finally {
-                Platform.runLater(() -> {
-                    pbProgress.setVisible(false);
-                    lblProgress.setVisible(false);
-                });
-            }
-        });
-    }
 }

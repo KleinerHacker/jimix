@@ -1,16 +1,16 @@
 package org.pcsoft.app.jimix.core.project;
 
 import javafx.beans.Observable;
-import javafx.beans.property.*;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.ReadOnlyListProperty;
+import javafx.beans.property.ReadOnlyListWrapper;
+import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.util.Callback;
 import org.pcsoft.app.jimix.plugins.api.model.JimixModel;
 
-import java.io.File;
-
 public final class JimixProjectModel implements JimixModel {
-    private final ObjectProperty<File> file = new SimpleObjectProperty<>();
     private final ReadOnlyListProperty<JimixLayerModel> layerList =
             new ReadOnlyListWrapper<>(FXCollections.observableArrayList(new JimixLayerObserverCallback())).getReadOnlyProperty();
     private final IntegerProperty width = new SimpleIntegerProperty(), height = new SimpleIntegerProperty();
@@ -28,18 +28,6 @@ public final class JimixProjectModel implements JimixModel {
 
     ReadOnlyListProperty<JimixLayerModel> layerListProperty() {
         return layerList;
-    }
-
-    public File getFile() {
-        return file.get();
-    }
-
-    public ObjectProperty<File> fileProperty() {
-        return file;
-    }
-
-    public void setFile(File file) {
-        this.file.set(file);
     }
 
     public int getWidth() {
@@ -69,15 +57,8 @@ public final class JimixProjectModel implements JimixModel {
     @Override
     public Observable[] getObservableValues() {
         return new Observable[] {
-                file, layerList, width, height
+                layerList, width, height
         };
-    }
-
-    @Override
-    public String toString() {
-        return "JimixProjectModel{" +
-                "file=" + file +
-                '}';
     }
 
     private static final class JimixLayerObserverCallback implements Callback<JimixLayerModel, Observable[]> {

@@ -7,7 +7,7 @@ import org.pcsoft.app.jimix.plugins.api.type.JimixSource;
 
 import java.util.Random;
 
-@JimixRendererDescriptor(name = "plugin.renderer.noise.title", description = "plugin.renderer.noise.description", resourceBundle = "languages/plugin",
+@JimixRendererDescriptor(name = "plugin.renderer.noise.title", description = "plugin.renderer.noise.description", resourceBundle = "base.language.plugin",
         usableForMasks = true, configurationClass = NoiseRendererConfiguration.class)
 public class NoiseRenderer extends JimixRendererBase<NoiseRendererConfiguration> {
     @Override

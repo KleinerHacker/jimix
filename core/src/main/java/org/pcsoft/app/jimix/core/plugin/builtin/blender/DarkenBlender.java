@@ -9,7 +9,7 @@ import javafx.scene.paint.Color;
 import org.pcsoft.app.jimix.plugins.api.JimixBlender;
 import org.pcsoft.app.jimix.plugins.api.annotation.JimixBlenderDescriptor;
 
-@JimixBlenderDescriptor(name = "Darken", description = "Darken algorithm", iconPath = "/icons/ic_blender_subtract16.png")
+@JimixBlenderDescriptor(name = "Darken", description = "Darken algorithm", iconPath = "/builtin/icons/ic_blender_subtract16.png")
 public class DarkenBlender implements JimixBlender {
     @Override
     public Image apply(Image groundImage, Image layerImage, double opacity) throws Exception {

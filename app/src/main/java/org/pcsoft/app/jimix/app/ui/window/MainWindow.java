@@ -6,15 +6,19 @@ import javafx.application.Platform;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import org.pcsoft.app.jimix.app.language.LanguageResources;
-import org.pcsoft.app.jimix.commons.exception.JimixProjectException;
+import org.pcsoft.app.jimix.core.plugin.type.JimixFileTypeProviderInstance;
 import org.pcsoft.app.jimix.core.project.JimixProject;
 import org.pcsoft.app.jimix.core.project.ProjectManager;
+import org.pcsoft.app.jimix.core.tooling.RecentFileManager;
+import org.pcsoft.app.jimix.core.util.FileTypeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.File;
+import java.io.IOException;
 
 public class MainWindow extends Stage {
     private static final Logger LOGGER = LoggerFactory.getLogger(MainWindow.class);
@@ -30,6 +34,8 @@ public class MainWindow extends Stage {
         controller = viewTuple.getCodeBehind();
         viewModel = viewTuple.getViewModel();
 
+        setScene(new Scene(viewTuple.getView()));
+
         if (file != null && (!file.exists() || file.isDirectory())) {
             LOGGER.error("Unable to find file " + file.getAbsolutePath());
             new Alert(Alert.AlertType.ERROR, "Unable to find file " + file.getAbsolutePath(), ButtonType.OK).showAndWait();
@@ -38,14 +44,23 @@ public class MainWindow extends Stage {
         }
         if (file != null) {
             try {
-                final JimixProject jimixProject = ProjectManager.getInstance().createProjectFromFile(file);
-                viewModel.getProjectList().add(jimixProject);
-            } catch (JimixProjectException e) {
+                final JimixFileTypeProviderInstance fileTypeProvider = FileTypeUtils.find(file);
+                if (fileTypeProvider == null) {
+                    LOGGER.error("Unable to find any file type provider to open file " + file);
+                    Platform.runLater(() -> new Alert(Alert.AlertType.ERROR, "Unable to find provider to open file", ButtonType.OK).showAndWait());
+                    return;
+                }
+                final Image image = fileTypeProvider.load(file);
+                final JimixProject jimixProject = ProjectManager.getInstance().createProjectFromImage(image);
+                jimixProject.setFile(file);
+                Platform.runLater(() -> {
+                    viewModel.getProjectList().add(jimixProject);
+                    RecentFileManager.getInstance().addFile(file);
+                });
+            } catch (IOException e) {
                 LOGGER.error("Unable to open file " + file.getAbsolutePath(), e);
-                new Alert(Alert.AlertType.ERROR, "Unable to load file " + file.getAbsolutePath(), ButtonType.OK).showAndWait();
+                Platform.runLater(() -> new Alert(Alert.AlertType.ERROR, "Unable to load file " + file.getAbsolutePath(), ButtonType.OK).showAndWait());
             }
         }
-
-        setScene(new Scene(viewTuple.getView()));
     }
 }

@@ -10,10 +10,10 @@
     </File>             
   </appenders>
 
-  <loggers>     
+  <loggers>
     <root level="trace">
       <appender-ref ref="Console" level="trace"/>
        <appender-ref ref="File" level="info"/>
-    </root>    
+    </root>
   </loggers>
 </configuration>

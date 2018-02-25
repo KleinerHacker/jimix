@@ -2,17 +2,15 @@ package org.pcsoft.app.jimix.core.project;
 
 import javafx.scene.image.Image;
 import javafx.scene.input.Clipboard;
-import org.apache.commons.io.FileUtils;
-import org.pcsoft.app.jimix.commons.exception.JimixProjectException;
 import org.pcsoft.app.jimix.core.plugin.builtin.model.JimixImageElementModel;
 import org.pcsoft.app.jimix.core.plugin.type.JimixClipboardProviderInstance;
 import org.pcsoft.app.jimix.plugins.api.model.JimixElementModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 public final class ProjectManager {
     private static final Logger LOGGER = LoggerFactory.getLogger(ProjectManager.class);
@@ -28,22 +26,6 @@ public final class ProjectManager {
     }
 
     //<editor-fold desc="Project">
-    public JimixProject createProjectFromFile(final File file) throws JimixProjectException {
-        LOGGER.info("Create project from file " + file.getAbsolutePath());
-
-        try {
-            //Load image
-            final Image image = new Image(FileUtils.openInputStream(file));
-            //Create project from image
-            final JimixProject project = this.createProjectFromImage(image);
-            project.getModel().setFile(file);
-
-            return project;
-        } catch (IOException e) {
-            throw new JimixProjectException("unable to load project from file " + file.getAbsolutePath(), e);
-        }
-    }
-
     public JimixProject createProjectFromImage(final Image image) {
         LOGGER.info("Create project from image");
 
