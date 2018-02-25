@@ -447,7 +447,6 @@ public class MainWindowView implements FxmlView<MainWindowViewModel>, Initializa
         });
     }
 
-    //TODO: Open file only, if not opened yet
     private void openPicture(List<File> files) {
         pbProgress.setVisible(true);
         lblProgress.setText("Open files...");
