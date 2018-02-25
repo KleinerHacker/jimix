@@ -27,10 +27,9 @@ import org.apache.commons.io.FilenameUtils;
 import org.pcsoft.app.jimix.app.ui.component.PictureEditorPane;
 import org.pcsoft.app.jimix.app.ui.splash.JimixSplash;
 import org.pcsoft.app.jimix.app.util.FileChooserUtils;
+import org.pcsoft.app.jimix.commons.exception.JimixPluginException;
 import org.pcsoft.app.jimix.core.plugin.PluginManager;
-import org.pcsoft.app.jimix.core.plugin.type.JimixClipboardProviderInstance;
-import org.pcsoft.app.jimix.core.plugin.type.JimixFileTypeProviderInstance;
-import org.pcsoft.app.jimix.core.plugin.type.JimixFilterInstance;
+import org.pcsoft.app.jimix.core.plugin.type.*;
 import org.pcsoft.app.jimix.core.project.JimixProject;
 import org.pcsoft.app.jimix.core.project.ProjectManager;
 import org.pcsoft.app.jimix.core.tooling.RecentFileManager;
@@ -168,7 +167,7 @@ public class MainWindowView implements FxmlView<MainWindowViewModel>, Initializa
         refreshRecentMenu();
         RecentFileManager.getInstance().addListener((ListChangeListener<File>) c -> refreshRecentMenu());
 
-        for (final JimixFilterInstance filterInstance : PluginManager.getInstance().getAllFilters()) {
+        for (final JimixFilterPlugin filterInstance : PluginManager.getInstance().getAllFilters()) {
             final MenuItem menuItem = new MenuItem(filterInstance.getName());
             if (filterInstance.getIcon() != null) {
                 menuItem.setGraphic(new ImageView(filterInstance.getIcon()));
@@ -178,21 +177,27 @@ public class MainWindowView implements FxmlView<MainWindowViewModel>, Initializa
             mnuFilter.getItems().add(menuItem);
         }
 
-        for (final JimixClipboardProviderInstance clipboardProviderInstance : PluginManager.getInstance().getAllClipboardProviders()) {
-            final MenuItem menuItem = new MenuItem(clipboardProviderInstance.getName());
-            if (clipboardProviderInstance.getIcon() != null) {
-                menuItem.setGraphic(new ImageView(clipboardProviderInstance.getIcon()));
-            }
-            menuItem.setUserData(clipboardProviderInstance);
-            menuItem.setOnAction(this::onActionPasteFromClipboard);
-            Toolkit.getDefaultToolkit().getSystemClipboard().addFlavorListener(e -> Platform.runLater(() -> {
-                final boolean accept = clipboardProviderInstance.acceptClipboardContent(Clipboard.getSystemClipboard());
-                LOGGER.debug("Clipboard content has changed, accept from " + clipboardProviderInstance.getIdentifier() + ": " + accept);
+        for (final JimixClipboardProviderPlugin clipboardProviderPlugin : PluginManager.getInstance().getAllClipboardProviders()) {
+            try {
+                final JimixClipboardProviderInstance clipboardProviderInstance = clipboardProviderPlugin.createInstance();
 
-                menuItem.setVisible(accept);
-            }));
-            menuItem.setVisible(clipboardProviderInstance.acceptClipboardContent(Clipboard.getSystemClipboard()));
-            mnuPaste.getItems().add(menuItem);
+                final MenuItem menuItem = new MenuItem(clipboardProviderPlugin.getName());
+                if (clipboardProviderPlugin.getIcon() != null) {
+                    menuItem.setGraphic(new ImageView(clipboardProviderPlugin.getIcon()));
+                }
+                menuItem.setUserData(clipboardProviderInstance);
+                menuItem.setOnAction(this::onActionPasteFromClipboard);
+                Toolkit.getDefaultToolkit().getSystemClipboard().addFlavorListener(e -> Platform.runLater(() -> {
+                    final boolean accept = clipboardProviderInstance.acceptClipboardContent(Clipboard.getSystemClipboard());
+                    LOGGER.debug("Clipboard content has changed, accept from " + clipboardProviderPlugin.getIdentifier() + ": " + accept);
+
+                    menuItem.setVisible(accept);
+                }));
+                menuItem.setVisible(clipboardProviderInstance.acceptClipboardContent(Clipboard.getSystemClipboard()));
+                mnuPaste.getItems().add(menuItem);
+            } catch (JimixPluginException e) {
+                LOGGER.error("Unable to create instance from clipboard provider " + clipboardProviderPlugin.getIdentifier() + ", skip", e);
+            }
         }
 
         viewModel.getProjectList().addListener((ListChangeListener<JimixProject>) c -> {
@@ -343,9 +348,14 @@ public class MainWindowView implements FxmlView<MainWindowViewModel>, Initializa
         if (tab == null)
             return;
         final PictureEditorPane pictureEditorPane = (PictureEditorPane) tab.getContent();
-        final JimixFilterInstance filterInstance = (JimixFilterInstance) ((MenuItem) actionEvent.getSource()).getUserData();
+        final JimixFilterPlugin filterInstance = (JimixFilterPlugin) ((MenuItem) actionEvent.getSource()).getUserData();
 
-        pictureEditorPane.getSelectedTopLayer().getModel().getFilterList().add(filterInstance.getIdentifier());
+        try {
+            pictureEditorPane.getSelectedTopLayer().getModel().getFilterList().add(filterInstance.createInstance());
+        } catch (JimixPluginException e) {
+            LOGGER.error("Unable to create filter instance " + filterInstance.getIdentifier(), e);
+            new Alert(Alert.AlertType.ERROR, "Unable to create filter instance: " + e.getMessage(), ButtonType.OK).showAndWait();
+        }
     }
 
     private void onActionPasteFromClipboard(ActionEvent actionEvent) {

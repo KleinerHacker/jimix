@@ -3,7 +3,7 @@ package org.pcsoft.app.jimix.app.util;
 import javafx.stage.FileChooser;
 import org.pcsoft.app.jimix.app.language.LanguageResources;
 import org.pcsoft.app.jimix.core.plugin.PluginManager;
-import org.pcsoft.app.jimix.core.plugin.type.JimixFileTypeProviderInstance;
+import org.pcsoft.app.jimix.core.plugin.type.JimixFileTypeProviderPlugin;
 import org.pcsoft.framework.jfex.util.FXChooserUtils;
 
 import java.io.File;
@@ -23,16 +23,16 @@ public final class FileChooserUtils {
     }
 
     private static List<FileChooser.ExtensionFilter> buildExtensionFilter(boolean allowAllFilter) {
-        final JimixFileTypeProviderInstance[] fileTypeProviders = PluginManager.getInstance().getAllFileTypeProviders();
+        final JimixFileTypeProviderPlugin[] fileTypeProviders = PluginManager.getInstance().getAllFileTypeProviders();
         final ArrayList<FileChooser.ExtensionFilter> filters = new ArrayList<>();
 
-        for (final JimixFileTypeProviderInstance fileTypeProvider : fileTypeProviders) {
+        for (final JimixFileTypeProviderPlugin fileTypeProvider : fileTypeProviders) {
             filters.add(new FileChooser.ExtensionFilter(fileTypeProvider.getDescription(), fileTypeProvider.getExtensions()));
         }
 
         if (allowAllFilter) {
             final List<String> extensions = new ArrayList<>();
-            for (final JimixFileTypeProviderInstance fileTypeProvider : fileTypeProviders) {
+            for (final JimixFileTypeProviderPlugin fileTypeProvider : fileTypeProviders) {
                 extensions.addAll(Arrays.asList(fileTypeProvider.getExtensions()));
             }
 

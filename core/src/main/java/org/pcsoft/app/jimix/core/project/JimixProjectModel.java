@@ -11,9 +11,10 @@ import javafx.util.Callback;
 import org.pcsoft.app.jimix.plugins.api.model.JimixModel;
 
 public final class JimixProjectModel implements JimixModel {
+    private final IntegerProperty width = new SimpleIntegerProperty(), height = new SimpleIntegerProperty();
+
     private final ReadOnlyListProperty<JimixLayerModel> layerList =
             new ReadOnlyListWrapper<>(FXCollections.observableArrayList(new JimixLayerObserverCallback())).getReadOnlyProperty();
-    private final IntegerProperty width = new SimpleIntegerProperty(), height = new SimpleIntegerProperty();
 
     JimixProjectModel(final int width, final int height) {
         this.width.set(width);

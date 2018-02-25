@@ -1,16 +1,31 @@
 package org.pcsoft.app.jimix.plugin.impl.base.filter;
 
-import org.pcsoft.app.jimix.plugins.api.config.JimixEffectConfiguration;
+import javafx.beans.Observable;
+import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleIntegerProperty;
+import org.pcsoft.app.jimix.plugins.api.annotation.JimixProperty;
 import org.pcsoft.app.jimix.plugins.api.config.JimixFilterConfiguration;
 
 public class ScrimDiffuserConfiguration implements JimixFilterConfiguration {
-    private int radius = 5;
+    @JimixProperty(fieldType = int.class, name = "Radius", description = "Radius of blur")
+    private final IntegerProperty radius = new SimpleIntegerProperty(5);
 
     public int getRadius() {
+        return radius.get();
+    }
+
+    public IntegerProperty radiusProperty() {
         return radius;
     }
 
     public void setRadius(int radius) {
-        this.radius = radius;
+        this.radius.set(radius);
+    }
+
+    @Override
+    public Observable[] getObservables() {
+        return new Observable[] {
+                radius
+        };
     }
 }

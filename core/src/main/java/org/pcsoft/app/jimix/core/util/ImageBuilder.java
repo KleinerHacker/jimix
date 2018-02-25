@@ -8,13 +8,10 @@ import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
 import org.pcsoft.app.jimix.commons.exception.JimixPluginException;
 import org.pcsoft.app.jimix.commons.exception.JimixPluginExecutionException;
-import org.pcsoft.app.jimix.core.plugin.PluginManager;
 import org.pcsoft.app.jimix.core.plugin.builtin.blender.OverlayBlender;
 import org.pcsoft.app.jimix.core.plugin.builtin.model.JimixImageElementModel;
 import org.pcsoft.app.jimix.core.plugin.builtin.scaler.DefaultScaler;
-import org.pcsoft.app.jimix.core.plugin.type.JimixBlenderInstance;
-import org.pcsoft.app.jimix.core.plugin.type.JimixFilterInstance;
-import org.pcsoft.app.jimix.core.plugin.type.JimixScalerInstance;
+import org.pcsoft.app.jimix.core.plugin.type.*;
 import org.pcsoft.app.jimix.core.project.JimixElement;
 import org.pcsoft.app.jimix.core.project.JimixLayer;
 import org.pcsoft.app.jimix.core.project.JimixProject;
@@ -40,11 +37,11 @@ public final class ImageBuilder {
             if (!layer.getModel().isVisibility())
                 continue;
 
-            JimixBlenderInstance blender = PluginManager.getInstance().getBlender(layer.getModel().getBlender());
+            JimixBlenderInstance blender = layer.getModel().getBlender();
             if (blender == null) {
-                LOGGER.warn("Unable to get blender " + layer.getModel().getBlender() + " for project image building, use default instead");
+                LOGGER.warn("No blender set for layer " + layer.getUuid() + ", use default");
                 try {
-                    blender = new JimixBlenderInstance(new OverlayBlender()); //Default as fallback
+                    blender = new JimixBlenderPlugin(new OverlayBlender()).createInstance(); //Default as fallback
                 } catch (JimixPluginException e) {
                     throw new RuntimeException(e);
                 }
@@ -75,11 +72,11 @@ public final class ImageBuilder {
             final JimixElementModel model = element.getModel();
             if (model instanceof JimixImageElementModel) {
                 final JimixImageElementModel jimixImageElementModel = (JimixImageElementModel) model;
-                JimixScalerInstance scaler = PluginManager.getInstance().getScaler(jimixImageElementModel.getScaler());
+                JimixScalerInstance scaler = jimixImageElementModel.getScaler();
                 if (scaler == null) {
-                    LOGGER.warn("Unable to get scaler " + jimixImageElementModel.getScaler() + " for layer image building, use default instead");
+                    LOGGER.warn("No scaler set for image element " + element.getUuid() + ", use default");
                     try {
-                        scaler = new JimixScalerInstance(new DefaultScaler()); //Default as fallback
+                        scaler = new JimixScalerPlugin(new DefaultScaler()).createInstance(); //Default as fallback
                     } catch (JimixPluginException e) {
                         throw new RuntimeException(e);
                     }
@@ -101,15 +98,9 @@ public final class ImageBuilder {
         canvas.snapshot(snapshotParameters, image);
 
         Image resultImage = image;
-        for (final String filterClassName : layer.getModel().getFilterList()) {
-            final JimixFilterInstance jimixFilterInstance = PluginManager.getInstance().getFilter(filterClassName);
-            if (jimixFilterInstance == null) {
-                LOGGER.warn("Unable to find filter " + filterClassName + ", ignore");
-                continue;
-            }
-
+        for (final JimixFilterInstance filterInstance : layer.getModel().getFilterList()) {
             try {
-                resultImage = jimixFilterInstance.apply(resultImage, JimixSource.Picture);
+                resultImage = filterInstance.apply(resultImage, JimixSource.Picture);
             } catch (JimixPluginExecutionException e) {
                 LOGGER.error("Unable to run filter", e);
             }

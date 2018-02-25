@@ -6,7 +6,7 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleListProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.collections.ObservableList;
-import javafx.scene.control.TreeItem;
+import org.pcsoft.app.jimix.core.plugin.type.JimixFilterInstance;
 import org.pcsoft.app.jimix.core.project.JimixElement;
 import org.pcsoft.app.jimix.core.project.JimixLayer;
 
@@ -16,6 +16,19 @@ public class LayerListViewModel implements ViewModel {
     private final ObjectProperty<JimixLayer> selectedTopLayer = new SimpleObjectProperty<>();
     private final ObjectProperty<JimixLayer> selectedLayer = new SimpleObjectProperty<>();
     private final ObjectProperty<JimixElement> selectedElement = new SimpleObjectProperty<>();
+    private final ObjectProperty<JimixFilterInstance> selectedFilter = new SimpleObjectProperty<>();
+
+    public JimixFilterInstance getSelectedFilter() {
+        return selectedFilter.get();
+    }
+
+    public ObjectProperty<JimixFilterInstance> selectedFilterProperty() {
+        return selectedFilter;
+    }
+
+    public void setSelectedFilter(JimixFilterInstance selectedFilter) {
+        this.selectedFilter.set(selectedFilter);
+    }
 
     public ObservableList<JimixLayer> getLayerList() {
         return layerList.get();

@@ -6,8 +6,12 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.image.Image;
 import javafx.util.Callback;
+import org.pcsoft.app.jimix.commons.exception.JimixPluginException;
 import org.pcsoft.app.jimix.core.plugin.builtin.blender.OverlayBlender;
 import org.pcsoft.app.jimix.core.plugin.builtin.model.JimixImageElementModel;
+import org.pcsoft.app.jimix.core.plugin.type.JimixBlenderInstance;
+import org.pcsoft.app.jimix.core.plugin.type.JimixBlenderPlugin;
+import org.pcsoft.app.jimix.core.plugin.type.JimixFilterInstance;
 import org.pcsoft.app.jimix.plugins.api.annotation.JimixProperty;
 import org.pcsoft.app.jimix.plugins.api.model.JimixElementModel;
 import org.pcsoft.app.jimix.plugins.api.model.JimixModel;
@@ -22,16 +26,23 @@ public final class JimixLayerModel implements JimixModel {
     private final FloatProperty opacity = new SimpleFloatProperty(1f);
     private final BooleanProperty visibility = new SimpleBooleanProperty(true);
     private final ObjectProperty<Image> mask = new SimpleObjectProperty<>();
-    private final StringProperty blender = new SimpleStringProperty(OverlayBlender.class.getName());
+    private final ObjectProperty<JimixBlenderInstance> blender;
+
     private final ReadOnlyListProperty<JimixElementModel> elementList =
             new ReadOnlyListWrapper<>(FXCollections.observableArrayList(new JimixElementObserverCallback())).getReadOnlyProperty();
-    private final ReadOnlyListProperty<String> filterList =
-            new ReadOnlyListWrapper<String>(FXCollections.observableArrayList()).getReadOnlyProperty();
+    private final ReadOnlyListProperty<JimixFilterInstance> filterList =
+            new ReadOnlyListWrapper<JimixFilterInstance>(FXCollections.observableArrayList(param -> param.getConfiguration().getObservables())).getReadOnlyProperty();
 
     public JimixLayerModel() {
+        try {
+            blender = new SimpleObjectProperty<>(new JimixBlenderPlugin(new OverlayBlender()).createInstance());
+        } catch (JimixPluginException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public JimixLayerModel(final Image image) {
+        this();
         elementList.add(new JimixImageElementModel(image));
     }
 
@@ -83,15 +94,15 @@ public final class JimixLayerModel implements JimixModel {
         this.mask.set(mask);
     }
 
-    public String getBlender() {
+    public JimixBlenderInstance getBlender() {
         return blender.get();
     }
 
-    public StringProperty blenderProperty() {
+    public ObjectProperty<JimixBlenderInstance> blenderProperty() {
         return blender;
     }
 
-    public void setBlender(String blender) {
+    public void setBlender(JimixBlenderInstance blender) {
         this.blender.set(blender);
     }
 
@@ -103,11 +114,11 @@ public final class JimixLayerModel implements JimixModel {
         return elementList;
     }
 
-    public ObservableList<String> getFilterList() {
+    public ObservableList<JimixFilterInstance> getFilterList() {
         return filterList.get();
     }
 
-    public ReadOnlyListProperty<String> filterListProperty() {
+    public ReadOnlyListProperty<JimixFilterInstance> filterListProperty() {
         return filterList;
     }
 

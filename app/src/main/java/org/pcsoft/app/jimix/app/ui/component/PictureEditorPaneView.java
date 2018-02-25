@@ -71,6 +71,7 @@ public class PictureEditorPaneView implements FxmlView<PictureEditorPaneViewMode
 
         lstLayer.selectedLayerProperty().addListener((v, o, n) -> refreshProperties());
         lstLayer.selectedElementProperty().addListener((v, o, n) -> refreshProperties());
+        lstLayer.selectedFilterProperty().addListener((v, o, n) -> refreshProperties());
     }
 
     private void refreshTransparentGround() {
@@ -95,6 +96,8 @@ public class PictureEditorPaneView implements FxmlView<PictureEditorPaneViewMode
             PropertyUtils.addProperties(propSheet, lstLayer.getSelectedLayer().getModel());
         } else if (lstLayer.getSelectedElement() != null) {
             PropertyUtils.addProperties(propSheet, lstLayer.getSelectedElement().getModel());
+        } else if (lstLayer.getSelectedFilter() != null) {
+            PropertyUtils.addProperties(propSheet, lstLayer.getSelectedFilter().getConfiguration());
         }
     }
 }

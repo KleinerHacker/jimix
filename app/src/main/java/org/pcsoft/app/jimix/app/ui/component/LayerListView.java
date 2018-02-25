@@ -9,7 +9,6 @@ import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import org.pcsoft.app.jimix.app.item.tree.*;
 import org.pcsoft.app.jimix.app.ui.component.cell.tree.ProjectTreeCell;
-import org.pcsoft.app.jimix.core.plugin.PluginManager;
 import org.pcsoft.app.jimix.core.plugin.type.JimixFilterInstance;
 import org.pcsoft.app.jimix.core.project.JimixElement;
 import org.pcsoft.app.jimix.core.project.JimixLayer;
@@ -43,6 +42,7 @@ public class LayerListView implements FxmlView<LayerListViewModel>, Initializabl
             viewModel.setSelectedLayer(null);
             viewModel.setSelectedElement(null);
             viewModel.setSelectedTopLayer(null);
+            viewModel.setSelectedFilter(null);
 
             if (n == null)
                 return;
@@ -51,6 +51,8 @@ public class LayerListView implements FxmlView<LayerListViewModel>, Initializabl
                 viewModel.setSelectedLayer(((LayerTreeItem) n).getLayer());
             } else if (n instanceof ElementTreeItem) {
                 viewModel.setSelectedElement(((ElementTreeItem) n).getElement());
+            } else if (n instanceof FilterTreeItem) {
+                viewModel.setSelectedFilter(((FilterTreeItem) n).getInstance());
             }
 
             //Find top layer
@@ -92,14 +94,8 @@ public class LayerListView implements FxmlView<LayerListViewModel>, Initializabl
 
                 //2. Processing
                 final FilterRootTreeItem filterRootTreeItem = new FilterRootTreeItem();
-                for (final String filterClassName : layer.getModel().getFilterList()) {
-                    JimixFilterInstance instance = PluginManager.getInstance().getFilter(filterClassName);
-                    if (instance == null) {
-                        LOGGER.warn("Unable to find filter " + filterClassName + ", ignore");
-                        continue;
-                    }
-
-                    final FilterTreeItem filterTreeItem = new FilterTreeItem(instance);
+                for (final JimixFilterInstance filterInstance : layer.getModel().getFilterList()) {
+                    final FilterTreeItem filterTreeItem = new FilterTreeItem(filterInstance);
                     filterRootTreeItem.getChildren().add(filterTreeItem);
                 }
                 layerTreeItem.getChildren().add(filterRootTreeItem);

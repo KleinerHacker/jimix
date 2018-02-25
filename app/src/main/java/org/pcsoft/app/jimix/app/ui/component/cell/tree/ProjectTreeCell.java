@@ -29,8 +29,8 @@ public class ProjectTreeCell extends TreeCell<Object> {
             } else if (getTreeItem() instanceof ElementRootTreeItem) {
                 setText("Elements");
             } else if (getTreeItem() instanceof FilterTreeItem && item instanceof JimixFilterInstance) {
-                setText(((JimixFilterInstance) item).getName());//TODO
-                setGraphic(new ImageView(((JimixFilterInstance) item).getIcon()));
+                setText(((JimixFilterInstance) item).getPlugin().getName());//TODO
+                setGraphic(new ImageView(((JimixFilterInstance) item).getPlugin().getIcon()));
             } else if (getTreeItem() instanceof FilterRootTreeItem) {
                 setText("Filters");
             }

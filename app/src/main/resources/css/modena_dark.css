@@ -29,6 +29,10 @@
     -fx-selection-bar-non-focused: rgb(50, 50, 50);
 }
 
+.tool-button {
+    -fx-text-fill: -fx-light-text-color;
+}
+
 /* Fix derived prompt color for text fields */
 .text-input {
     -fx-prompt-text-fill: derive(-fx-control-inner-background, +50%);

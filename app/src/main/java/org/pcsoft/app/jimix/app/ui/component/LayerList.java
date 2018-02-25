@@ -7,6 +7,7 @@ import javafx.beans.property.ObjectProperty;
 import javafx.collections.ObservableList;
 import javafx.scene.layout.HBox;
 import org.pcsoft.app.jimix.app.language.LanguageResources;
+import org.pcsoft.app.jimix.core.plugin.type.JimixFilterInstance;
 import org.pcsoft.app.jimix.core.project.JimixElement;
 import org.pcsoft.app.jimix.core.project.JimixLayer;
 
@@ -19,6 +20,18 @@ public class LayerList extends HBox {
                 FluentViewLoader.fxmlView(LayerListView.class).resourceBundle(LanguageResources.getBundle()).root(this).load();
         controller = viewTuple.getCodeBehind();
         viewModel = viewTuple.getViewModel();
+    }
+
+    public JimixFilterInstance getSelectedFilter() {
+        return viewModel.getSelectedFilter();
+    }
+
+    public ObjectProperty<JimixFilterInstance> selectedFilterProperty() {
+        return viewModel.selectedFilterProperty();
+    }
+
+    public void setSelectedFilter(JimixFilterInstance selectedFilter) {
+        viewModel.setSelectedFilter(selectedFilter);
     }
 
     public ObservableList<JimixLayer> getLayerList() {
