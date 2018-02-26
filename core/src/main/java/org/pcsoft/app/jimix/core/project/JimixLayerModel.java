@@ -13,6 +13,7 @@ import org.pcsoft.app.jimix.core.plugin.type.JimixBlenderInstance;
 import org.pcsoft.app.jimix.core.plugin.type.JimixBlenderPlugin;
 import org.pcsoft.app.jimix.core.plugin.type.JimixFilterInstance;
 import org.pcsoft.app.jimix.plugins.api.annotation.JimixProperty;
+import org.pcsoft.app.jimix.plugins.api.annotation.JimixPropertyDoubleRestriction;
 import org.pcsoft.app.jimix.plugins.api.model.JimixElementModel;
 import org.pcsoft.app.jimix.plugins.api.model.JimixModel;
 
@@ -22,8 +23,9 @@ import java.util.List;
 public final class JimixLayerModel implements JimixModel {
     @JimixProperty(fieldType = String.class, name = "Name", description = "Name of layer", category = "Default")
     private final StringProperty name = new SimpleStringProperty("Layer");
-    @JimixProperty(fieldType = Float.class, name = "Opacity", description = "Opacity of layer", category = "View")
-    private final FloatProperty opacity = new SimpleFloatProperty(1f);
+    @JimixProperty(fieldType = Double.class, name = "Opacity", description = "Opacity of layer", category = "View")
+    @JimixPropertyDoubleRestriction(minValue = 0d, maxValue = 1d)
+    private final DoubleProperty opacity = new SimpleDoubleProperty(1d);
     private final BooleanProperty visibility = new SimpleBooleanProperty(true);
     private final ObjectProperty<Image> mask = new SimpleObjectProperty<>();
     private final ObjectProperty<JimixBlenderInstance> blender;
@@ -58,15 +60,15 @@ public final class JimixLayerModel implements JimixModel {
         this.name.set(name);
     }
 
-    public float getOpacity() {
+    public double getOpacity() {
         return opacity.get();
     }
 
-    public FloatProperty opacityProperty() {
+    public DoubleProperty opacityProperty() {
         return opacity;
     }
 
-    public void setOpacity(float opacity) {
+    public void setOpacity(double opacity) {
         this.opacity.set(opacity);
     }
 

@@ -7,7 +7,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Label;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.image.ImageView;
-import org.pcsoft.app.jimix.app.ex.InvertBooleanProperty;
+import org.pcsoft.framework.jfex.property.InvertBooleanProperty;
 
 import java.net.URL;
 import java.util.ResourceBundle;

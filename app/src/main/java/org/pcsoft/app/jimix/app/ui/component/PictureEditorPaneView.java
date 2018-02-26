@@ -10,6 +10,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import org.controlsfx.control.PropertySheet;
+import org.pcsoft.app.jimix.app.type.PropertySheetCallback;
 import org.pcsoft.app.jimix.app.util.PropertyUtils;
 import org.pcsoft.framework.jfex.toolbox.ToolBox;
 
@@ -72,6 +73,8 @@ public class PictureEditorPaneView implements FxmlView<PictureEditorPaneViewMode
         lstLayer.selectedLayerProperty().addListener((v, o, n) -> refreshProperties());
         lstLayer.selectedElementProperty().addListener((v, o, n) -> refreshProperties());
         lstLayer.selectedFilterProperty().addListener((v, o, n) -> refreshProperties());
+
+        propSheet.setPropertyEditorFactory(new PropertySheetCallback(propSheet.getPropertyEditorFactory()));
     }
 
     private void refreshTransparentGround() {

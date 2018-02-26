@@ -10,7 +10,6 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -29,7 +28,10 @@ import org.pcsoft.app.jimix.app.ui.splash.JimixSplash;
 import org.pcsoft.app.jimix.app.util.FileChooserUtils;
 import org.pcsoft.app.jimix.commons.exception.JimixPluginException;
 import org.pcsoft.app.jimix.core.plugin.PluginManager;
-import org.pcsoft.app.jimix.core.plugin.type.*;
+import org.pcsoft.app.jimix.core.plugin.type.JimixClipboardProviderInstance;
+import org.pcsoft.app.jimix.core.plugin.type.JimixClipboardProviderPlugin;
+import org.pcsoft.app.jimix.core.plugin.type.JimixFileTypeProviderInstance;
+import org.pcsoft.app.jimix.core.plugin.type.JimixFilterPlugin;
 import org.pcsoft.app.jimix.core.project.JimixProject;
 import org.pcsoft.app.jimix.core.project.ProjectManager;
 import org.pcsoft.app.jimix.core.tooling.RecentFileManager;
@@ -138,7 +140,7 @@ public class MainWindowView implements FxmlView<MainWindowViewModel>, Initializa
     @FXML
     private Button btnCopy;
     @FXML
-    private Button btnDefaultPaste;
+    private MenuButton btnPaste;
     //</editor-fold>
 
     @InjectViewModel
@@ -162,10 +164,11 @@ public class MainWindowView implements FxmlView<MainWindowViewModel>, Initializa
         btnRedo.disableProperty().bind(miRedo.disableProperty().or(mnuEdit.disableProperty()));
         btnCut.disableProperty().bind(miCut.disableProperty().or(mnuEdit.disableProperty()));
         btnCopy.disableProperty().bind(miCopy.disableProperty().or(mnuEdit.disableProperty()));
-        btnDefaultPaste.disableProperty().bind(mnuPaste.disableProperty().or(mnuEdit.disableProperty()));
+        btnPaste.disableProperty().bind(mnuPaste.disableProperty().or(mnuEdit.disableProperty()));
+        Bindings.bindContent(btnPaste.getItems(), mnuPaste.getItems());
 
         refreshRecentMenu();
-        RecentFileManager.getInstance().addListener((ListChangeListener<File>) c -> refreshRecentMenu());
+        RecentFileManager.getInstance().addListener(c -> refreshRecentMenu());
 
         for (final JimixFilterPlugin filterInstance : PluginManager.getInstance().getAllFilters()) {
             final MenuItem menuItem = new MenuItem(filterInstance.getName());
@@ -412,20 +415,6 @@ public class MainWindowView implements FxmlView<MainWindowViewModel>, Initializa
     @FXML
     private void onActionCopy(ActionEvent actionEvent) {
 
-    }
-
-    @FXML
-    private void onActionDefaultPaste(ActionEvent actionEvent) {
-        if (mnuPaste.getItems().isEmpty())
-            return;
-
-        final MenuItem defaultMenuItem = mnuPaste.getItems().stream()
-                .filter(MenuItem::isVisible)
-                .findFirst().orElse(null);
-        if (defaultMenuItem == null)
-            return;
-
-        defaultMenuItem.getOnAction().handle(new ActionEvent(defaultMenuItem, Event.NULL_SOURCE_TARGET));
     }
 
     private void onActionOpenRecent(ActionEvent actionEvent) {

@@ -6,7 +6,8 @@ public final class LanguageResources {
     private static final ResourceBundle BUNDLE = new MultipleResourceBundle(
             ResourceBundle.getBundle("language/app"),
             ResourceBundle.getBundle("language/view"),
-            ResourceBundle.getBundle("language/dialog")
+            ResourceBundle.getBundle("language/dialog"),
+            ResourceBundle.getBundle("language/common")
     );
 
     public static ResourceBundle getBundle() {

@@ -4,10 +4,12 @@ import javafx.beans.Observable;
 import javafx.beans.property.*;
 import org.apache.commons.lang.ArrayUtils;
 import org.pcsoft.app.jimix.plugins.api.annotation.JimixProperty;
+import org.pcsoft.app.jimix.plugins.api.annotation.JimixPropertyDoubleRestriction;
 
 public abstract class JimixElementModel implements JimixModel {
-    @JimixProperty(fieldType = Float.class, name = "Opacity", description = "Opacity of element", category = "View")
-    private final FloatProperty opacity = new SimpleFloatProperty(1f);
+    @JimixProperty(fieldType = Double.class, name = "Opacity", description = "Opacity of element", category = "View")
+    @JimixPropertyDoubleRestriction(minValue = 0d, maxValue = 1d)
+    private final DoubleProperty opacity = new SimpleDoubleProperty(1d);
     @JimixProperty(fieldType = Integer.class, name = "X", description = "Left position of element", category = "Alignment")
     private final IntegerProperty x = new SimpleIntegerProperty(0);
     @JimixProperty(fieldType = Integer.class, name = "Y", description = "Top position of element", category = "Alignment")
@@ -66,15 +68,15 @@ public abstract class JimixElementModel implements JimixModel {
         this.height.set(height);
     }
 
-    public float getOpacity() {
+    public double getOpacity() {
         return opacity.get();
     }
 
-    public FloatProperty opacityProperty() {
+    public DoubleProperty opacityProperty() {
         return opacity;
     }
 
-    public void setOpacity(float opacity) {
+    public void setOpacity(double opacity) {
         this.opacity.set(opacity);
     }
 
