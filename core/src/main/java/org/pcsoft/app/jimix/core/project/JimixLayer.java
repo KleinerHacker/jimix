@@ -11,6 +11,7 @@ import javafx.collections.ObservableMap;
 import javafx.scene.image.Image;
 import javafx.util.Callback;
 import org.pcsoft.app.jimix.core.util.ImageBuilder;
+import org.pcsoft.app.jimix.plugins.api.model.JimixElementModel;
 
 import java.util.*;
 
@@ -32,6 +33,12 @@ public final class JimixLayer {
     public JimixLayer(final JimixProject project, final JimixLayerModel model) {
         this.project = new ReadOnlyObjectWrapper<>(project).getReadOnlyProperty();
         this.model = new ReadOnlyObjectWrapper<>(model).getReadOnlyProperty();
+
+        for (final JimixElementModel elementModel : model.getElementList()) {
+            final JimixElement element = new JimixElement(project, this, elementModel);
+            elementMap.put(element.getUuid(), element);
+        }
+
         //List Updater
         elementMap.addListener((MapChangeListener<UUID, JimixElement>) c -> {
             if (c.wasAdded()) {
@@ -101,6 +108,7 @@ public final class JimixLayer {
         return resultImage;
     }
 
+    //<editor-fold desc="Equals / Hashcode / String">
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -118,6 +126,7 @@ public final class JimixLayer {
     public String toString() {
         return model.get().toString();
     }
+    //</editor-fold>
 
     //<editor-fold desc="Helper Classes">
     private static final class JimixElementObserverCallback implements Callback<JimixElement, Observable[]> {

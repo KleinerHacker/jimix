@@ -10,6 +10,7 @@ import java.lang.annotation.*;
 public @interface JimixRendererDescriptor {
     String name();
     String description();
+    String group() default "";
     String resourceBundle() default "";
     String iconPath() default "";
 

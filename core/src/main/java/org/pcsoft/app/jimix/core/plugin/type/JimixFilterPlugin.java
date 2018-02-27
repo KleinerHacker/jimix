@@ -105,6 +105,15 @@ public final class JimixFilterPlugin implements JimixPlugin<JimixFilterInstance>
         return descriptor.description();
     }
 
+    public String getGroup() {
+        if (StringUtils.isEmpty(descriptor.group()))
+            return null;
+        if (resourceBundle != null)
+            return resourceBundle.getString(descriptor.group());
+
+        return descriptor.group();
+    }
+
     public Image getIcon() {
         return icon;
     }

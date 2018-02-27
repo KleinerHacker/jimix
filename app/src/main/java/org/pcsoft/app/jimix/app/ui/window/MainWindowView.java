@@ -24,6 +24,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import org.apache.commons.io.FilenameUtils;
 import org.pcsoft.app.jimix.app.ui.component.PictureEditorPane;
+import org.pcsoft.app.jimix.app.ui.dialog.FilterManagerDialog;
 import org.pcsoft.app.jimix.app.ui.splash.JimixSplash;
 import org.pcsoft.app.jimix.app.util.FileChooserUtils;
 import org.pcsoft.app.jimix.commons.exception.JimixPluginException;
@@ -47,9 +48,8 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.Collections;
+import java.util.*;
 import java.util.List;
-import java.util.ResourceBundle;
 
 public class MainWindowView implements FxmlView<MainWindowViewModel>, Initializable {
     private static final Logger LOGGER = LoggerFactory.getLogger(MainWindowView.class);
@@ -170,16 +170,28 @@ public class MainWindowView implements FxmlView<MainWindowViewModel>, Initializa
         refreshRecentMenu();
         RecentFileManager.getInstance().addListener(c -> refreshRecentMenu());
 
-        for (final JimixFilterPlugin filterInstance : PluginManager.getInstance().getAllFilters()) {
-            final MenuItem menuItem = new MenuItem(filterInstance.getName());
-            if (filterInstance.getIcon() != null) {
-                menuItem.setGraphic(new ImageView(filterInstance.getIcon()));
-            }
-            menuItem.setUserData(filterInstance);
-            menuItem.setOnAction(this::onActionPictureFilter);
-            mnuFilter.getItems().add(menuItem);
-        }
+        buildFilterMenu();
+        buildPasteMenu();
 
+        viewModel.getProjectList().addListener((ListChangeListener<JimixProject>) c -> {
+            while (c.next()) {
+                if (c.wasAdded()) {
+                    for (final JimixProject jimixProject : c.getAddedSubList()) {
+                        LOGGER.debug("Add project " + jimixProject.getUuid());
+                        createTabForProject(jimixProject);
+                    }
+                }
+                if (c.wasRemoved()) {
+                    for (final JimixProject jimixProject : c.getRemoved()) {
+                        LOGGER.debug("Remove project " + jimixProject.getUuid());
+                        removeTabForProject(jimixProject);
+                    }
+                }
+            }
+        });
+    }
+
+    private void buildPasteMenu() {
         for (final JimixClipboardProviderPlugin clipboardProviderPlugin : PluginManager.getInstance().getAllClipboardProviders()) {
             try {
                 final JimixClipboardProviderInstance clipboardProviderInstance = clipboardProviderPlugin.createInstance();
@@ -202,23 +214,30 @@ public class MainWindowView implements FxmlView<MainWindowViewModel>, Initializa
                 LOGGER.error("Unable to create instance from clipboard provider " + clipboardProviderPlugin.getIdentifier() + ", skip", e);
             }
         }
+    }
 
-        viewModel.getProjectList().addListener((ListChangeListener<JimixProject>) c -> {
-            while (c.next()) {
-                if (c.wasAdded()) {
-                    for (final JimixProject jimixProject : c.getAddedSubList()) {
-                        LOGGER.debug("Add project " + jimixProject.getUuid());
-                        createTabForProject(jimixProject);
-                    }
-                }
-                if (c.wasRemoved()) {
-                    for (final JimixProject jimixProject : c.getRemoved()) {
-                        LOGGER.debug("Remove project " + jimixProject.getUuid());
-                        removeTabForProject(jimixProject);
-                    }
-                }
+    private void buildFilterMenu() {
+        final Map<String, Menu> menuMap = new HashMap<>();
+
+        for (final JimixFilterPlugin filterInstance : PluginManager.getInstance().getAllFilters()) {
+            final MenuItem menuItem = new MenuItem(filterInstance.getName());
+            if (filterInstance.getIcon() != null) {
+                menuItem.setGraphic(new ImageView(filterInstance.getIcon()));
             }
-        });
+            menuItem.setUserData(filterInstance);
+            menuItem.setOnAction(this::onActionPictureFilter);
+
+            if (filterInstance.getGroup() == null) {
+                mnuFilter.getItems().add(menuItem);
+            } else {
+                if (!menuMap.containsKey(filterInstance.getGroup())) {
+                    final Menu menu = new Menu(filterInstance.getGroup());
+                    menuMap.put(filterInstance.getGroup(), menu);
+                    mnuFilter.getItems().add(menu);
+                }
+                menuMap.get(filterInstance.getGroup()).getItems().add(menuItem);
+            }
+        }
     }
 
     private void refreshRecentMenu() {
@@ -231,6 +250,7 @@ public class MainWindowView implements FxmlView<MainWindowViewModel>, Initializa
         }
     }
 
+    //<editor-fold desc="Tab Handling">
     private void createTabForProject(final JimixProject project) {
         final Tab tab = new Tab();
         tab.setUserData(project);
@@ -261,6 +281,7 @@ public class MainWindowView implements FxmlView<MainWindowViewModel>, Initializa
 
         tabPicture.getTabs().remove(tabToRemove);
     }
+    //</editor-fold>
 
     //<editor-fold desc="Menu Action">
     @FXML
@@ -338,7 +359,18 @@ public class MainWindowView implements FxmlView<MainWindowViewModel>, Initializa
 
     @FXML
     private void onActionFilterManager(ActionEvent actionEvent) {
+        final Tab tab = tabPicture.getSelectionModel().getSelectedItem();
+        if (tab == null)
+            return;
+        final PictureEditorPane pictureEditorPane = (PictureEditorPane) tab.getContent();
+        if (pictureEditorPane.getSelectedTopLayer() == null)
+            return;
+        final Image image = pictureEditorPane.getProject().getResultImage();
 
+        final Optional<FilterManagerDialog.Result> result = new FilterManagerDialog(pnlRoot.getScene().getWindow(), image).showAndWait();
+        if (result.isPresent()) {
+            pictureEditorPane.getSelectedTopLayer().getModel().getFilterList().add(result.get().getInstance());
+        }
     }
 
     @FXML
@@ -425,6 +457,7 @@ public class MainWindowView implements FxmlView<MainWindowViewModel>, Initializa
 
     //</editor-fold>
 
+    //<editor-fold desc="Open / Save Picture">
     private void savePicture(JimixProject project, File file) {
         pbProgress.setVisible(true);
         lblProgress.setText("Save to file...");
@@ -485,6 +518,7 @@ public class MainWindowView implements FxmlView<MainWindowViewModel>, Initializa
             }
         });
     }
+    //</editor-fold>
 
     //<editor-fold desc="Local Helper Properties">
     private final class TopLayerBooleanProperty extends ExtendedWrapperProperty<Boolean> {

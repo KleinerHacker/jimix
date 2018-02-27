@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<?import org.pcsoft.framework.jfex.data.ListViewEx?>
+<?import javafx.scene.image.ImageView?>
+<?import org.controlsfx.control.PropertySheet?>
+<SplitPane xmlns="http://javafx.com/javafx"
+           xmlns:fx="http://javafx.com/fxml"
+           fx:controller="org.pcsoft.app.jimix.app.ui.dialog.FilterManagerDialogView"
+           prefHeight="500.0" prefWidth="800.0">
+    <ListViewEx fx:id="lstFilter" minWidth="150"/>
+    <VBox alignment="CENTER">
+        <ImageView fx:id="imgPreview" fitWidth="500" fitHeight="300"/>
+        <PropertySheet fx:id="propSheet" maxHeight="1.7976931348623157E308" VBox.vgrow="ALWAYS"/>
+    </VBox>
+</SplitPane>

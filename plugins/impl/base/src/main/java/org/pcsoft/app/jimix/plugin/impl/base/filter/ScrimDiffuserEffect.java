@@ -8,8 +8,8 @@ import org.pcsoft.app.jimix.plugins.api.type.JimixSource;
 
 import java.awt.*;
 
-@JimixFilterDescriptor(name = "plugin.filter.scrim_diffuser.title", description = "plugin.filter.scrim_diffuser.description", resourceBundle = "base.language.plugin",
-        usableForMasks = true, configurationClass = ScrimDiffuserConfiguration.class)
+@JimixFilterDescriptor(name = "plugin.filter.scrim_diffuser.title", description = "plugin.filter.scrim_diffuser.description", group = "plugin.filter.group.diffuser",
+        resourceBundle = "base.language.plugin", usableForMasks = true, configurationClass = ScrimDiffuserConfiguration.class)
 public class ScrimDiffuserEffect extends JimixFilterBase<ScrimDiffuserConfiguration> {
     @Override
     protected void apply(JimixPixelReader pixelReader, JimixPixelWriter pixelWriter, ScrimDiffuserConfiguration configuration, JimixSource source) {

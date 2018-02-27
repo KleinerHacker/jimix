@@ -11,6 +11,7 @@ import java.lang.annotation.*;
 public @interface JimixFilterDescriptor {
     String name();
     String description();
+    String group() default "";
     String iconPath() default "";
     String resourceBundle() default "";
     JimixFilterType type() default JimixFilterType.ColorFilter;

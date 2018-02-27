@@ -32,6 +32,12 @@ public final class JimixProject {
 
     JimixProject(final JimixProjectModel model) {
         this.model = new ReadOnlyObjectWrapper<>(model).getReadOnlyProperty();
+
+        for (final JimixLayerModel layerModel : model.getLayerList()) {
+            final JimixLayer layer = new JimixLayer(this, layerModel);
+            layerMap.put(layer.getUuid(), layer);
+        }
+
         //List Updater
         layerMap.addListener((MapChangeListener<UUID, JimixLayer>) c -> {
             if (c.wasAdded()) {
