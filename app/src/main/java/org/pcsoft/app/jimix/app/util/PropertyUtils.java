@@ -6,7 +6,7 @@ import org.apache.commons.lang.StringUtils;
 import org.controlsfx.control.PropertySheet;
 import org.controlsfx.property.editor.AbstractPropertyEditor;
 import org.pcsoft.app.jimix.app.language.LanguageResources;
-import org.pcsoft.app.jimix.app.type.PropertySheetCallback;
+import org.pcsoft.app.jimix.app.ui.component.prop_sheet.JimixPropertySheet;
 import org.pcsoft.app.jimix.plugins.api.annotation.JimixProperty;
 import org.pcsoft.app.jimix.plugins.api.annotation.JimixPropertyDoubleRestriction;
 import org.pcsoft.app.jimix.plugins.api.annotation.JimixPropertyIntegerRestriction;
@@ -18,7 +18,7 @@ import java.lang.reflect.Field;
 import java.util.ResourceBundle;
 
 public final class PropertyUtils {
-    public static void addProperties(final PropertySheet propertySheet, final Object model) {
+    public static void addProperties(final JimixPropertySheet propertySheet, final Object model) {
         Class clazz = model.getClass();
         while (clazz != null) {
             for (final Field field : clazz.getDeclaredFields()) {
@@ -56,14 +56,14 @@ public final class PropertyUtils {
     }
 
     //<editor-fold desc="Restriction Methods">
-    private static void buildIntegerRestriction(final PropertySheet propertySheet, final PropertySheet.Item sheetItem, final JimixPropertyIntegerRestriction restriction) {
+    private static void buildIntegerRestriction(final JimixPropertySheet propertySheet, final PropertySheet.Item sheetItem, final JimixPropertyIntegerRestriction restriction) {
         final Slider slider = new Slider();
         slider.setMin(restriction.minValue());
         slider.setMax(restriction.maxValue());
-        slider.setValue((int)sheetItem.getValue());
+        slider.setValue((int) sheetItem.getValue());
 
-        ((PropertySheetCallback) propertySheet.getPropertyEditorFactory()).getEditorMap().put(
-                sheetItem, new AbstractPropertyEditor<Number, Slider>(sheetItem, slider) {
+        propertySheet.addItemSupport(
+                sheetItem, item -> new AbstractPropertyEditor<Number, Slider>(item, slider) {
                     @Override
                     protected ObservableValue<Number> getObservableValue() {
                         return new SimpleWrapperProperty<Number, Number>(getEditor().valueProperty()) {
@@ -87,14 +87,14 @@ public final class PropertyUtils {
         );
     }
 
-    private static void buildDoubleRestriction(final PropertySheet propertySheet, final PropertySheet.Item sheetItem, final JimixPropertyDoubleRestriction restriction) {
+    private static void buildDoubleRestriction(final JimixPropertySheet propertySheet, final PropertySheet.Item sheetItem, final JimixPropertyDoubleRestriction restriction) {
         final Slider slider = new Slider();
         slider.setMin(restriction.minValue());
         slider.setMax(restriction.maxValue());
-        slider.setValue((double)sheetItem.getValue());
+        slider.setValue((double) sheetItem.getValue());
 
-        ((PropertySheetCallback) propertySheet.getPropertyEditorFactory()).getEditorMap().put(
-                sheetItem, new AbstractPropertyEditor<Number, Slider>(sheetItem, slider) {
+        propertySheet.addItemSupport(
+                sheetItem, item -> new AbstractPropertyEditor<Number, Slider>(item, slider) {
                     @Override
                     protected ObservableValue<Number> getObservableValue() {
                         return getEditor().valueProperty();

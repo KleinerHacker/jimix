@@ -6,6 +6,8 @@ import org.apache.commons.lang.ArrayUtils;
 import org.pcsoft.app.jimix.plugins.api.annotation.JimixProperty;
 import org.pcsoft.app.jimix.plugins.api.annotation.JimixPropertyDoubleRestriction;
 
+import java.awt.*;
+
 public abstract class JimixElementModel implements JimixModel {
     @JimixProperty(fieldType = Double.class, name = "Opacity", description = "Opacity of element", category = "View")
     @JimixPropertyDoubleRestriction(minValue = 0d, maxValue = 1d)
@@ -14,11 +16,21 @@ public abstract class JimixElementModel implements JimixModel {
     private final IntegerProperty x = new SimpleIntegerProperty(0);
     @JimixProperty(fieldType = Integer.class, name = "Y", description = "Top position of element", category = "Alignment")
     private final IntegerProperty y = new SimpleIntegerProperty(0);
-    @JimixProperty(fieldType = Integer.class, name = "Width", description = "Width of element", category = "Alignment")
-    private final IntegerProperty width = new SimpleIntegerProperty();
-    @JimixProperty(fieldType = Integer.class, name = "Height", description = "Height of element", category = "Alignment")
-    private final IntegerProperty height = new SimpleIntegerProperty();
+    @JimixProperty(fieldType = Dimension.class, name = "Size", description = "Size of element", category = "Alignment")
+    private final ObjectProperty<Dimension> dimension = new SimpleObjectProperty<>(new Dimension());
     private final BooleanProperty visibility = new SimpleBooleanProperty(true);
+
+    public Dimension getDimension() {
+        return dimension.get();
+    }
+
+    public ObjectProperty<Dimension> dimensionProperty() {
+        return dimension;
+    }
+
+    public void setDimension(Dimension dimension) {
+        this.dimension.set(dimension);
+    }
 
     public int getX() {
         return x.get();
@@ -42,30 +54,6 @@ public abstract class JimixElementModel implements JimixModel {
 
     public void setY(int y) {
         this.y.set(y);
-    }
-
-    public int getWidth() {
-        return width.get();
-    }
-
-    public IntegerProperty widthProperty() {
-        return width;
-    }
-
-    public void setWidth(int width) {
-        this.width.set(width);
-    }
-
-    public int getHeight() {
-        return height.get();
-    }
-
-    public IntegerProperty heightProperty() {
-        return height;
-    }
-
-    public void setHeight(int height) {
-        this.height.set(height);
     }
 
     public double getOpacity() {
@@ -92,10 +80,18 @@ public abstract class JimixElementModel implements JimixModel {
         this.visibility.set(visibility);
     }
 
+    public int getWidth() {
+        return dimension.get().width;
+    }
+
+    public int getHeight() {
+        return dimension.get().height;
+    }
+
     @Override
     public final Observable[] getObservableValues() {
         return (Observable[]) ArrayUtils.addAll(new Observable[] {
-                opacity, x, y, width, height, visibility
+                opacity, x, y, dimension, visibility
         }, _getObservableValues());
     }
 

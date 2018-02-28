@@ -1,16 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.canvas.Canvas?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.StackPane?>
-<?import org.pcsoft.app.jimix.app.ui.component.LayerList?>
-<?import javafx.scene.control.Label?>
 <?import javafx.scene.layout.VBox?>
-<?import org.pcsoft.framework.jfex.toolbox.ToolBox?>
-<?import org.pcsoft.framework.jfex.toolbox.ToolBoxDescriptor?>
-<?import org.controlsfx.control.PropertySheet?>
+<?import org.pcsoft.app.jimix.app.ui.component.LayerList?>
+<?import org.pcsoft.app.jimix.app.ui.component.prop_sheet.JimixPropertySheet?>
+<?import org.pcsoft.framework.jfex.toolbox.*?>
 <fx:root type="BorderPane" xmlns="http://javafx.com/javafx"
          xmlns:fx="http://javafx.com/fxml"
          fx:controller="org.pcsoft.app.jimix.app.ui.component.PictureEditorPaneView">
@@ -19,12 +18,12 @@
             <items>
                 <ToolBoxDescriptor title="Levels">
                     <content>
-                        <LayerList fx:id="lstLayer" prefWidth="300"/>
+                        <LayerList fx:id="lstLayer" prefWidth="315"/>
                     </content>
                 </ToolBoxDescriptor>
                 <ToolBoxDescriptor title="Properties">
                     <content>
-                        <PropertySheet fx:id="propSheet" mode="CATEGORY"/>
+                        <JimixPropertySheet fx:id="propSheet" mode="CATEGORY" prefWidth="315"/>
                     </content>
                 </ToolBoxDescriptor>
             </items>

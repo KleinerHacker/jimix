@@ -1,5 +1,7 @@
 package org.pcsoft.app.jimix.app.language;
 
+import org.pcsoft.framework.jfex.type.MultipleResourceBundle;
+
 import java.util.ResourceBundle;
 
 public final class LanguageResources {

@@ -39,7 +39,7 @@ public class App extends MvvmfxCdiApplication {
             } else {
                 fileToOpen = new File(arg);
             }
-        }
+        }        
         pluginPathList.add(JimixConstants.DEFAULT_PLUGIN_PATH);
 
         LOGGER.info("Load plugins...");

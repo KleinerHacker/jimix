@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+<fx:root hgap="5.0" type="GridPane" vgap="2.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1"
+         fx:controller="org.pcsoft.app.jimix.app.ui.component.prop_sheet.editor.cell.DimensionEditorPaneView"
+         stylesheets="@/css/default.css">
+    <rowConstraints>
+        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity"/>
+        <RowConstraints maxHeight="-Infinity" minHeight="-Infinity"/>
+    </rowConstraints>
+    <columnConstraints>
+        <ColumnConstraints hgrow="ALWAYS" maxWidth="1.7976931348623157E308"/>
+        <ColumnConstraints maxWidth="-Infinity" minWidth="-Infinity"/>
+    </columnConstraints>
+    <TextField fx:id="txtWidth" promptText="Width"/>
+    <TextField fx:id="txtHeight" promptText="Height" GridPane.rowIndex="1"/>
+    <ToggleButton fx:id="btnProportional" mnemonicParsing="false" selected="true" styleClass="button-flat" GridPane.columnIndex="1" GridPane.rowSpan="2">
+        <graphic>
+            <ImageView fx:id="imgProportional"/>
+        </graphic>
+    </ToggleButton>
+</fx:root>

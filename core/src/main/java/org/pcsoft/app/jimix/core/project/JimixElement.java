@@ -14,7 +14,6 @@ public final class JimixElement {
     private final ReadOnlyObjectProperty<UUID> uuid = new ReadOnlyObjectWrapper<>(UUID.randomUUID()).getReadOnlyProperty();
     private final ReadOnlyObjectProperty<JimixElementModel> model;
 
-
     private final ReadOnlyObjectProperty<JimixProject> project;
     private final ReadOnlyObjectProperty<JimixLayer> layer;
 

@@ -10,6 +10,8 @@ import org.pcsoft.app.jimix.core.plugin.type.JimixScalerInstance;
 import org.pcsoft.app.jimix.core.plugin.type.JimixScalerPlugin;
 import org.pcsoft.app.jimix.plugins.api.model.JimixElementModel;
 
+import java.awt.*;
+
 public final class JimixImageElementModel extends JimixElementModel {
     private final ObjectProperty<Image> value = new SimpleObjectProperty<>();
     private final ObjectProperty<JimixScalerInstance> scaler;
@@ -25,8 +27,7 @@ public final class JimixImageElementModel extends JimixElementModel {
     public JimixImageElementModel(final Image image) {
         this();
         this.value.set(image);
-        setWidth((int) image.getWidth());
-        setHeight((int) image.getHeight());
+        setDimension(new Dimension((int) image.getWidth(), (int) image.getHeight()));
     }
 
     public Image getValue() {

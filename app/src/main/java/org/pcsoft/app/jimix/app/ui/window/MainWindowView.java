@@ -14,7 +14,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
@@ -37,6 +36,7 @@ import org.pcsoft.app.jimix.core.project.JimixProject;
 import org.pcsoft.app.jimix.core.project.ProjectManager;
 import org.pcsoft.app.jimix.core.tooling.RecentFileManager;
 import org.pcsoft.app.jimix.core.util.FileTypeUtils;
+import org.pcsoft.framework.jfex.component.StatusProgressIndicatorPane;
 import org.pcsoft.framework.jfex.property.ExtendedWrapperProperty;
 import org.pcsoft.framework.jfex.threading.JfxUiThreadPool;
 import org.slf4j.Logger;
@@ -62,9 +62,7 @@ public class MainWindowView implements FxmlView<MainWindowViewModel>, Initializa
 
     //<editor-fold desc="Status Bar">
     @FXML
-    private ProgressIndicator pbProgress;
-    @FXML
-    private Label lblProgress;
+    private StatusProgressIndicatorPane pbState;
     //</editor-fold>
 
     //<editor-fold desc="Menu">
@@ -459,9 +457,7 @@ public class MainWindowView implements FxmlView<MainWindowViewModel>, Initializa
 
     //<editor-fold desc="Open / Save Picture">
     private void savePicture(JimixProject project, File file) {
-        pbProgress.setVisible(true);
-        lblProgress.setText("Save to file...");
-        lblProgress.setVisible(true);
+        pbState.show("Save to file...");
         JfxUiThreadPool.submit(() -> {
             try {
                 final BufferedImage bufferedImage = SwingFXUtils.fromFXImage(project.getResultImage(), null);
@@ -471,18 +467,13 @@ public class MainWindowView implements FxmlView<MainWindowViewModel>, Initializa
                 LOGGER.error("Unable to save image", e);
                 Platform.runLater(() -> new Alert(Alert.AlertType.ERROR, "Unable to save image: " + e.getMessage(), ButtonType.OK).showAndWait());
             } finally {
-                Platform.runLater(() -> {
-                    pbProgress.setVisible(false);
-                    lblProgress.setVisible(false);
-                });
+                Platform.runLater(() -> pbState.hide());
             }
         });
     }
 
     private void openPicture(List<File> files) {
-        pbProgress.setVisible(true);
-        lblProgress.setText("Open files...");
-        lblProgress.setVisible(true);
+        pbState.show("Open files...");
         JfxUiThreadPool.submit(() -> {
             try {
                 for (final File file : files) {
@@ -511,10 +502,7 @@ public class MainWindowView implements FxmlView<MainWindowViewModel>, Initializa
                     }
                 }
             } finally {
-                Platform.runLater(() -> {
-                    pbProgress.setVisible(false);
-                    lblProgress.setVisible(false);
-                });
+                Platform.runLater(() -> pbState.hide());
             }
         });
     }

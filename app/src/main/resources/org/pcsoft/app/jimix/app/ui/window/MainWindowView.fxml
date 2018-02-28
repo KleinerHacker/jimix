@@ -4,9 +4,9 @@
 <?import javafx.scene.image.*?>
 <?import javafx.scene.input.*?>
 <?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import org.controlsfx.control.StatusBar?>
+<?import org.pcsoft.framework.jfex.component.StatusProgressIndicatorPane?>
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml" fx:id="pnlRoot"
             fx:controller="org.pcsoft.app.jimix.app.ui.window.MainWindowView"
@@ -260,10 +260,7 @@
     <bottom>
         <StatusBar text="">
             <rightItems>
-                <HBox spacing="5">
-                    <Label fx:id="lblProgress" visible="false" managed="${lblProgress.visible}"/>
-                    <ProgressIndicator fx:id="pbProgress" visible="false" managed="${pbProgress.visible}"/>
-                </HBox>
+                <StatusProgressIndicatorPane fx:id="pbState"/>
             </rightItems>
         </StatusBar>
     </bottom>
