@@ -18,6 +18,11 @@ public abstract class JimixElementModel implements JimixModel {
     private final IntegerProperty y = new SimpleIntegerProperty(0);
     @JimixProperty(fieldType = Dimension.class, name = "Size", description = "Size of element", category = "Alignment")
     private final ObjectProperty<Dimension> dimension = new SimpleObjectProperty<>(new Dimension());
+    @JimixProperty(fieldType = Boolean.class, name = "Mirror Horizontal", description = "Mirror Horizontal", category = "View")
+    private final BooleanProperty mirrorHorizontal = new SimpleBooleanProperty(false);
+    @JimixProperty(fieldType = Boolean.class, name = "Mirror Vertical", description = "Mirror Vertical", category = "View")
+    private final BooleanProperty mirrorVertical = new SimpleBooleanProperty(false);
+
     private final BooleanProperty visibility = new SimpleBooleanProperty(true);
 
     public Dimension getDimension() {
@@ -88,10 +93,34 @@ public abstract class JimixElementModel implements JimixModel {
         return dimension.get().height;
     }
 
+    public boolean isMirrorHorizontal() {
+        return mirrorHorizontal.get();
+    }
+
+    public BooleanProperty mirrorHorizontalProperty() {
+        return mirrorHorizontal;
+    }
+
+    public void setMirrorHorizontal(boolean mirrorHorizontal) {
+        this.mirrorHorizontal.set(mirrorHorizontal);
+    }
+
+    public boolean isMirrorVertical() {
+        return mirrorVertical.get();
+    }
+
+    public BooleanProperty mirrorVerticalProperty() {
+        return mirrorVertical;
+    }
+
+    public void setMirrorVertical(boolean mirrorVertical) {
+        this.mirrorVertical.set(mirrorVertical);
+    }
+
     @Override
     public final Observable[] getObservableValues() {
         return (Observable[]) ArrayUtils.addAll(new Observable[] {
-                opacity, x, y, dimension, visibility
+                opacity, x, y, dimension, visibility, mirrorHorizontal, mirrorVertical
         }, _getObservableValues());
     }
 

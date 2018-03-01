@@ -7,6 +7,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import org.controlsfx.control.StatusBar?>
 <?import org.pcsoft.framework.jfex.component.StatusProgressIndicatorPane?>
+<?import org.pcsoft.app.jimix.app.ui.component.ProjectInfoPane?>
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml" fx:id="pnlRoot"
             fx:controller="org.pcsoft.app.jimix.app.ui.window.MainWindowView"
@@ -143,7 +144,61 @@
                         </graphic>
                     </Menu>
                 </Menu>
-                <Menu fx:id="mnuPicture" text="%view.window.main.menu.picture"/>
+                <Menu fx:id="mnuPicture" text="%view.window.main.menu.picture">
+                    <MenuItem fx:id="miInformation" text="%view.window.main.menu.picture.info" onAction="#onActionInformation"/>
+                    <SeparatorMenuItem/>
+                    <MenuItem fx:id="miTurnLeft" text="%view.window.main.menu.picture.left" onAction="#onActionTurnLeft">
+                        <graphic>
+                            <ImageView>
+                                <Image url="@/icons/ic_turn_left16.png"/>
+                            </ImageView>
+                        </graphic>
+                        <accelerator>
+                            <KeyCodeCombination code="LEFT" control="DOWN" alt="DOWN" shift="UP" meta="UP" shortcut="UP"/>
+                        </accelerator>
+                    </MenuItem>
+                    <MenuItem fx:id="miTurnRight" text="%view.window.main.menu.picture.right" onAction="#onActionTurnRight">
+                        <graphic>
+                            <ImageView>
+                                <Image url="@/icons/ic_turn_right16.png"/>
+                            </ImageView>
+                        </graphic>
+                        <accelerator>
+                            <KeyCodeCombination code="RIGHT" control="DOWN" alt="DOWN" shift="UP" meta="UP" shortcut="UP"/>
+                        </accelerator>
+                    </MenuItem>
+                    <MenuItem fx:id="miMirrorHorizontal" text="%view.window.main.menu.picture.horizontal" onAction="#onActionMirrorHorizontal">
+                        <graphic>
+                            <ImageView>
+                                <Image url="@/icons/ic_mirror_horizontal16.png"/>
+                            </ImageView>
+                        </graphic>
+                        <accelerator>
+                            <KeyCodeCombination code="DOWN" control="DOWN" alt="DOWN" shift="UP" meta="UP" shortcut="UP"/>
+                        </accelerator>
+                    </MenuItem>
+                    <MenuItem fx:id="miMirrorVertical" text="%view.window.main.menu.picture.vertical" onAction="#onActionMirrorVertical">
+                        <graphic>
+                            <ImageView>
+                                <Image url="@/icons/ic_mirror_vertical16.png"/>
+                            </ImageView>
+                        </graphic>
+                        <accelerator>
+                            <KeyCodeCombination code="UP" control="DOWN" alt="DOWN" shift="UP" meta="UP" shortcut="UP"/>
+                        </accelerator>
+                    </MenuItem>
+                    <SeparatorMenuItem/>
+                    <MenuItem fx:id="miResize" text="%view.window.main.menu.picture.resize" onAction="#onActionResize">
+                        <graphic>
+                            <ImageView>
+                                <Image url="@/icons/ic_resize16.png"/>
+                            </ImageView>
+                        </graphic>
+                        <accelerator>
+                            <KeyCodeCombination code="ENTER" control="DOWN" alt="DOWN" shift="UP" meta="UP" shortcut="UP"/>
+                        </accelerator>
+                    </MenuItem>
+                </Menu>
                 <Menu fx:id="mnuLayer" text="%view.window.main.menu.layer"/>
                 <Menu fx:id="mnuFilter" text="%view.window.main.menu.filter">
                     <MenuItem fx:id="miFilterManager" text="%view.window.main.menu.filter.manager" onAction="#onActionFilterManager">
@@ -259,6 +314,9 @@
     </center>
     <bottom>
         <StatusBar text="">
+            <leftItems>
+                <ProjectInfoPane fx:id="projectInfo"/>
+            </leftItems>
             <rightItems>
                 <StatusProgressIndicatorPane fx:id="pbState"/>
             </rightItems>

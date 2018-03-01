@@ -45,7 +45,7 @@ public final class JimixEffectPlugin implements JimixPlugin<JimixEffectInstance>
             try {
                 icon = new Image(instance.getClass().getResourceAsStream(descriptor.iconPath()));
             } catch (Exception e) {
-                throw new JimixPluginAnnotationException("Unable to find icon " + descriptor.iconPath() + " for filter " + instance.getClass().getName(), e);
+                throw new JimixPluginAnnotationException("Unable to find icon " + descriptor.iconPath() + " for effect " + instance.getClass().getName(), e);
             }
         } else {
             icon = null;

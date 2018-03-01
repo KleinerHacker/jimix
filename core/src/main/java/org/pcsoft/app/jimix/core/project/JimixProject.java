@@ -10,6 +10,7 @@ import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
 import javafx.scene.image.Image;
 import javafx.util.Callback;
+import org.apache.commons.lang.ArrayUtils;
 import org.pcsoft.app.jimix.core.util.ImageBuilder;
 
 import java.io.File;
@@ -50,7 +51,7 @@ public final class JimixProject {
 
         resultImage = Bindings.createObjectBinding(
                 () -> ImageBuilder.getInstance().buildProjectImage(this),
-                layerList
+                (Observable[]) ArrayUtils.add(model.getObservableValues(), layerList)
         );
     }
 

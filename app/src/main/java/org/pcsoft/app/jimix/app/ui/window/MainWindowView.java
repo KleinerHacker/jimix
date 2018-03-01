@@ -23,6 +23,7 @@ import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import org.apache.commons.io.FilenameUtils;
 import org.pcsoft.app.jimix.app.ui.component.PictureEditorPane;
+import org.pcsoft.app.jimix.app.ui.component.ProjectInfoPane;
 import org.pcsoft.app.jimix.app.ui.dialog.FilterManagerDialog;
 import org.pcsoft.app.jimix.app.ui.splash.JimixSplash;
 import org.pcsoft.app.jimix.app.util.FileChooserUtils;
@@ -61,6 +62,8 @@ public class MainWindowView implements FxmlView<MainWindowViewModel>, Initializa
     private TabPane tabPicture;
 
     //<editor-fold desc="Status Bar">
+    @FXML
+    private ProjectInfoPane projectInfo;
     @FXML
     private StatusProgressIndicatorPane pbState;
     //</editor-fold>
@@ -120,6 +123,18 @@ public class MainWindowView implements FxmlView<MainWindowViewModel>, Initializa
     private MenuItem miCopy;
     @FXML
     private Menu mnuPaste;
+    @FXML
+    private MenuItem miInformation;
+    @FXML
+    private MenuItem miTurnLeft;
+    @FXML
+    private MenuItem miTurnRight;
+    @FXML
+    private MenuItem miMirrorHorizontal;
+    @FXML
+    private MenuItem miMirrorVertical;
+    @FXML
+    private MenuItem miResize;
     //</editor-fold>
 
     //<editor-fold desc="Toolbar">
@@ -187,6 +202,12 @@ public class MainWindowView implements FxmlView<MainWindowViewModel>, Initializa
                 }
             }
         });
+
+        projectInfo.visibleProperty().bind(tabPicture.getSelectionModel().selectedItemProperty().isNotNull());
+        projectInfo.projectProperty().bind(Bindings.createObjectBinding(
+                () -> tabPicture.getSelectionModel().getSelectedItem() == null ? null : ((PictureEditorPane) tabPicture.getSelectionModel().getSelectedItem().getContent()).getProject(),
+                tabPicture.getSelectionModel().selectedItemProperty()
+        ));
     }
 
     private void buildPasteMenu() {
@@ -448,7 +469,7 @@ public class MainWindowView implements FxmlView<MainWindowViewModel>, Initializa
     }
 
     private void onActionOpenRecent(ActionEvent actionEvent) {
-        final File file = (File) ((MenuItem)actionEvent.getSource()).getUserData();
+        final File file = (File) ((MenuItem) actionEvent.getSource()).getUserData();
         openPicture(Collections.singletonList(file));
         RecentFileManager.getInstance().addFile(file);
     }
@@ -478,7 +499,7 @@ public class MainWindowView implements FxmlView<MainWindowViewModel>, Initializa
             try {
                 for (final File file : files) {
                     final Tab pictureTab = tabPicture.getTabs().stream()
-                            .filter(tab -> ((PictureEditorPane)tab.getContent()).getProject().getFile().equals(file))
+                            .filter(tab -> ((PictureEditorPane) tab.getContent()).getProject().getFile().equals(file))
                             .findFirst().orElse(null);
                     if (pictureTab != null) {
                         tabPicture.getSelectionModel().select(pictureTab);
@@ -505,6 +526,66 @@ public class MainWindowView implements FxmlView<MainWindowViewModel>, Initializa
                 Platform.runLater(() -> pbState.hide());
             }
         });
+    }
+
+    @FXML
+    private void onActionInformation(ActionEvent actionEvent) {
+        final Tab tab = tabPicture.getSelectionModel().getSelectedItem();
+        if (tab == null)
+            return;
+        final JimixProject project = ((PictureEditorPane) tab.getContent()).getProject();
+
+
+    }
+
+    @FXML
+    private void onActionTurnLeft(ActionEvent actionEvent) {
+        final Tab tab = tabPicture.getSelectionModel().getSelectedItem();
+        if (tab == null)
+            return;
+        final JimixProject project = ((PictureEditorPane) tab.getContent()).getProject();
+
+
+    }
+
+    @FXML
+    private void onActionTurnRight(ActionEvent actionEvent) {
+        final Tab tab = tabPicture.getSelectionModel().getSelectedItem();
+        if (tab == null)
+            return;
+        final JimixProject project = ((PictureEditorPane) tab.getContent()).getProject();
+
+
+    }
+
+    @FXML
+    private void onActionMirrorHorizontal(ActionEvent actionEvent) {
+        final Tab tab = tabPicture.getSelectionModel().getSelectedItem();
+        if (tab == null)
+            return;
+        final JimixProject project = ((PictureEditorPane) tab.getContent()).getProject();
+
+
+    }
+
+    @FXML
+    private void onActionMirrorVertical(ActionEvent actionEvent) {
+        final Tab tab = tabPicture.getSelectionModel().getSelectedItem();
+        if (tab == null)
+            return;
+        final JimixProject project = ((PictureEditorPane) tab.getContent()).getProject();
+
+
+    }
+
+    @FXML
+    private void onActionResize(ActionEvent actionEvent) {
+        final Tab tab = tabPicture.getSelectionModel().getSelectedItem();
+        if (tab == null)
+            return;
+        final JimixProject project = ((PictureEditorPane) tab.getContent()).getProject();
+
+
     }
     //</editor-fold>
 

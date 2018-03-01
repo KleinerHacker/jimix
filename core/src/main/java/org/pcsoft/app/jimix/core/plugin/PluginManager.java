@@ -4,6 +4,7 @@ import org.apache.commons.lang.StringUtils;
 import org.pcsoft.app.jimix.commons.exception.JimixPluginException;
 import org.pcsoft.app.jimix.core.plugin.type.*;
 import org.pcsoft.app.jimix.plugins.api.*;
+import org.pcsoft.app.jimix.plugins.api.model.JimixElementModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,6 +30,7 @@ public final class PluginManager {
     private final Map<String, JimixScalerPlugin> scalerMap = new HashMap<>();
     private final Map<String, JimixClipboardProviderPlugin> clipboardProviderMap = new HashMap<>();
     private final Map<String, JimixFileTypeProviderPlugin> fileTypeProviderMap = new HashMap<>();
+    private final Map<Class<? extends JimixElementModel>, JimixElementDrawerPlugin> elementDrawerMap = new HashMap<>();
 
     private PluginManager() {
     }
@@ -54,10 +56,11 @@ public final class PluginManager {
         loadScaler(classLoader);
         loadClipboardProvider(classLoader);
         loadFileTypeProvider(classLoader);
+        loadElementDrawerProvider(classLoader);
 
-        LOGGER.debug("Found {} effects, {} filters, {} renderer, {} blender, {} scaler, {} clipboard providers, {} file type providers",
+        LOGGER.debug("Found {} effects, {} filters, {} renderer, {} blender, {} scaler, {} clipboard providers, {} file type providers, {} element drawers",
                 effectMap.size(), filterMap.size(), rendererMap.size(), blenderMap.size(), scalerMap.size(), clipboardProviderMap.size(),
-                fileTypeProviderMap.size());
+                fileTypeProviderMap.size(), elementDrawerMap.size());
     }
 
     private void loadEffects(final ClassLoader classLoader) {
@@ -66,9 +69,9 @@ public final class PluginManager {
         final ServiceLoader<JimixEffect> jimixEffects = ServiceLoader.load(JimixEffect.class, classLoader);
         for (final JimixEffect jimixEffect : jimixEffects) {
             try {
-                final JimixEffectPlugin jimixEffectInstance = new JimixEffectPlugin(jimixEffect);
-                effectMap.put(jimixEffectInstance.getIdentifier(), jimixEffectInstance);
-                LOGGER.trace(">>> {}", jimixEffectInstance.getIdentifier());
+                final JimixEffectPlugin jimixEffectPlugin = new JimixEffectPlugin(jimixEffect);
+                effectMap.put(jimixEffectPlugin.getIdentifier(), jimixEffectPlugin);
+                LOGGER.trace(">>> {}", jimixEffectPlugin.getIdentifier());
             } catch (JimixPluginException e) {
                 LOGGER.error("Unable to load effect " + jimixEffect.getClass().getName(), e);
             }
@@ -81,9 +84,9 @@ public final class PluginManager {
         final ServiceLoader<JimixFilter> jimixFilters = ServiceLoader.load(JimixFilter.class, classLoader);
         for (final JimixFilter jimixFilter : jimixFilters) {
             try {
-                final JimixFilterPlugin jimixFilterInstance = new JimixFilterPlugin(jimixFilter);
-                filterMap.put(jimixFilterInstance.getIdentifier(), jimixFilterInstance);
-                LOGGER.trace(">>> {}", jimixFilterInstance.getIdentifier());
+                final JimixFilterPlugin jimixFilterPlugin = new JimixFilterPlugin(jimixFilter);
+                filterMap.put(jimixFilterPlugin.getIdentifier(), jimixFilterPlugin);
+                LOGGER.trace(">>> {}", jimixFilterPlugin.getIdentifier());
             } catch (JimixPluginException e) {
                 LOGGER.error("Unable to load filter " + jimixFilter.getClass().getName(), e);
             }
@@ -96,9 +99,9 @@ public final class PluginManager {
         final ServiceLoader<JimixRenderer> jimixRenderers = ServiceLoader.load(JimixRenderer.class, classLoader);
         for (final JimixRenderer jimixRenderer : jimixRenderers) {
             try {
-                final JimixRendererPlugin jimixRendererInstance = new JimixRendererPlugin(jimixRenderer);
-                rendererMap.put(jimixRendererInstance.getIdentifier(), jimixRendererInstance);
-                LOGGER.trace(">>> {}", jimixRendererInstance.getIdentifier());
+                final JimixRendererPlugin jimixRendererPlugin = new JimixRendererPlugin(jimixRenderer);
+                rendererMap.put(jimixRendererPlugin.getIdentifier(), jimixRendererPlugin);
+                LOGGER.trace(">>> {}", jimixRendererPlugin.getIdentifier());
             } catch (JimixPluginException e) {
                 LOGGER.error("Unable to load renderer " + jimixRenderer.getClass().getName(), e);
             }
@@ -111,9 +114,9 @@ public final class PluginManager {
         final ServiceLoader<JimixBlender> jimixBlenders = ServiceLoader.load(JimixBlender.class, classLoader);
         for (final JimixBlender jimixBlender : jimixBlenders) {
             try {
-                final JimixBlenderPlugin jimixBlenderInstance = new JimixBlenderPlugin(jimixBlender);
-                blenderMap.put(jimixBlenderInstance.getIdentifier(), jimixBlenderInstance);
-                LOGGER.trace(">>> {}", jimixBlenderInstance.getIdentifier());
+                final JimixBlenderPlugin jimixBlenderPlugin = new JimixBlenderPlugin(jimixBlender);
+                blenderMap.put(jimixBlenderPlugin.getIdentifier(), jimixBlenderPlugin);
+                LOGGER.trace(">>> {}", jimixBlenderPlugin.getIdentifier());
             } catch (JimixPluginException e) {
                 LOGGER.error("Unable to load blender " + jimixBlender.getClass().getName(), e);
             }
@@ -126,9 +129,9 @@ public final class PluginManager {
         final ServiceLoader<JimixScaler> jimixScalers = ServiceLoader.load(JimixScaler.class, classLoader);
         for (final JimixScaler jimixScaler : jimixScalers) {
             try {
-                final JimixScalerPlugin jimixScalerInstance = new JimixScalerPlugin(jimixScaler);
-                scalerMap.put(jimixScalerInstance.getIdentifier(), jimixScalerInstance);
-                LOGGER.trace(">>> {}", jimixScalerInstance.getIdentifier());
+                final JimixScalerPlugin jimixScalerPlugin = new JimixScalerPlugin(jimixScaler);
+                scalerMap.put(jimixScalerPlugin.getIdentifier(), jimixScalerPlugin);
+                LOGGER.trace(">>> {}", jimixScalerPlugin.getIdentifier());
             } catch (JimixPluginException e) {
                 LOGGER.error("Unable to load scaler " + jimixScaler.getClass().getName(), e);
             }
@@ -161,6 +164,21 @@ public final class PluginManager {
                 LOGGER.trace(">>> {}", jimixFileTypeProviderInstance.getIdentifier());
             } catch (JimixPluginException e) {
                 LOGGER.error("Unable to load file type provider " + jimixFileTypeProvider.getClass().getName(), e);
+            }
+        }
+    }
+
+    private void loadElementDrawerProvider(final ClassLoader classLoader) {
+        LOGGER.debug("> Load element drawer plugins");
+
+        final ServiceLoader<JimixElementDrawer> jimixElementDrawers = ServiceLoader.load(JimixElementDrawer.class, classLoader);
+        for (final JimixElementDrawer jimixElementDrawer : jimixElementDrawers) {
+            try {
+                final JimixElementDrawerPlugin jimixElementDrawerPlugin = new JimixElementDrawerPlugin(jimixElementDrawer);
+                elementDrawerMap.put(jimixElementDrawerPlugin.getElementModelClass(), jimixElementDrawerPlugin);
+                LOGGER.trace(">>> {}", jimixElementDrawerPlugin.getIdentifier());
+            } catch (JimixPluginException e) {
+                LOGGER.error("Unable to load element drawer " + jimixElementDrawer.getClass().getName(), e);
             }
         }
     }
@@ -219,5 +237,13 @@ public final class PluginManager {
 
     public JimixFileTypeProviderPlugin getFileTypeProvider(final String fileTypeProviderClassName) {
         return fileTypeProviderMap.get(fileTypeProviderClassName);
+    }
+
+    public JimixElementDrawerPlugin[] getAllElementDrawers() {
+        return elementDrawerMap.values().toArray(new JimixElementDrawerPlugin[elementDrawerMap.size()]);
+    }
+
+    public JimixElementDrawerPlugin getElementDrawer(final Class<? extends JimixElementModel> elementModelClass) {
+        return elementDrawerMap.get(elementModelClass);
     }
 }

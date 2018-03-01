@@ -8,10 +8,12 @@ import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
 import org.pcsoft.app.jimix.commons.exception.JimixPluginException;
 import org.pcsoft.app.jimix.commons.exception.JimixPluginExecutionException;
+import org.pcsoft.app.jimix.core.plugin.PluginManager;
 import org.pcsoft.app.jimix.core.plugin.builtin.blender.OverlayBlender;
-import org.pcsoft.app.jimix.core.plugin.builtin.model.JimixImageElementModel;
-import org.pcsoft.app.jimix.core.plugin.builtin.scaler.DefaultScaler;
-import org.pcsoft.app.jimix.core.plugin.type.*;
+import org.pcsoft.app.jimix.core.plugin.type.JimixBlenderInstance;
+import org.pcsoft.app.jimix.core.plugin.type.JimixBlenderPlugin;
+import org.pcsoft.app.jimix.core.plugin.type.JimixElementDrawerPlugin;
+import org.pcsoft.app.jimix.core.plugin.type.JimixFilterInstance;
 import org.pcsoft.app.jimix.core.project.JimixElement;
 import org.pcsoft.app.jimix.core.project.JimixLayer;
 import org.pcsoft.app.jimix.core.project.JimixProject;
@@ -64,34 +66,12 @@ public final class ImageBuilder {
         final Canvas canvas = new Canvas(layer.getProject().getModel().getWidth(), layer.getProject().getModel().getHeight());
         final GraphicsContext gc = canvas.getGraphicsContext2D();
         for (final JimixElement element : layer.getElementList()) {
-            if (!element.getModel().isVisibility())
+            if (!element.getModel().isVisibility()) {
+                LOGGER.trace("element " + element.getUuid() + " invisible");
                 continue;
-
-            gc.setGlobalAlpha(element.getModel().getOpacity());
-
-            final JimixElementModel model = element.getModel();
-            if (model instanceof JimixImageElementModel) {
-                final JimixImageElementModel jimixImageElementModel = (JimixImageElementModel) model;
-                JimixScalerInstance scaler = jimixImageElementModel.getScaler();
-                if (scaler == null) {
-                    LOGGER.warn("No scaler set for image element " + element.getUuid() + ", use default");
-                    try {
-                        scaler = new JimixScalerPlugin(new DefaultScaler()).createInstance(); //Default as fallback
-                    } catch (JimixPluginException e) {
-                        throw new RuntimeException(e);
-                    }
-                }
-
-                Image scaledImage;
-                try {
-                    scaledImage = scaler.apply(jimixImageElementModel.getValue(), model.getWidth(), model.getHeight(), JimixSource.Picture);
-                } catch (JimixPluginExecutionException e) {
-                    LOGGER.error("unable to scale image", e);
-                    scaledImage = jimixImageElementModel.getValue(); //Ignore scaling, use builtin JavaFX Scaling
-                }
-                gc.drawImage(scaledImage, jimixImageElementModel.getX(), jimixImageElementModel.getY(),
-                        jimixImageElementModel.getWidth(), jimixImageElementModel.getHeight());
             }
+
+            drawElement(element, gc);
         }
         final SnapshotParameters snapshotParameters = new SnapshotParameters();
         snapshotParameters.setFill(Color.TRANSPARENT);
@@ -107,5 +87,36 @@ public final class ImageBuilder {
         }
 
         return resultImage;
+    }
+
+    private void drawElement(JimixElement element, GraphicsContext gc) {
+        gc.setGlobalAlpha(element.getModel().getOpacity());
+
+        final JimixElementModel model = element.getModel();
+        final JimixElementDrawerPlugin elementDrawer = PluginManager.getInstance().getElementDrawer(model.getClass());
+        if (elementDrawer == null) {
+            LOGGER.error("unable to draw element " + element.getUuid() + ": no element drawer found, skip");
+            return;
+        }
+
+        try {
+            final Image elementImage = elementDrawer.draw(model);
+            final Canvas elementCanvas = new Canvas(elementImage.getWidth(), elementImage.getHeight());
+            final GraphicsContext elementGc = elementCanvas.getGraphicsContext2D();
+            if (element.getModel().isMirrorHorizontal()) {
+                elementCanvas.setScaleX(-1);
+            }
+            if (element.getModel().isMirrorVertical()) {
+                elementCanvas.setScaleY(-1);
+            }
+            elementGc.drawImage(elementImage, model.getX(), model.getY(), model.getWidth(), model.getHeight());
+            gc.drawImage(
+                    elementCanvas.snapshot(new SnapshotParameters() {{
+                        setFill(Color.TRANSPARENT);
+                    }}, null), 0, 0
+            );
+        } catch (JimixPluginExecutionException e) {
+            LOGGER.error("unable to draw element " + element.getUuid() + ": execution error of plugin, skip", e);
+        }
     }
 }
