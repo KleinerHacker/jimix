@@ -1,4 +1,13 @@
 package org.pcsoft.app.jimix.plugins.api.config;
 
-public interface JimixFilterConfiguration extends JimixConfiguration {
+/**
+ * Basic interface for all filter configuration, used by {@link org.pcsoft.app.jimix.plugins.api.JimixFilter}
+ * @param <T> Concrete filter configuration implementation class
+ */
+public interface JimixFilterConfiguration<T extends JimixFilterConfiguration<T>> extends JimixConfiguration {
+    /**
+     * Update this configuration to new values of given input configuration
+     * @param newConfiguration
+     */
+    void update(T newConfiguration);
 }

@@ -2,6 +2,7 @@ package org.pcsoft.app.jimix.core.plugin.builtin.filter;
 
 import org.pcsoft.app.jimix.plugins.api.JimixFilterBase;
 import org.pcsoft.app.jimix.plugins.api.annotation.JimixFilterDescriptor;
+import org.pcsoft.app.jimix.plugins.api.type.JimixFilterVariant;
 import org.pcsoft.app.jimix.plugins.api.type.JimixPixelReader;
 import org.pcsoft.app.jimix.plugins.api.type.JimixPixelWriter;
 import org.pcsoft.app.jimix.plugins.api.type.JimixSource;
@@ -23,5 +24,13 @@ public class NegateEffect extends JimixFilterBase<NegateEffectConfiguration> {
             final int writeColor = new Color(red, green, blue, readColor.getAlpha()).getRGB();
             pixelWriter.setPixel(i, writeColor);
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    @Override
+    public JimixFilterVariant<NegateEffectConfiguration>[] getVariants() {
+        return new JimixFilterVariant[] {
+                new JimixFilterVariant<>("Default", new NegateEffectConfiguration())
+        };
     }
 }

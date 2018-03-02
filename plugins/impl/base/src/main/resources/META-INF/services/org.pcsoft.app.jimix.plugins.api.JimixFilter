@@ -1,1 +1,2 @@
-org.pcsoft.app.jimix.plugin.impl.base.filter.ScrimDiffuserEffect
+org.pcsoft.app.jimix.plugin.impl.base.filter.GaussianBlurEffect
+org.pcsoft.app.jimix.plugin.impl.base.filter.MotionBlurEffect

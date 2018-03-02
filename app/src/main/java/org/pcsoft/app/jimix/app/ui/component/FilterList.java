@@ -1,6 +1,7 @@
 package org.pcsoft.app.jimix.app.ui.component;
 
 import javafx.geometry.Insets;
+import javafx.scene.control.ListCell;
 import javafx.scene.image.ImageView;
 import org.pcsoft.app.jimix.app.language.LanguageResources;
 import org.pcsoft.app.jimix.commons.exception.JimixPluginException;
@@ -22,23 +23,9 @@ public class FilterList extends ListViewEx<JimixFilterInstance, String> {
         setHeaderKeyExtractor(instance -> instance.getPlugin().getGroup() == null ?
                 LanguageResources.getText("common.plugin.group.default") : instance.getPlugin().getGroup());
         setHeaderComparator(String::compareTo);
-        setHeaderCellRendererCallback((cell, item, empty) -> {
-            cell.setText(null);
-            cell.setStyle("-fx-font-weight: bold");
-            if (item != null && !empty) {
-                cell.setText(item);
-            }
-        });
+        setHeaderCellRendererCallback(this::drawHeader);
         setValueComparator(Comparator.comparing(o -> o.getPlugin().getName()));
-        setValueCellRendererCallback((cell, item, empty) -> {
-            cell.setText(null);
-            cell.setGraphic(null);
-            if (item != null && !empty) {
-                cell.setText(item.getPlugin().getName());
-                cell.setGraphic(new ImageView(item.getPlugin().getIcon()));
-                cell.setPadding(new Insets(0, 0, 0, 20));
-            }
-        });
+        setValueCellRendererCallback(this::drawValue);
 
         setItemLoader(() -> {
             final List<JimixFilterInstance> instanceList = new ArrayList<>();
@@ -53,5 +40,26 @@ public class FilterList extends ListViewEx<JimixFilterInstance, String> {
             }
             return instanceList;
         });
+    }
+
+    private void drawValue(ListCell cell, JimixFilterInstance item, boolean empty) {
+        cell.setText(null);
+        cell.setGraphic(null);
+        cell.setStyle("");
+        if (item != null && !empty) {
+            cell.setText(item.getPlugin().getName());
+            cell.setGraphic(new ImageView(item.getPlugin().getIcon()));
+            cell.setPadding(new Insets(cell.getPadding().getTop(), cell.getPadding().getRight(), cell.getPadding().getBottom(), 20));
+        }
+    }
+
+    private void drawHeader(ListCell cell, String item, boolean empty) {
+        cell.setText(null);
+        cell.setGraphic(null);
+        cell.setStyle("");
+        if (item != null && !empty) {
+            cell.setStyle("-fx-font-weight: bold");
+            cell.setText(item);
+        }
     }
 }

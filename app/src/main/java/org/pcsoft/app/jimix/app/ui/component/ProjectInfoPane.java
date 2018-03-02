@@ -2,6 +2,7 @@ package org.pcsoft.app.jimix.app.ui.component;
 
 import de.saxsys.mvvmfx.FluentViewLoader;
 import de.saxsys.mvvmfx.ViewTuple;
+import javafx.beans.binding.Bindings;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.layout.HBox;
@@ -21,10 +22,16 @@ public class ProjectInfoPane extends HBox {
         viewModel = viewTuple.getViewModel();
 
         project.addListener((v, o, n) -> {
+            if (o != null) {
+                viewModel.dimensionProperty().unbind();
+            }
             if (n == null)
                 return;
 
-            viewModel.setDimension(n.getModel().getWidth() + "x" + n.getModel().getHeight());
+            viewModel.dimensionProperty().bind(Bindings.createStringBinding(
+                    () -> n.getModel().getWidth() + "x" + n.getModel().getHeight(),
+                    n.getModel().widthProperty(), n.getModel().heightProperty()
+            ));   
         });
     }
 

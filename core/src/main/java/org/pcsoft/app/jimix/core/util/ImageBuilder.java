@@ -1,5 +1,6 @@
 package org.pcsoft.app.jimix.core.util;
 
+import javafx.geometry.Point3D;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -109,11 +110,15 @@ public final class ImageBuilder {
             if (element.getModel().isMirrorVertical()) {
                 elementCanvas.setScaleY(-1);
             }
-            elementGc.drawImage(elementImage, model.getX(), model.getY(), model.getWidth(), model.getHeight());
+            if (element.getModel().getRotation() != 0d) {
+                elementCanvas.setRotate(element.getModel().getRotation());
+                elementCanvas.setRotationAxis(new Point3D(0, 0, 1));
+            }
+            elementGc.drawImage(elementImage, 0, 0, model.getWidth(), model.getHeight());
             gc.drawImage(
                     elementCanvas.snapshot(new SnapshotParameters() {{
                         setFill(Color.TRANSPARENT);
-                    }}, null), 0, 0
+                    }}, null), model.getX(), model.getY()
             );
         } catch (JimixPluginExecutionException e) {
             LOGGER.error("unable to draw element " + element.getUuid() + ": execution error of plugin, skip", e);

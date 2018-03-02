@@ -51,6 +51,7 @@ public final class JimixProject {
 
         resultImage = Bindings.createObjectBinding(
                 () -> ImageBuilder.getInstance().buildProjectImage(this),
+                //TODO: Optimize
                 (Observable[]) ArrayUtils.add(model.getObservableValues(), layerList)
         );
     }
@@ -111,6 +112,55 @@ public final class JimixProject {
         return resultImage;
     }
 
+    /**
+     * Turn all layers on project left and recalculate its position
+     */
+    public void turnLeft() {
+        for (final JimixLayer layer : layerList) {
+            layer.turnLeft();
+        }
+
+        turnAroundWidthAndHeight();
+    }
+
+    /**
+     * Turn all layers on project right and recalculate its position
+     */
+    public void turnRight() {
+        for (final JimixLayer layer : layerList) {
+            layer.turnRight();
+        }
+
+        turnAroundWidthAndHeight();
+    }
+
+    @SuppressWarnings("SuspiciousNameCombination")
+    private void turnAroundWidthAndHeight() {
+        final int width = model.get().getWidth();
+        final int height = model.get().getHeight();
+        model.get().setWidth(height);
+        model.get().setHeight(width);
+    }
+
+    /**
+     * Mirror all layers on project horizontal and recalculate its position
+     */
+    public void mirrorHorizontal() {
+        for (final JimixLayer layer : layerList) {
+            layer.mirrorHorizontal();
+        }
+    }
+
+    /**
+     * Mirror all layers on project vertical and recalculate its position
+     */
+    public void mirrorVertical() {
+        for (final JimixLayer layer : layerList) {
+            layer.mirrorVertical();
+        }
+    }
+
+    //<editor-fold desc="Equals / Hashcode / ToString">
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -128,15 +178,21 @@ public final class JimixProject {
     public String toString() {
         return model.get().toString();
     }
+    //</editor-fold>
 
+    //<editor-fold desc="Helper Classes">
     private static final class JimixLayerObserverCallback implements Callback<JimixLayer, Observable[]> {
         @Override
         public Observable[] call(JimixLayer param) {
             final List<Observable> list = new ArrayList<>();
+            list.add(param.getModel().nameProperty());
+            list.add(param.getModel().opacityProperty());
+            list.add(param.getModel().visibilityProperty());
+            list.add(param.getModel().filterListProperty());
             list.add(param.elementListProperty());
-            list.addAll(Arrays.asList(param.getModel().getObservableValues()));
 
             return list.toArray(new Observable[list.size()]);
         }
     }
+    //</editor-fold>
 }

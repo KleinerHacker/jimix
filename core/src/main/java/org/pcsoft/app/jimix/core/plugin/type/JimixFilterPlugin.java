@@ -11,6 +11,7 @@ import org.pcsoft.app.jimix.plugins.api.JimixFilter;
 import org.pcsoft.app.jimix.plugins.api.annotation.JimixFilterDescriptor;
 import org.pcsoft.app.jimix.plugins.api.config.JimixFilterConfiguration;
 import org.pcsoft.app.jimix.plugins.api.type.JimixFilterType;
+import org.pcsoft.app.jimix.plugins.api.type.JimixFilterVariant;
 import org.pcsoft.app.jimix.plugins.api.type.JimixSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -73,6 +74,10 @@ public final class JimixFilterPlugin implements JimixPlugin<JimixFilterInstance>
         }
 
         return resultImage;
+    }
+
+    public JimixFilterVariant[] getVariants() {
+        return instance.getVariants();
     }
 
     @Override

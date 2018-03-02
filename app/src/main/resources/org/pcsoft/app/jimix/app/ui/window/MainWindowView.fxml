@@ -16,8 +16,8 @@
         <VBox>
             <MenuBar>
                 <Menu fx:id="mnuFile" text="%view.window.main.menu.file">
-                    <Menu fx:id="mnuNew" text="%view.window.main.menu.file.new">
-                        <MenuItem fx:id="miNewEmpty" text="%view.window.main.menu.file.new.empty" onAction="#onActionNewEmpty">
+                    <Menu fx:id="mnuProjectNew" text="%view.window.main.menu.file.new">
+                        <MenuItem fx:id="miProjectNewEmpty" text="%view.window.main.menu.file.new.empty" onAction="#onActionProjectNewEmpty">
                             <graphic>
                                 <ImageView>
                                     <Image url="@/icons/ic_new_empty16.png"/>
@@ -27,7 +27,7 @@
                                 <KeyCodeCombination code="N" control="DOWN" alt="UP" shift="DOWN" meta="UP" shortcut="UP"/>
                             </accelerator>
                         </MenuItem>
-                        <MenuItem fx:id="miNewFromClipboard" text="%view.window.main.menu.file.new.from_clipboard" onAction="#onActionFromClipboard">
+                        <MenuItem fx:id="miProjectNewFromClipboard" text="%view.window.main.menu.file.new.from_clipboard" onAction="#onActionProjectNewFromClipboard">
                             <graphic>
                                 <ImageView>
                                     <Image url="@/icons/ic_new_clipboard16.png"/>
@@ -37,7 +37,7 @@
                                 <KeyCodeCombination code="V" control="DOWN" alt="UP" shift="DOWN" meta="UP" shortcut="UP"/>
                             </accelerator>
                         </MenuItem>
-                        <MenuItem fx:id="miNewFromRenderer" text="%view.window.main.menu.file.new.from_renderer" onAction="#onActionFromRenderer">
+                        <MenuItem fx:id="miProjectNewFromRenderer" text="%view.window.main.menu.file.new.from_renderer" onAction="#onActionProjectNewFromRenderer">
                             <graphic>
                                 <ImageView>
                                     <Image url="@/icons/ic_new_renderer16.png"/>
@@ -145,9 +145,9 @@
                     </Menu>
                 </Menu>
                 <Menu fx:id="mnuPicture" text="%view.window.main.menu.picture">
-                    <MenuItem fx:id="miInformation" text="%view.window.main.menu.picture.info" onAction="#onActionInformation"/>
+                    <MenuItem fx:id="miProjectInformation" text="%view.window.main.menu.picture.info" onAction="#onActionProjectInformation"/>
                     <SeparatorMenuItem/>
-                    <MenuItem fx:id="miTurnLeft" text="%view.window.main.menu.picture.left" onAction="#onActionTurnLeft">
+                    <MenuItem fx:id="miProjectTurnLeft" text="%view.window.main.menu.picture.left" onAction="#onActionProjectTurnLeft">
                         <graphic>
                             <ImageView>
                                 <Image url="@/icons/ic_turn_left16.png"/>
@@ -157,7 +157,7 @@
                             <KeyCodeCombination code="LEFT" control="DOWN" alt="DOWN" shift="UP" meta="UP" shortcut="UP"/>
                         </accelerator>
                     </MenuItem>
-                    <MenuItem fx:id="miTurnRight" text="%view.window.main.menu.picture.right" onAction="#onActionTurnRight">
+                    <MenuItem fx:id="miProjectTurnRight" text="%view.window.main.menu.picture.right" onAction="#onActionProjectTurnRight">
                         <graphic>
                             <ImageView>
                                 <Image url="@/icons/ic_turn_right16.png"/>
@@ -167,7 +167,7 @@
                             <KeyCodeCombination code="RIGHT" control="DOWN" alt="DOWN" shift="UP" meta="UP" shortcut="UP"/>
                         </accelerator>
                     </MenuItem>
-                    <MenuItem fx:id="miMirrorHorizontal" text="%view.window.main.menu.picture.horizontal" onAction="#onActionMirrorHorizontal">
+                    <MenuItem fx:id="miProjectMirrorHorizontal" text="%view.window.main.menu.picture.horizontal" onAction="#onActionProjectMirrorHorizontal">
                         <graphic>
                             <ImageView>
                                 <Image url="@/icons/ic_mirror_horizontal16.png"/>
@@ -177,7 +177,7 @@
                             <KeyCodeCombination code="DOWN" control="DOWN" alt="DOWN" shift="UP" meta="UP" shortcut="UP"/>
                         </accelerator>
                     </MenuItem>
-                    <MenuItem fx:id="miMirrorVertical" text="%view.window.main.menu.picture.vertical" onAction="#onActionMirrorVertical">
+                    <MenuItem fx:id="miProjectMirrorVertical" text="%view.window.main.menu.picture.vertical" onAction="#onActionProjectMirrorVertical">
                         <graphic>
                             <ImageView>
                                 <Image url="@/icons/ic_mirror_vertical16.png"/>
@@ -188,7 +188,7 @@
                         </accelerator>
                     </MenuItem>
                     <SeparatorMenuItem/>
-                    <MenuItem fx:id="miResize" text="%view.window.main.menu.picture.resize" onAction="#onActionResize">
+                    <MenuItem fx:id="miProjectResize" text="%view.window.main.menu.picture.resize" onAction="#onActionProjectResize">
                         <graphic>
                             <ImageView>
                                 <Image url="@/icons/ic_resize16.png"/>
@@ -199,7 +199,65 @@
                         </accelerator>
                     </MenuItem>
                 </Menu>
-                <Menu fx:id="mnuLayer" text="%view.window.main.menu.layer"/>
+                <Menu fx:id="mnuLayer" text="%view.window.main.menu.layer">
+                    <Menu fx:id="mnuLayerNew" text="%view.window.main.menu.layer.new">
+                        <MenuItem fx:id="miLayerNewSimple" text="%view.window.main.menu.layer.new.simple" onAction="#onActionLayerNewSimple">
+                            <graphic>
+                                <ImageView>
+                                    <Image url="@/icons/ic_new_empty16.png"/>
+                                </ImageView>
+                            </graphic>
+                        </MenuItem>
+                        <MenuItem fx:id="miLayerNewFromRenderer" text="%view.window.main.menu.layer.new.renderer" onAction="#onActionLayerNewFromRenderer">
+                            <graphic>
+                                <ImageView>
+                                    <Image url="@/icons/ic_new_renderer16.png"/>
+                                </ImageView>
+                            </graphic>
+                        </MenuItem>
+                    </Menu>
+                    <SeparatorMenuItem/>
+                    <MenuItem fx:id="miLayerTurnLeft" text="%view.window.main.menu.layer.left" onAction="#onActionLayerTurnLeft">
+                        <graphic>
+                            <ImageView>
+                                <Image url="@/icons/ic_turn_left16.png"/>
+                            </ImageView>
+                        </graphic>
+                        <accelerator>
+                            <KeyCodeCombination code="LEFT" control="DOWN" alt="DOWN" shift="DOWN" meta="UP" shortcut="UP"/>
+                        </accelerator>
+                    </MenuItem>
+                    <MenuItem fx:id="miLayerTurnRight" text="%view.window.main.menu.layer.right" onAction="#onActionLayerTurnRight">
+                        <graphic>
+                            <ImageView>
+                                <Image url="@/icons/ic_turn_right16.png"/>
+                            </ImageView>
+                        </graphic>
+                        <accelerator>
+                            <KeyCodeCombination code="RIGHT" control="DOWN" alt="DOWN" shift="DOWN" meta="UP" shortcut="UP"/>
+                        </accelerator>
+                    </MenuItem>
+                    <MenuItem fx:id="miLayerMirrorHorizontal" text="%view.window.main.menu.layer.horizontal" onAction="#onActionLayerMirrorHorizontal">
+                        <graphic>
+                            <ImageView>
+                                <Image url="@/icons/ic_mirror_horizontal16.png"/>
+                            </ImageView>
+                        </graphic>
+                        <accelerator>
+                            <KeyCodeCombination code="DOWN" control="DOWN" alt="DOWN" shift="DOWN" meta="UP" shortcut="UP"/>
+                        </accelerator>
+                    </MenuItem>
+                    <MenuItem fx:id="miLayerMirrorVertical" text="%view.window.main.menu.layer.vertical" onAction="#onActionLayerMirrorVertical">
+                        <graphic>
+                            <ImageView>
+                                <Image url="@/icons/ic_mirror_vertical16.png"/>
+                            </ImageView>
+                        </graphic>
+                        <accelerator>
+                            <KeyCodeCombination code="UP" control="DOWN" alt="DOWN" shift="DOWN" meta="UP" shortcut="UP"/>
+                        </accelerator>
+                    </MenuItem>
+                </Menu>
                 <Menu fx:id="mnuFilter" text="%view.window.main.menu.filter">
                     <MenuItem fx:id="miFilterManager" text="%view.window.main.menu.filter.manager" onAction="#onActionFilterManager">
                         <graphic>
@@ -224,7 +282,7 @@
                 </Menu>
             </MenuBar>
             <ToolBar>
-                <Button fx:id="btnNewEmpty" onAction="#onActionNewEmpty">
+                <Button fx:id="btnNewEmpty" onAction="#onActionProjectNewEmpty">
                     <graphic>
                         <ImageView>
                             <Image url="@/icons/ic_new_empty16.png"/>

@@ -8,8 +8,11 @@ import javafx.collections.FXCollections;
 import javafx.collections.MapChangeListener;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
+import javafx.geometry.Point2D;
 import javafx.scene.image.Image;
+import javafx.scene.transform.Transform;
 import javafx.util.Callback;
+import org.apache.commons.lang.ArrayUtils;
 import org.pcsoft.app.jimix.core.util.ImageBuilder;
 import org.pcsoft.app.jimix.plugins.api.model.JimixElementModel;
 
@@ -52,7 +55,8 @@ public final class JimixLayer {
         //Rebuild cached image if sub elements has changed
         resultImage = Bindings.createObjectBinding(
                 () -> ImageBuilder.getInstance().buildLayerImage(this),
-                elementList, model.filterListProperty()
+                //TODO: Optimize
+                (Observable[]) ArrayUtils.addAll(model.getObservableValues(), new Observable[]{elementList, model.filterListProperty()})
         );
     }
 
@@ -106,6 +110,55 @@ public final class JimixLayer {
 
     public ObjectBinding<Image> resultImageProperty() {
         return resultImage;
+    }
+
+    /**
+     * Turn all elements on layer left and recalculate its position
+     */
+    public void turnLeft() {
+        for (final JimixElement element : elementList) {
+            element.getModel().setRotation(element.getModel().getRotation() - 90);
+
+            calculateRotation(element, -90);
+        }
+    }
+
+    /**
+     * Turn all elements on layer right and recalculate its position
+     */
+    public void turnRight() {
+        for (final JimixElement element : elementList) {
+            element.getModel().setRotation(element.getModel().getRotation() + 90);
+
+            calculateRotation(element, 90);
+        }
+    }
+
+    private void calculateRotation(JimixElement element, double rotation) {
+        final Transform rotate = Transform.rotate(rotation, project.get().getModel().getWidth() / 2, project.get().getModel().getHeight() / 2);
+        final Point2D transform = rotate.transform(element.getModel().getX(), element.getModel().getY());
+        element.getModel().setX((int) transform.getX());
+        element.getModel().setY((int) transform.getY());
+    }
+
+    /**
+     * Mirror all elements on layer horizontal and recalculate its position
+     */
+    public void mirrorHorizontal() {
+        for (final JimixElement element : elementList) {
+            element.getModel().setMirrorHorizontal(!element.getModel().isMirrorHorizontal());
+            element.getModel().setX(project.get().getModel().getWidth() - (element.getModel().getX() + element.getModel().getWidth()));
+        }
+    }
+
+    /**
+     * Mirror all elements on layer vertical and recalculate its position
+     */
+    public void mirrorVertical() {
+        for (final JimixElement element : elementList) {
+            element.getModel().setMirrorVertical(!element.getModel().isMirrorVertical());
+            element.getModel().setY(project.get().getModel().getHeight() - (element.getModel().getY() + element.getModel().getHeight()));
+        }
     }
 
     //<editor-fold desc="Equals / Hashcode / String">
