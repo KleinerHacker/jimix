@@ -4,6 +4,7 @@ import de.saxsys.mvvmfx.FxmlView;
 import de.saxsys.mvvmfx.InjectViewModel;
 import javafx.beans.Observable;
 import javafx.beans.binding.Bindings;
+import javafx.collections.ListChangeListener;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -16,13 +17,15 @@ import org.pcsoft.app.jimix.app.ui.component.VariantComboBox;
 import org.pcsoft.app.jimix.app.ui.component.prop_sheet.JimixPropertySheet;
 import org.pcsoft.app.jimix.app.util.PropertyUtils;
 import org.pcsoft.app.jimix.plugins.api.type.JimixEffectVariant;
+import org.pcsoft.app.jimix.plugins.manager.PluginVariantManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.List;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 public class EffectManagerDialogView implements FxmlView<EffectManagerDialogViewModel>, Initializable {
     private static final Logger LOGGER = LoggerFactory.getLogger(EffectManagerDialogView.class);
@@ -56,10 +59,11 @@ public class EffectManagerDialogView implements FxmlView<EffectManagerDialogView
         ));
         pnlPreview.disableProperty().bind(viewModel.selectedEffectProperty().isNull());
 
-        cmbVariants.setItemLoader(() -> viewModel.getSelectedEffect() == null ? new ArrayList<>() : Arrays.asList(viewModel.getSelectedEffect().getPlugin().getVariants()));
+        cmbVariants.setItemLoader(() -> viewModel.getSelectedEffect() == null ? new ArrayList<>() : extractEffectVariants());
 
         imgPreview.imageProperty().bind(viewModel.resultImageProperty());
         viewModel.selectedEffectProperty().bind(lstEffect.getSelectionModel().selectedItemProperty());
+        //Update variants and properties
         viewModel.selectedEffectProperty().addListener(o -> {
             propSheet.getItems().clear();
             cmbVariants.setValue(null);
@@ -70,6 +74,7 @@ public class EffectManagerDialogView implements FxmlView<EffectManagerDialogView
 
             PropertyUtils.addProperties(propSheet, viewModel.getSelectedEffect().getConfiguration());
         });
+        //Reset variants selection in case of changing settings
         viewModel.selectedEffectProperty().addListener((v, o, n) -> {
             if (o != null) {
                 for (final Observable observable : o.getConfiguration().getObservables()) {
@@ -82,7 +87,8 @@ public class EffectManagerDialogView implements FxmlView<EffectManagerDialogView
                 }
             }
         });
-
+        PluginVariantManager.effectVariantListProperty().addListener((ListChangeListener<JimixEffectVariant>) c -> cmbVariants.refresh());
+        //Copy configuration values from variant into instance configuration
         cmbVariants.valueProperty().addListener((v, o, n) -> {
             if (n == null)
                 return;
@@ -90,6 +96,12 @@ public class EffectManagerDialogView implements FxmlView<EffectManagerDialogView
             viewModel.getSelectedEffect().getConfiguration().update(n.getConfiguration());
         });
         viewModel.zoomProperty().bind(sldZoom.valueProperty());
+    }
+
+    private List<JimixEffectVariant> extractEffectVariants() {
+        return PluginVariantManager.getEffectVariantList().stream()
+                .filter(item -> item.getConfiguration().getClass() == viewModel.getSelectedEffect().getConfiguration().getClass())
+                .collect(Collectors.toList());
     }
 
     @FXML

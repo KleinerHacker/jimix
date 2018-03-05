@@ -2,6 +2,8 @@ package org.pcsoft.app.jimix.plugins.api.config;
 
 import javafx.beans.Observable;
 
-public interface JimixConfiguration {
+import java.io.Serializable;
+
+public interface JimixConfiguration extends Serializable {
     Observable[] getObservables();
 }

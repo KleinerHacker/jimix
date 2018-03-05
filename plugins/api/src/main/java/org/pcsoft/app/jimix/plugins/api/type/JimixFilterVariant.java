@@ -8,9 +8,13 @@ public final class JimixFilterVariant<T extends JimixFilterConfiguration> implem
     private final boolean builtin;
 
     public JimixFilterVariant(String name, T configuration) {
+        this(name, configuration, true);
+    }
+
+    public JimixFilterVariant(String name, T configuration, boolean builtin) {
         this.name = name;
         this.configuration = configuration;
-        this.builtin = true; //TODO
+        this.builtin = builtin;
     }
 
     @Override

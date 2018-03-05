@@ -4,6 +4,7 @@ import de.saxsys.mvvmfx.FxmlView;
 import de.saxsys.mvvmfx.InjectViewModel;
 import javafx.beans.Observable;
 import javafx.beans.binding.Bindings;
+import javafx.collections.ListChangeListener;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -14,14 +15,17 @@ import org.pcsoft.app.jimix.app.ui.component.FilterList;
 import org.pcsoft.app.jimix.app.ui.component.VariantComboBox;
 import org.pcsoft.app.jimix.app.ui.component.prop_sheet.JimixPropertySheet;
 import org.pcsoft.app.jimix.app.util.PropertyUtils;
+import org.pcsoft.app.jimix.plugins.api.type.JimixEffectVariant;
 import org.pcsoft.app.jimix.plugins.api.type.JimixFilterVariant;
+import org.pcsoft.app.jimix.plugins.manager.PluginVariantManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.List;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 
 public class FilterManagerDialogView implements FxmlView<FilterManagerDialogViewModel>, Initializable {
     private static final Logger LOGGER = LoggerFactory.getLogger(FilterManagerDialogView.class);
@@ -53,7 +57,7 @@ public class FilterManagerDialogView implements FxmlView<FilterManagerDialogView
         ));
         pnlPreview.disableProperty().bind(viewModel.selectedFilterProperty().isNull());
 
-        cmbVariants.setItemLoader(() -> viewModel.getSelectedFilter() == null ? new ArrayList<>() : Arrays.asList(viewModel.getSelectedFilter().getPlugin().getVariants()));
+        cmbVariants.setItemLoader(() -> viewModel.getSelectedFilter() == null ? new ArrayList<>() : extractFilterVariants());
 
         imgPreview.imageProperty().bind(viewModel.resultImageProperty());
         viewModel.selectedFilterProperty().bind(lstFilter.getSelectionModel().selectedItemProperty());
@@ -81,6 +85,7 @@ public class FilterManagerDialogView implements FxmlView<FilterManagerDialogView
                 }
             }
         });
+        PluginVariantManager.effectVariantListProperty().addListener((ListChangeListener<JimixEffectVariant>) c -> cmbVariants.refresh());
         //Copy configuration values from variant into instance configuration
         cmbVariants.valueProperty().addListener((v, o, n) -> {
             if (n == null)
@@ -88,6 +93,12 @@ public class FilterManagerDialogView implements FxmlView<FilterManagerDialogView
 
             viewModel.getSelectedFilter().getConfiguration().update(n.getConfiguration());
         });
+    }
+
+    private List<JimixFilterVariant> extractFilterVariants() {
+        return PluginVariantManager.getFilterVariantList().stream()
+                .filter(item -> item.getConfiguration().getClass() == viewModel.getSelectedFilter().getConfiguration().getClass())
+                .collect(Collectors.toList());
     }
 
     @FXML
