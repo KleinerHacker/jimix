@@ -9,7 +9,8 @@ import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import org.pcsoft.app.jimix.app.item.tree.*;
 import org.pcsoft.app.jimix.app.ui.component.cell.tree.ProjectTreeCell;
-import org.pcsoft.app.jimix.core.plugin.type.JimixFilterInstance;
+import org.pcsoft.app.jimix.plugins.manager.type.JimixEffectInstance;
+import org.pcsoft.app.jimix.plugins.manager.type.JimixFilterInstance;
 import org.pcsoft.app.jimix.core.project.JimixElement;
 import org.pcsoft.app.jimix.core.project.JimixLayer;
 import org.pcsoft.framework.jfex.util.FXTreeUtils;
@@ -39,20 +40,20 @@ public class LayerListView implements FxmlView<LayerListViewModel>, Initializabl
             if (ignoreSelectionUpdate.get())
                 return;
 
-            viewModel.setSelectedLayer(null);
-            viewModel.setSelectedElement(null);
+            viewModel.setSelectedItem(null);
             viewModel.setSelectedTopLayer(null);
-            viewModel.setSelectedFilter(null);
 
             if (n == null)
                 return;
 
             if (n instanceof LayerTreeItem) {
-                viewModel.setSelectedLayer(((LayerTreeItem) n).getLayer());
+                viewModel.setSelectedItem(((LayerTreeItem) n).getLayer());
             } else if (n instanceof ElementTreeItem) {
-                viewModel.setSelectedElement(((ElementTreeItem) n).getElement());
+                viewModel.setSelectedItem(((ElementTreeItem) n).getElement());
             } else if (n instanceof FilterTreeItem) {
-                viewModel.setSelectedFilter(((FilterTreeItem) n).getInstance());
+                viewModel.setSelectedItem(((FilterTreeItem) n).getInstance());
+            } else if (n instanceof EffectTreeItem) {
+                viewModel.setSelectedItem(((EffectTreeItem) n).getInstance());
             }
 
             //Find top layer
@@ -89,6 +90,14 @@ public class LayerListView implements FxmlView<LayerListViewModel>, Initializabl
                 for (final JimixElement element : layer.getElementList()) {
                     final ElementTreeItem elementTreeItem = new ElementTreeItem(element);
                     elementRootTreeItem.getChildren().add(elementTreeItem);
+
+                    final EffectRootTreeItem effectRootTreeItem = new EffectRootTreeItem();
+                    //1.1 Effects
+                    for (final JimixEffectInstance effectInstance : element.getModel().getEffectList()) {
+                        final EffectTreeItem effectTreeItem = new EffectTreeItem(effectInstance);
+                        effectRootTreeItem.getChildren().add(effectTreeItem);
+                    }
+                    elementRootTreeItem.getChildren().add(effectRootTreeItem);
                 }
                 layerTreeItem.getChildren().add(elementRootTreeItem);
 

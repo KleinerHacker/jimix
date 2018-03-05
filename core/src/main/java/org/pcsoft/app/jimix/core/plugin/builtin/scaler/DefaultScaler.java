@@ -1,10 +1,9 @@
 package org.pcsoft.app.jimix.core.plugin.builtin.scaler;
 
-import javafx.scene.SnapshotParameters;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
-import javafx.scene.paint.Color;
+import org.pcsoft.app.jimix.commons.type.TransparentSnapshotParams;
 import org.pcsoft.app.jimix.plugins.api.JimixScaler;
 import org.pcsoft.app.jimix.plugins.api.annotation.JimixScalerDescriptor;
 import org.pcsoft.app.jimix.plugins.api.type.JimixSource;
@@ -18,8 +17,6 @@ public class DefaultScaler implements JimixScaler {
 
         gc.drawImage(image, 0, 0, targetWidth, targetHeight);
 
-        final SnapshotParameters params = new SnapshotParameters();
-        params.setFill(Color.TRANSPARENT);
-        return canvas.snapshot(params, null);
+        return canvas.snapshot(new TransparentSnapshotParams(), null);
     }
 }

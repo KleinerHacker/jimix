@@ -6,7 +6,7 @@ import org.apache.commons.lang.SystemUtils;
 import org.pcsoft.app.jimix.app.ui.splash.JimixSplash;
 import org.pcsoft.app.jimix.app.ui.window.MainWindow;
 import org.pcsoft.app.jimix.commons.JimixConstants;
-import org.pcsoft.app.jimix.core.plugin.PluginManager;
+import org.pcsoft.app.jimix.plugins.manager.PluginManager;
 import org.pcsoft.framework.jfex.splash.FXSplash;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

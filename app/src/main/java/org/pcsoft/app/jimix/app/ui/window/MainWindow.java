@@ -9,7 +9,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import org.pcsoft.app.jimix.app.language.LanguageResources;
-import org.pcsoft.app.jimix.core.plugin.type.JimixFileTypeProviderInstance;
+import org.pcsoft.app.jimix.plugins.manager.type.JimixFileTypeProviderInstance;
 import org.pcsoft.app.jimix.core.project.JimixProject;
 import org.pcsoft.app.jimix.core.project.ProjectManager;
 import org.pcsoft.app.jimix.core.tooling.RecentFileManager;

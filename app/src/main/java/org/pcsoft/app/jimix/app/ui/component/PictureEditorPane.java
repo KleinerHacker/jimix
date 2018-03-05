@@ -7,7 +7,6 @@ import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.scene.layout.BorderPane;
 import org.pcsoft.app.jimix.app.language.LanguageResources;
-import org.pcsoft.app.jimix.core.project.JimixElement;
 import org.pcsoft.app.jimix.core.project.JimixLayer;
 import org.pcsoft.app.jimix.core.project.JimixProject;
 
@@ -47,5 +46,17 @@ public class PictureEditorPane extends BorderPane {
 
     public void setSelectedTopLayer(JimixLayer selectedTopLayer) {
         viewModel.setSelectedTopLayer(selectedTopLayer);
+    }
+
+    public Object getSelectedItem() {
+        return viewModel.getSelectedItem();
+    }
+
+    public ObjectProperty<Object> selectedItemProperty() {
+        return viewModel.selectedItemProperty();
+    }
+
+    public void setSelectedItem(Object selectedItem) {
+        viewModel.setSelectedItem(selectedItem);
     }
 }

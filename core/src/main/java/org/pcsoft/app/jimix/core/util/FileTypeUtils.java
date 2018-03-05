@@ -1,9 +1,9 @@
 package org.pcsoft.app.jimix.core.util;
 
 import org.pcsoft.app.jimix.commons.exception.JimixPluginException;
-import org.pcsoft.app.jimix.core.plugin.PluginManager;
-import org.pcsoft.app.jimix.core.plugin.type.JimixFileTypeProviderInstance;
-import org.pcsoft.app.jimix.core.plugin.type.JimixFileTypeProviderPlugin;
+import org.pcsoft.app.jimix.plugins.manager.PluginManager;
+import org.pcsoft.app.jimix.plugins.manager.type.JimixFileTypeProviderInstance;
+import org.pcsoft.app.jimix.plugins.manager.type.JimixFileTypeProviderPlugin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -7,8 +7,6 @@ import javafx.beans.property.ObjectProperty;
 import javafx.collections.ObservableList;
 import javafx.scene.layout.HBox;
 import org.pcsoft.app.jimix.app.language.LanguageResources;
-import org.pcsoft.app.jimix.core.plugin.type.JimixFilterInstance;
-import org.pcsoft.app.jimix.core.project.JimixElement;
 import org.pcsoft.app.jimix.core.project.JimixLayer;
 
 public class LayerList extends HBox {
@@ -20,18 +18,6 @@ public class LayerList extends HBox {
                 FluentViewLoader.fxmlView(LayerListView.class).resourceBundle(LanguageResources.getBundle()).root(this).load();
         controller = viewTuple.getCodeBehind();
         viewModel = viewTuple.getViewModel();
-    }
-
-    public JimixFilterInstance getSelectedFilter() {
-        return viewModel.getSelectedFilter();
-    }
-
-    public ObjectProperty<JimixFilterInstance> selectedFilterProperty() {
-        return viewModel.selectedFilterProperty();
-    }
-
-    public void setSelectedFilter(JimixFilterInstance selectedFilter) {
-        viewModel.setSelectedFilter(selectedFilter);
     }
 
     public ObservableList<JimixLayer> getLayerList() {
@@ -58,27 +44,15 @@ public class LayerList extends HBox {
         viewModel.setSelectedTopLayer(selectedTopLayer);
     }
 
-    public JimixLayer getSelectedLayer() {
-        return viewModel.getSelectedLayer();
+    public Object getSelectedItem() {
+        return viewModel.getSelectedItem();
     }
 
-    public ObjectProperty<JimixLayer> selectedLayerProperty() {
-        return viewModel.selectedLayerProperty();
+    public ObjectProperty<Object> selectedItemProperty() {
+        return viewModel.selectedItemProperty();
     }
 
-    public void setSelectedLayer(JimixLayer selectedLayer) {
-        viewModel.setSelectedLayer(selectedLayer);
-    }
-
-    public JimixElement getSelectedElement() {
-        return viewModel.getSelectedElement();
-    }
-
-    public ObjectProperty<JimixElement> selectedElementProperty() {
-        return viewModel.selectedElementProperty();
-    }
-
-    public void setSelectedElement(JimixElement selectedElement) {
-        viewModel.setSelectedElement(selectedElement);
+    public void setSelectedItem(Object selectedItem) {
+        viewModel.setSelectedItem(selectedItem);
     }
 }

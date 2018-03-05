@@ -11,7 +11,7 @@
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml" fx:id="pnlRoot"
             fx:controller="org.pcsoft.app.jimix.app.ui.window.MainWindowView"
-            prefHeight="768" prefWidth="1024">
+            prefHeight="1024" prefWidth="1280">
     <top>
         <VBox>
             <MenuBar>
@@ -271,6 +271,19 @@
                     </MenuItem>
                     <SeparatorMenuItem/>
                 </Menu>
+                <Menu fx:id="mnuEffect" text="%view.window.main.menu.effect">
+                    <MenuItem fx:id="miEffectManager" text="%view.window.main.menu.effect.manager" onAction="#onActionEffectManager">
+                        <graphic>
+                            <ImageView>
+                                <Image url="@/icons/ic_effect16.png"/>
+                            </ImageView>
+                        </graphic>
+                        <accelerator>
+                            <KeyCodeCombination code="E" control="DOWN" alt="DOWN" shift="DOWN" meta="UP" shortcut="UP"/>
+                        </accelerator>
+                    </MenuItem>
+                    <SeparatorMenuItem/>
+                </Menu>
                 <Menu fx:id="mnuView" text="%view.window.main.menu.view">
                     <Menu fx:id="mnuTheme" text="%view.window.main.menu.view.theme">
                         <CheckMenuItem fx:id="miThemeDefault" text="%view.window.main.menu.view.theme.default" selected="true" onAction="#onActionThemeDefault"/>
@@ -364,6 +377,27 @@
                         <Tooltip text="%view.window.main.menu.edit.paste"/>
                     </tooltip>
                 </MenuButton>
+                <Separator/>
+                <Button fx:id="btnFilterManager" onAction="#onActionFilterManager">
+                    <graphic>
+                        <ImageView>
+                            <Image url="@/icons/ic_filter16.png"/>
+                        </ImageView>
+                    </graphic>
+                    <tooltip>
+                        <Tooltip text="%view.window.main.menu.filter.manager"/>
+                    </tooltip>
+                </Button>
+                <Button fx:id="btnEffectManager" onAction="#onActionEffectManager">
+                    <graphic>
+                        <ImageView>
+                            <Image url="@/icons/ic_effect16.png"/>
+                        </ImageView>
+                    </graphic>
+                    <tooltip>
+                        <Tooltip text="%view.window.main.menu.effect.manager"/>
+                    </tooltip>
+                </Button>
             </ToolBar>
         </VBox>
     </top>

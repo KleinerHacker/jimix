@@ -11,6 +11,10 @@ import javafx.scene.image.ImageView;
 import javafx.scene.paint.Color;
 import org.pcsoft.app.jimix.app.ui.component.prop_sheet.JimixPropertySheet;
 import org.pcsoft.app.jimix.app.util.PropertyUtils;
+import org.pcsoft.app.jimix.core.project.JimixElement;
+import org.pcsoft.app.jimix.core.project.JimixLayer;
+import org.pcsoft.app.jimix.plugins.manager.type.JimixEffectInstance;
+import org.pcsoft.app.jimix.plugins.manager.type.JimixFilterInstance;
 import org.pcsoft.framework.jfex.toolbox.ToolBox;
 
 import java.net.URL;
@@ -69,9 +73,8 @@ public class PictureEditorPaneView implements FxmlView<PictureEditorPaneViewMode
         toolBoxRight.getSelectionModel().selectAll();
         toolBoxLeft.getSelectionModel().selectAll();
 
-        lstLayer.selectedLayerProperty().addListener((v, o, n) -> refreshProperties());
-        lstLayer.selectedElementProperty().addListener((v, o, n) -> refreshProperties());
-        lstLayer.selectedFilterProperty().addListener((v, o, n) -> refreshProperties());
+        lstLayer.selectedItemProperty().addListener((v, o, n) -> refreshProperties());
+        viewModel.selectedItemProperty().bind(lstLayer.selectedItemProperty());
     }
 
     private void refreshTransparentGround() {
@@ -92,12 +95,14 @@ public class PictureEditorPaneView implements FxmlView<PictureEditorPaneViewMode
     private void refreshProperties() {
         propSheet.getItems().clear();
 
-        if (lstLayer.getSelectedLayer() != null) {
-            PropertyUtils.addProperties(propSheet, lstLayer.getSelectedLayer().getModel());
-        } else if (lstLayer.getSelectedElement() != null) {
-            PropertyUtils.addProperties(propSheet, lstLayer.getSelectedElement().getModel());
-        } else if (lstLayer.getSelectedFilter() != null) {
-            PropertyUtils.addProperties(propSheet, lstLayer.getSelectedFilter().getConfiguration());
+        if (lstLayer.getSelectedItem() instanceof JimixLayer) {
+            PropertyUtils.addProperties(propSheet, ((JimixLayer)lstLayer.getSelectedItem()).getModel());
+        } else if (lstLayer.getSelectedItem() instanceof JimixElement) {
+            PropertyUtils.addProperties(propSheet, ((JimixElement) lstLayer.getSelectedItem()).getModel());
+        } else if (lstLayer.getSelectedItem() instanceof JimixFilterInstance) {
+            PropertyUtils.addProperties(propSheet, ((JimixFilterInstance) lstLayer.getSelectedItem()).getConfiguration());
+        } else if (lstLayer.getSelectedItem() instanceof JimixEffectInstance) {
+            PropertyUtils.addProperties(propSheet, ((JimixEffectInstance) lstLayer.getSelectedItem()).getConfiguration());
         }
     }
 }

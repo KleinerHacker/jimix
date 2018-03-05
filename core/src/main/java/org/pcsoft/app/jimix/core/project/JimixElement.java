@@ -2,7 +2,7 @@ package org.pcsoft.app.jimix.core.project;
 
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
-import org.pcsoft.app.jimix.plugins.api.model.JimixElementModel;
+import org.pcsoft.app.jimix.project.JimixElementModel;
 
 import java.util.Objects;
 import java.util.UUID;

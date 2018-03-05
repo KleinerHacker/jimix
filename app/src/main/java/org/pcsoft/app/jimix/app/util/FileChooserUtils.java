@@ -2,8 +2,8 @@ package org.pcsoft.app.jimix.app.util;
 
 import javafx.stage.FileChooser;
 import org.pcsoft.app.jimix.app.language.LanguageResources;
-import org.pcsoft.app.jimix.core.plugin.PluginManager;
-import org.pcsoft.app.jimix.core.plugin.type.JimixFileTypeProviderPlugin;
+import org.pcsoft.app.jimix.plugins.manager.PluginManager;
+import org.pcsoft.app.jimix.plugins.manager.type.JimixFileTypeProviderPlugin;
 import org.pcsoft.framework.jfex.util.FXChooserUtils;
 
 import java.io.File;

@@ -1,6 +1,6 @@
 package org.pcsoft.app.jimix.plugins.api.annotation;
 
-import org.pcsoft.app.jimix.plugins.api.model.JimixElementModel;
+import org.pcsoft.app.jimix.plugins.api.type.JimixPluginElement;
 
 import java.lang.annotation.*;
 
@@ -8,5 +8,5 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface JimixElementDrawerDescriptor {
-    Class<? extends JimixElementModel> elementModelClass();
+    Class<? extends JimixPluginElement> elementModelClass();
 }

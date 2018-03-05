@@ -1,2 +1,2 @@
-org.pcsoft.app.jimix.plugin.impl.base.filter.GaussianBlurEffect
-org.pcsoft.app.jimix.plugin.impl.base.filter.MotionBlurEffect
+org.pcsoft.app.jimix.plugin.impl.base.filter.GaussianBlurFilter
+org.pcsoft.app.jimix.plugin.impl.base.filter.MotionBlurFilter

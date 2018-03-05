@@ -6,7 +6,6 @@ import javafx.application.Platform;
 import javafx.beans.Observable;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.BooleanBinding;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
@@ -24,20 +23,20 @@ import javafx.stage.Stage;
 import org.apache.commons.io.FilenameUtils;
 import org.pcsoft.app.jimix.app.ui.component.PictureEditorPane;
 import org.pcsoft.app.jimix.app.ui.component.ProjectInfoPane;
+import org.pcsoft.app.jimix.app.ui.dialog.EffectManagerDialog;
 import org.pcsoft.app.jimix.app.ui.dialog.FilterManagerDialog;
 import org.pcsoft.app.jimix.app.ui.splash.JimixSplash;
 import org.pcsoft.app.jimix.app.util.FileChooserUtils;
 import org.pcsoft.app.jimix.commons.exception.JimixPluginException;
-import org.pcsoft.app.jimix.core.plugin.PluginManager;
-import org.pcsoft.app.jimix.core.plugin.type.JimixClipboardProviderInstance;
-import org.pcsoft.app.jimix.core.plugin.type.JimixClipboardProviderPlugin;
-import org.pcsoft.app.jimix.core.plugin.type.JimixFileTypeProviderInstance;
-import org.pcsoft.app.jimix.core.plugin.type.JimixFilterPlugin;
+import org.pcsoft.app.jimix.core.project.JimixElement;
 import org.pcsoft.app.jimix.core.project.JimixLayer;
 import org.pcsoft.app.jimix.core.project.JimixProject;
 import org.pcsoft.app.jimix.core.project.ProjectManager;
 import org.pcsoft.app.jimix.core.tooling.RecentFileManager;
 import org.pcsoft.app.jimix.core.util.FileTypeUtils;
+import org.pcsoft.app.jimix.core.util.ImageBuilder;
+import org.pcsoft.app.jimix.plugins.manager.PluginManager;
+import org.pcsoft.app.jimix.plugins.manager.type.*;
 import org.pcsoft.framework.jfex.component.StatusProgressIndicatorPane;
 import org.pcsoft.framework.jfex.property.ExtendedWrapperProperty;
 import org.pcsoft.framework.jfex.threading.JfxUiThreadPool;
@@ -150,6 +149,10 @@ public class MainWindowView implements FxmlView<MainWindowViewModel>, Initializa
     private MenuItem miLayerMirrorHorizontal;
     @FXML
     private MenuItem miLayerMirrorVertical;
+    @FXML
+    private Menu mnuEffect;
+    @FXML
+    private MenuItem miEffectManager;
     //</editor-fold>
 
     //<editor-fold desc="Toolbar">
@@ -169,6 +172,10 @@ public class MainWindowView implements FxmlView<MainWindowViewModel>, Initializa
     private Button btnCopy;
     @FXML
     private MenuButton btnPaste;
+    @FXML
+    private Button btnFilterManager;
+    @FXML
+    private Button btnEffectManager;
     //</editor-fold>
 
     @InjectViewModel
@@ -176,21 +183,23 @@ public class MainWindowView implements FxmlView<MainWindowViewModel>, Initializa
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        final TopLayerBooleanProperty topLayerBooleanProperty = new TopLayerBooleanProperty();
+        final TopLayerSelectedBooleanProperty topLayerSelectedBooleanProperty = new TopLayerSelectedBooleanProperty();
+        final ElementSelectedBooleanProperty elementSelectedBooleanProperty = new ElementSelectedBooleanProperty();
         final MenuEmptyBooleanProperty menuEmptyBooleanProperty = new MenuEmptyBooleanProperty();
 
         mnuPicture.disableProperty().bind(tabPicture.getSelectionModel().selectedItemProperty().isNull());
         mnuLayer.disableProperty().bind(tabPicture.getSelectionModel().selectedItemProperty().isNull());
-        mnuFilter.disableProperty().bind(topLayerBooleanProperty);
+        mnuFilter.disableProperty().bind(topLayerSelectedBooleanProperty.not());
+        mnuEffect.disableProperty().bind(elementSelectedBooleanProperty.not());
         miClose.disableProperty().bind(tabPicture.getSelectionModel().selectedItemProperty().isNull());
         miSave.disableProperty().bind(tabPicture.getSelectionModel().selectedItemProperty().isNull());
         miSaveAs.disableProperty().bind(tabPicture.getSelectionModel().selectedItemProperty().isNull());
         mnuEdit.disableProperty().bind(tabPicture.getSelectionModel().selectedItemProperty().isNull());
-        mnuPaste.disableProperty().bind(topLayerBooleanProperty.or(menuEmptyBooleanProperty));
-        miLayerTurnLeft.disableProperty().bind(topLayerBooleanProperty);
-        miLayerTurnRight.disableProperty().bind(topLayerBooleanProperty);
-        miLayerMirrorHorizontal.disableProperty().bind(topLayerBooleanProperty);
-        miLayerMirrorVertical.disableProperty().bind(topLayerBooleanProperty);
+        mnuPaste.disableProperty().bind(Bindings.or(topLayerSelectedBooleanProperty.not(), menuEmptyBooleanProperty.toBinding()));
+        miLayerTurnLeft.disableProperty().bind(topLayerSelectedBooleanProperty.not());
+        miLayerTurnRight.disableProperty().bind(topLayerSelectedBooleanProperty.not());
+        miLayerMirrorHorizontal.disableProperty().bind(topLayerSelectedBooleanProperty.not());
+        miLayerMirrorVertical.disableProperty().bind(topLayerSelectedBooleanProperty.not());
 
         btnNewEmpty.disableProperty().bind(miProjectNewEmpty.disableProperty().or(mnuFile.disableProperty()));
         btnOpen.disableProperty().bind(miOpen.disableProperty().or(mnuFile.disableProperty()));
@@ -201,11 +210,14 @@ public class MainWindowView implements FxmlView<MainWindowViewModel>, Initializa
         btnCopy.disableProperty().bind(miCopy.disableProperty().or(mnuEdit.disableProperty()));
         btnPaste.disableProperty().bind(mnuPaste.disableProperty().or(mnuEdit.disableProperty()));
         Bindings.bindContent(btnPaste.getItems(), mnuPaste.getItems());
+        btnFilterManager.disableProperty().bind(miFilterManager.disableProperty().or(mnuFilter.disableProperty()));
+        btnEffectManager.disableProperty().bind(miEffectManager.disableProperty().or(mnuEffect.disableProperty()));
 
         refreshRecentMenu();
         RecentFileManager.getInstance().addListener(c -> refreshRecentMenu());
 
         buildFilterMenu();
+        buildEffectMenu();
         buildPasteMenu();
 
         viewModel.getProjectList().addListener((ListChangeListener<JimixProject>) c -> {
@@ -260,23 +272,47 @@ public class MainWindowView implements FxmlView<MainWindowViewModel>, Initializa
     private void buildFilterMenu() {
         final Map<String, Menu> menuMap = new HashMap<>();
 
-        for (final JimixFilterPlugin filterInstance : PluginManager.getInstance().getAllFilters()) {
-            final MenuItem menuItem = new MenuItem(filterInstance.getName());
-            if (filterInstance.getIcon() != null) {
-                menuItem.setGraphic(new ImageView(filterInstance.getIcon()));
+        for (final JimixFilterPlugin filterPlugin : PluginManager.getInstance().getAllFilters()) {
+            final MenuItem menuItem = new MenuItem(filterPlugin.getName());
+            if (filterPlugin.getIcon() != null) {
+                menuItem.setGraphic(new ImageView(filterPlugin.getIcon()));
             }
-            menuItem.setUserData(filterInstance);
+            menuItem.setUserData(filterPlugin);
             menuItem.setOnAction(this::onActionPictureFilter);
 
-            if (filterInstance.getGroup() == null) {
+            if (filterPlugin.getGroup() == null) {
                 mnuFilter.getItems().add(menuItem);
             } else {
-                if (!menuMap.containsKey(filterInstance.getGroup())) {
-                    final Menu menu = new Menu(filterInstance.getGroup());
-                    menuMap.put(filterInstance.getGroup(), menu);
+                if (!menuMap.containsKey(filterPlugin.getGroup())) {
+                    final Menu menu = new Menu(filterPlugin.getGroup());
+                    menuMap.put(filterPlugin.getGroup(), menu);
                     mnuFilter.getItems().add(menu);
                 }
-                menuMap.get(filterInstance.getGroup()).getItems().add(menuItem);
+                menuMap.get(filterPlugin.getGroup()).getItems().add(menuItem);
+            }
+        }
+    }
+
+    private void buildEffectMenu() {
+        final Map<String, Menu> menuMap = new HashMap<>();
+
+        for (final JimixEffectPlugin effectPlugin : PluginManager.getInstance().getAllEffects()) {
+            final MenuItem menuItem = new MenuItem(effectPlugin.getName());
+            if (effectPlugin.getIcon() != null) {
+                menuItem.setGraphic(new ImageView(effectPlugin.getIcon()));
+            }
+            menuItem.setUserData(effectPlugin);
+            menuItem.setOnAction(this::onActionPictureEffect);
+
+            if (effectPlugin.getGroup() == null) {
+                mnuEffect.getItems().add(menuItem);
+            } else {
+                if (!menuMap.containsKey(effectPlugin.getGroup())) {
+                    final Menu menu = new Menu(effectPlugin.getGroup());
+                    menuMap.put(effectPlugin.getGroup(), menu);
+                    mnuEffect.getItems().add(menu);
+                }
+                menuMap.get(effectPlugin.getGroup()).getItems().add(menuItem);
             }
         }
     }
@@ -424,13 +460,28 @@ public class MainWindowView implements FxmlView<MainWindowViewModel>, Initializa
         if (tab == null)
             return;
         final PictureEditorPane pictureEditorPane = (PictureEditorPane) tab.getContent();
-        final JimixFilterPlugin filterInstance = (JimixFilterPlugin) ((MenuItem) actionEvent.getSource()).getUserData();
+        final JimixFilterPlugin filterPlugin = (JimixFilterPlugin) ((MenuItem) actionEvent.getSource()).getUserData();
 
         try {
-            pictureEditorPane.getSelectedTopLayer().getModel().getFilterList().add(filterInstance.createInstance());
+            pictureEditorPane.getSelectedTopLayer().getModel().getFilterList().add(filterPlugin.createInstance());
         } catch (JimixPluginException e) {
-            LOGGER.error("Unable to create filter instance " + filterInstance.getIdentifier(), e);
+            LOGGER.error("Unable to create filter instance " + filterPlugin.getIdentifier(), e);
             new Alert(Alert.AlertType.ERROR, "Unable to create filter instance: " + e.getMessage(), ButtonType.OK).showAndWait();
+        }
+    }
+
+    private void onActionPictureEffect(ActionEvent actionEvent) {
+        final Tab tab = tabPicture.getSelectionModel().getSelectedItem();
+        if (tab == null)
+            return;
+        final PictureEditorPane pictureEditorPane = (PictureEditorPane) tab.getContent();
+        final JimixEffectPlugin effectPlugin = (JimixEffectPlugin) ((MenuItem) actionEvent.getSource()).getUserData();
+
+        try {
+            ((JimixElement)pictureEditorPane.getSelectedItem()).getModel().getEffectList().add(effectPlugin.createInstance());
+        } catch (JimixPluginException e) {
+            LOGGER.error("Unable to create effect instance " + effectPlugin.getIdentifier(), e);
+            new Alert(Alert.AlertType.ERROR, "Unable to create effect instance: " + e.getMessage(), ButtonType.OK).showAndWait();
         }
     }
 
@@ -606,6 +657,22 @@ public class MainWindowView implements FxmlView<MainWindowViewModel>, Initializa
         topLayer.mirrorVertical();
     }
 
+    @FXML
+    private void onActionEffectManager(ActionEvent actionEvent) {
+        final Tab tab = tabPicture.getSelectionModel().getSelectedItem();
+        if (tab == null)
+            return;
+        if (!(((PictureEditorPane) tab.getContent()).getSelectedItem() instanceof JimixElement))
+            return;
+        final JimixElement element = (JimixElement) ((PictureEditorPane) tab.getContent()).getSelectedItem();
+
+        final Image image = ImageBuilder.getInstance().buildElementImage(element);
+        final Optional<EffectManagerDialog.Result> result = new EffectManagerDialog(pnlRoot.getScene().getWindow(), image).showAndWait();
+        if (result.isPresent()) {
+            element.getModel().getEffectList().add(result.get().getInstance());
+        }
+    }
+
     //</editor-fold>
 
     //<editor-fold desc="Open / Save Picture">
@@ -662,9 +729,43 @@ public class MainWindowView implements FxmlView<MainWindowViewModel>, Initializa
     //</editor-fold>
 
     //<editor-fold desc="Local Helper Properties">
-    private final class TopLayerBooleanProperty extends ExtendedWrapperProperty<Boolean> {
+    private final class ElementSelectedBooleanProperty extends ExtendedWrapperProperty<Boolean> {
+        public ElementSelectedBooleanProperty() {
+            super(tabPicture.getSelectionModel().selectedIndexProperty());
 
-        private TopLayerBooleanProperty() {
+            tabPicture.getSelectionModel().selectedItemProperty().addListener((v, o, n) -> {
+                if (o != null) {
+                    ((PictureEditorPane) o.getContent()).selectedItemProperty().removeListener(this::invalidated);
+                }
+                if (n != null) {
+                    ((PictureEditorPane) n.getContent()).selectedItemProperty().addListener(this::invalidated);
+                }
+            });
+        }
+
+        public BooleanBinding not() {
+            return Bindings.createBooleanBinding(() -> !getValue(), this);
+        }
+
+        @Override
+        protected Boolean getPseudoValue() {
+            return tabPicture.getSelectionModel().getSelectedItem() != null &&
+                    ((PictureEditorPane) tabPicture.getSelectionModel().getSelectedItem().getContent()).getSelectedItem() instanceof JimixElement;
+        }
+
+        @Override
+        protected void setPseudoValue(Boolean value) {
+            throw new RuntimeException("Not Supported");
+        }
+
+        private void invalidated(Observable obs) {
+            fireValueChangedEvent();
+        }
+    }
+
+    private final class TopLayerSelectedBooleanProperty extends ExtendedWrapperProperty<Boolean> {
+
+        private TopLayerSelectedBooleanProperty() {
             super(tabPicture.getSelectionModel().selectedItemProperty());
 
             tabPicture.getSelectionModel().selectedItemProperty().addListener((v, o, n) -> {
@@ -677,14 +778,14 @@ public class MainWindowView implements FxmlView<MainWindowViewModel>, Initializa
             });
         }
 
-        public BooleanBinding or(ObservableValue<Boolean> value) {
-            return Bindings.createBooleanBinding(() -> getValue() || value.getValue(), this, value);
+        public BooleanBinding not() {
+            return Bindings.createBooleanBinding(() -> !getValue(), this);
         }
 
         @Override
         protected Boolean getPseudoValue() {
-            return tabPicture.getSelectionModel().getSelectedItem() == null ||
-                    ((PictureEditorPane) tabPicture.getSelectionModel().getSelectedItem().getContent()).getSelectedTopLayer() == null;
+            return tabPicture.getSelectionModel().getSelectedItem() != null &&
+                    ((PictureEditorPane) tabPicture.getSelectionModel().getSelectedItem().getContent()).getSelectedTopLayer() != null;
         }
 
         @Override
@@ -719,8 +820,8 @@ public class MainWindowView implements FxmlView<MainWindowViewModel>, Initializa
             });
         }
 
-        public BooleanBinding or(ObservableValue<Boolean> value) {
-            return Bindings.createBooleanBinding(() -> getValue() || value.getValue(), this, value);
+        public BooleanBinding toBinding() {
+            return Bindings.createBooleanBinding(this::getValue, this);
         }
 
         @Override

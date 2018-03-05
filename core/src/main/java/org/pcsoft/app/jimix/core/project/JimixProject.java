@@ -12,9 +12,14 @@ import javafx.scene.image.Image;
 import javafx.util.Callback;
 import org.apache.commons.lang.ArrayUtils;
 import org.pcsoft.app.jimix.core.util.ImageBuilder;
+import org.pcsoft.app.jimix.project.JimixLayerModel;
+import org.pcsoft.app.jimix.project.JimixProjectModel;
 
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
 
 /**
  * Project host for the {@link JimixProjectModel} self, with additional app internal information

@@ -5,17 +5,17 @@
 <?import javafx.scene.image.*?>
 <?import javafx.scene.layout.*?>
 <?import org.pcsoft.app.jimix.app.ui.component.FilterList?>
-<?import org.pcsoft.app.jimix.app.ui.component.FilterVariantComboBox?>
+<?import org.pcsoft.app.jimix.app.ui.component.VariantComboBox?>
 <?import org.pcsoft.app.jimix.app.ui.component.prop_sheet.JimixPropertySheet?>
 <SplitPane xmlns="http://javafx.com/javafx"
            xmlns:fx="http://javafx.com/fxml"
            fx:controller="org.pcsoft.app.jimix.app.ui.dialog.FilterManagerDialogView"
-           prefHeight="500.0" prefWidth="800.0">
+           prefHeight="768.0" prefWidth="1024.0">
     <FilterList fx:id="lstFilter" minWidth="150"/>
-    <VBox alignment="CENTER">
+    <VBox fx:id="pnlPreview" alignment="CENTER">
         <HBox spacing="2.0" alignment="CENTER_LEFT">
             <Label text="Variants: "/>
-            <FilterVariantComboBox fx:id="cmbVariants" maxWidth=".7976931348623157E308" HBox.hgrow="ALWAYS"/>
+            <VariantComboBox fx:id="cmbVariants" maxWidth=".7976931348623157E308" HBox.hgrow="ALWAYS"/>
             <Button fx:id="btnAdd" onAction="#onActionAddVariant">
                 <graphic>
                     <ImageView>
@@ -37,10 +37,10 @@
                 </tooltip>
             </Button>
             <VBox.margin>
-                <Insets left="5.0"/>
+                <Insets left="5.0" bottom="5.0"/>
             </VBox.margin>
         </HBox>
-        <Separator orientation="VERTICAL"/>
+        <Separator/>
         <ImageView fx:id="imgPreview" fitWidth="500" fitHeight="300" preserveRatio="true">
             <VBox.margin>
                 <Insets left="5.0" top="5.0" right="5.0" bottom="5.0"/>

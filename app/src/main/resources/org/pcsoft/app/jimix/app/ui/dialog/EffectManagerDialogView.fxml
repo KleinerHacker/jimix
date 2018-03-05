@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import org.pcsoft.app.jimix.app.ui.component.EffectList?>
+<?import org.pcsoft.app.jimix.app.ui.component.prop_sheet.JimixPropertySheet?>
+<?import org.pcsoft.app.jimix.app.ui.component.VariantComboBox?>
+<SplitPane xmlns="http://javafx.com/javafx"
+           xmlns:fx="http://javafx.com/fxml"
+           fx:controller="org.pcsoft.app.jimix.app.ui.dialog.EffectManagerDialogView"
+           prefHeight="768.0" prefWidth="1024.0">
+    <EffectList fx:id="lstEffect" minWidth="150"/>
+    <VBox fx:id="pnlPreview" alignment="CENTER">
+        <HBox spacing="2.0" alignment="CENTER_LEFT">
+            <Label text="Variants: "/>
+            <VariantComboBox fx:id="cmbVariants" maxWidth=".7976931348623157E308" HBox.hgrow="ALWAYS"/>
+            <Button fx:id="btnAdd" onAction="#onActionAddVariant">
+                <graphic>
+                    <ImageView>
+                        <Image url="@/icons/ic_add16.png"/>
+                    </ImageView>
+                </graphic>
+                <tooltip>
+                    <Tooltip text="Add Variant"/>
+                </tooltip>
+            </Button>
+            <Button fx:id="btnRemove" onAction="#onActionRemoveVariant">
+                <graphic>
+                    <ImageView>
+                        <Image url="@/icons/ic_remove16.png"/>
+                    </ImageView>
+                </graphic>
+                <tooltip>
+                    <Tooltip text="Remove Variant"/>
+                </tooltip>
+            </Button>
+            <VBox.margin>
+                <Insets left="5.0" bottom="5.0"/>
+            </VBox.margin>
+        </HBox>
+        <Separator/>
+        <ImageView fx:id="imgPreview" fitWidth="500" fitHeight="300" preserveRatio="true">
+            <VBox.margin>
+                <Insets left="5.0" top="5.0" right="5.0" bottom="5.0"/>
+            </VBox.margin>
+        </ImageView>
+        <Slider fx:id="sldZoom" min="1" max="5" value="2"/>
+        <JimixPropertySheet fx:id="propSheet" mode="CATEGORY" maxHeight="1.7976931348623157E308" VBox.vgrow="ALWAYS"/>
+    </VBox>
+</SplitPane>

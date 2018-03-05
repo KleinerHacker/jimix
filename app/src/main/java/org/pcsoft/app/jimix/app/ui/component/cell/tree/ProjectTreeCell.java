@@ -5,9 +5,10 @@ import javafx.scene.image.ImageView;
 import org.pcsoft.app.jimix.app.item.tree.*;
 import org.pcsoft.app.jimix.app.ui.component.cell.pane.ElementTreeCellPane;
 import org.pcsoft.app.jimix.app.ui.component.cell.pane.LayerTreeCellPane;
-import org.pcsoft.app.jimix.core.plugin.type.JimixFilterInstance;
 import org.pcsoft.app.jimix.core.project.JimixElement;
 import org.pcsoft.app.jimix.core.project.JimixLayer;
+import org.pcsoft.app.jimix.plugins.manager.type.JimixEffectInstance;
+import org.pcsoft.app.jimix.plugins.manager.type.JimixFilterInstance;
 
 public class ProjectTreeCell extends TreeCell<Object> {
     private final LayerTreeCellPane layerPane = new LayerTreeCellPane();
@@ -33,6 +34,11 @@ public class ProjectTreeCell extends TreeCell<Object> {
                 setGraphic(new ImageView(((JimixFilterInstance) item).getPlugin().getIcon()));
             } else if (getTreeItem() instanceof FilterRootTreeItem) {
                 setText("Filters");
+            } else if (getTreeItem() instanceof EffectRootTreeItem) {
+                setText("Effects");
+            } else if (getTreeItem() instanceof EffectTreeItem) {
+                setText(((JimixEffectInstance) item).getPlugin().getName());
+                setGraphic(new ImageView(((JimixEffectInstance) item).getPlugin().getIcon()));
             }
         }
     }

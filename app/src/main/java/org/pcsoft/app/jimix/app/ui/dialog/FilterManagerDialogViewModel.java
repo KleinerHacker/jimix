@@ -9,7 +9,7 @@ import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.image.Image;
 import org.pcsoft.app.jimix.commons.exception.JimixPluginExecutionException;
-import org.pcsoft.app.jimix.core.plugin.type.JimixFilterInstance;
+import org.pcsoft.app.jimix.plugins.manager.type.JimixFilterInstance;
 import org.pcsoft.app.jimix.plugins.api.type.JimixSource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

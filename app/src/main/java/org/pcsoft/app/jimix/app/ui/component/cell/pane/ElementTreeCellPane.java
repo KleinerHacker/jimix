@@ -7,7 +7,6 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.layout.HBox;
 import org.pcsoft.app.jimix.app.language.LanguageResources;
 import org.pcsoft.app.jimix.core.project.JimixElement;
-import org.pcsoft.app.jimix.core.plugin.builtin.model.JimixImageElementModel;
 
 public class ElementTreeCellPane extends HBox {
     private final ElementTreeCellPaneView controller;
@@ -27,11 +26,9 @@ public class ElementTreeCellPane extends HBox {
             }
 
             if (n != null) {
-                viewModel.setTitle(n.getModel() instanceof JimixImageElementModel ? "Image" : "");//TODO
+                viewModel.setTitle(n.getModel().getPluginElement().getName());
                 viewModel.visibilityProperty().bindBidirectional(n.getModel().visibilityProperty());
-                if (n.getModel() instanceof JimixImageElementModel) {
-                    viewModel.previewProperty().bind(((JimixImageElementModel) n.getModel()).valueProperty());
-                }
+                viewModel.previewProperty().bind(n.getModel().getPluginElement().previewProperty());
             }
         });
     }

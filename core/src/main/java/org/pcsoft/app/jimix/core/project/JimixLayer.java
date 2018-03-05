@@ -14,7 +14,8 @@ import javafx.scene.transform.Transform;
 import javafx.util.Callback;
 import org.apache.commons.lang.ArrayUtils;
 import org.pcsoft.app.jimix.core.util.ImageBuilder;
-import org.pcsoft.app.jimix.plugins.api.model.JimixElementModel;
+import org.pcsoft.app.jimix.project.JimixElementModel;
+import org.pcsoft.app.jimix.project.JimixLayerModel;
 
 import java.util.*;
 
