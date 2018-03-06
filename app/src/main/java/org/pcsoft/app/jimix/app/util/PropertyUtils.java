@@ -7,6 +7,7 @@ import org.controlsfx.control.PropertySheet;
 import org.controlsfx.property.editor.AbstractPropertyEditor;
 import org.pcsoft.app.jimix.app.language.LanguageResources;
 import org.pcsoft.app.jimix.app.ui.component.prop_sheet.JimixPropertySheet;
+import org.pcsoft.app.jimix.commons.exception.JimixPropertyException;
 import org.pcsoft.app.jimix.plugin.common.api.annotation.JimixProperty;
 import org.pcsoft.app.jimix.plugin.common.api.annotation.JimixPropertyDoubleRestriction;
 import org.pcsoft.app.jimix.plugin.common.api.annotation.JimixPropertyIntegerRestriction;
@@ -34,12 +35,24 @@ public final class PropertyUtils {
                         resourceBundle = null;
                     }
 
+                    final ObservableValue observable;
+                    if (ObservableValue.class.isAssignableFrom(field.getType())) {
+                        try {
+                            field.setAccessible(true);
+                            observable = (ObservableValue) field.get(model);
+                        } catch (IllegalAccessException e) {
+                            throw new JimixPropertyException("Unable to get observable from field: " + field.getDeclaringClass().getName() + "#" + field.getName(), e);
+                        }
+                    } else {
+                        observable = null;
+                    }
+
                     final SimpleProperty<Object> sheetItem = new SimpleProperty<Object>(property.fieldType(),
                             resourceBundle == null ? property.name() : resourceBundle.getString(property.name()),
                             resourceBundle == null ? property.description() : resourceBundle.getString(property.description()),
                             StringUtils.isEmpty(property.category()) ? LanguageResources.getText("common.property.category.default") :
                                     resourceBundle == null ? property.category() : resourceBundle.getString(property.category()),
-                            () -> getValueFromField(model, field), v -> setValueToField(model, field, v));
+                            () -> getValueFromField(model, field), v -> setValueToField(model, field, v), observable);
 
                     if (integerRestriction != null) {
                         buildIntegerRestriction(propertySheet, sheetItem, integerRestriction);
@@ -110,21 +123,21 @@ public final class PropertyUtils {
     //</editor-fold>
 
     //<editor-fold desc="Helper Methods">
-    private static void setValueToField(Object model, Field field, Object v) {
+    private static void setValueToField(Object model, Field field, Object v) throws JimixPropertyException {
         try {
             final PropertyDescriptor descriptor = org.apache.commons.beanutils.PropertyUtils.getPropertyDescriptor(model, field.getName());
             descriptor.getWriteMethod().invoke(model, v);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new JimixPropertyException("Unable to set value to field: " + field.getDeclaringClass().getName() + "#" + field.getName(), e);
         }
     }
 
-    private static Object getValueFromField(Object model, Field field) {
+    private static Object getValueFromField(Object model, Field field) throws JimixPropertyException {
         try {
             final PropertyDescriptor descriptor = org.apache.commons.beanutils.PropertyUtils.getPropertyDescriptor(model, field.getName());
             return descriptor.getReadMethod().invoke(model);
         } catch (Exception e) {
-            throw new RuntimeException(e);
+            throw new JimixPropertyException("Unable to get value from field: " + field.getDeclaringClass().getName() + "#" + field.getName(), e);
         }
     }
     //</editor-fold>

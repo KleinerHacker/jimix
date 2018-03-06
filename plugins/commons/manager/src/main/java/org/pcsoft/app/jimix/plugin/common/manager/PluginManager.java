@@ -6,4 +6,5 @@ import java.util.List;
 
 public interface PluginManager {
     void init(final List<File> pluginPathList) throws IOException;
+    ClassLoader getClassLoader();
 }

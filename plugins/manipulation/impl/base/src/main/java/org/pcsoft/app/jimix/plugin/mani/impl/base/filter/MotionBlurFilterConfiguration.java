@@ -7,6 +7,8 @@ import org.pcsoft.app.jimix.plugin.common.api.annotation.JimixProperty;
 import org.pcsoft.app.jimix.plugin.common.api.annotation.JimixPropertyDoubleRestriction;
 import org.pcsoft.app.jimix.plugin.mani.api.config.JimixFilterConfiguration;
 
+import java.io.*;
+
 public class MotionBlurFilterConfiguration implements JimixFilterConfiguration<MotionBlurFilterConfiguration> {
     @JimixProperty(fieldType = double.class, name = "Radius", description = "Radius of blur", category = "View")
     @JimixPropertyDoubleRestriction(minValue = 0.1d, maxValue = 50d)
@@ -21,6 +23,7 @@ public class MotionBlurFilterConfiguration implements JimixFilterConfiguration<M
 
     /**
      * Radius of blur
+     *
      * @return
      */
     public DoubleProperty radiusProperty() {
@@ -37,6 +40,7 @@ public class MotionBlurFilterConfiguration implements JimixFilterConfiguration<M
 
     /**
      * Angle of motion
+     *
      * @return
      */
     public DoubleProperty angleProperty() {
@@ -54,8 +58,29 @@ public class MotionBlurFilterConfiguration implements JimixFilterConfiguration<M
     }
 
     @Override
+    public MotionBlurFilterConfiguration copy() {
+        final MotionBlurFilterConfiguration configuration = new MotionBlurFilterConfiguration();
+        configuration.angle.set(this.angle.get());
+        configuration.radius.set(this.radius.get());
+
+        return configuration;
+    }
+
+    @Override
+    public void save(ObjectOutputStream out) throws IOException {
+        out.writeDouble(this.angle.get());
+        out.writeDouble(this.radius.get());
+    }
+
+    @Override
+    public void load(ObjectInputStream in) throws IOException {
+        this.angle.set(in.readDouble());
+        this.radius.set(in.readDouble());
+    }
+
+    @Override
     public Observable[] getObservables() {
-        return new Observable[] {
+        return new Observable[]{
                 radius, angle
         };
     }

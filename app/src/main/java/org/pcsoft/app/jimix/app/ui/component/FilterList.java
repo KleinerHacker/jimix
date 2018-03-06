@@ -26,20 +26,21 @@ public class FilterList extends ListViewEx<JimixFilterInstance, String> {
         setHeaderCellRendererCallback(this::drawHeader);
         setValueComparator(Comparator.comparing(o -> o.getPlugin().getName()));
         setValueCellRendererCallback(this::drawValue);
+        getItems().setAll(extractFilters());
+    }
 
-        setItemLoader(() -> {
-            final List<JimixFilterInstance> instanceList = new ArrayList<>();
-            for (final JimixFilterPlugin plugin : ManipulationPluginManager.getInstance().getAllFilters()) {
-                try {
-                    final JimixFilterInstance instance = plugin.createInstance();
-                    instanceList.add(instance);
-                } catch (JimixPluginException e) {
-                    LOGGER.error("Unable to create instance for filter " + plugin.getIdentifier() + ", skip", e);
-                    continue;
-                }
+    private List<JimixFilterInstance> extractFilters() {
+        final List<JimixFilterInstance> instanceList = new ArrayList<>();
+        for (final JimixFilterPlugin plugin : ManipulationPluginManager.getInstance().getAllFilters()) {
+            try {
+                final JimixFilterInstance instance = plugin.createInstance();
+                instanceList.add(instance);
+            } catch (JimixPluginException e) {
+                LOGGER.error("Unable to create instance for filter " + plugin.getIdentifier() + ", skip", e);
+                continue;
             }
-            return instanceList;
-        });
+        }
+        return instanceList;
     }
 
     private void drawValue(ListCell cell, JimixFilterInstance item, boolean empty) {

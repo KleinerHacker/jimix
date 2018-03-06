@@ -5,7 +5,6 @@ import de.saxsys.mvvmfx.InjectViewModel;
 import javafx.application.Platform;
 import javafx.beans.Observable;
 import javafx.beans.binding.Bindings;
-import javafx.beans.binding.BooleanBinding;
 import javafx.collections.ListChangeListener;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.event.ActionEvent;
@@ -43,6 +42,7 @@ import org.pcsoft.app.jimix.project.JimixProjectModel;
 import org.pcsoft.framework.jfex.component.StatusProgressIndicatorPane;
 import org.pcsoft.framework.jfex.property.ExtendedWrapperProperty;
 import org.pcsoft.framework.jfex.threading.JfxUiThreadPool;
+import org.pcsoft.framework.jfex.util.BindingsEx;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -192,17 +192,17 @@ public class MainWindowView implements FxmlView<MainWindowViewModel>, Initializa
 
         mnuPicture.disableProperty().bind(tabPicture.getSelectionModel().selectedItemProperty().isNull());
         mnuLayer.disableProperty().bind(tabPicture.getSelectionModel().selectedItemProperty().isNull());
-        mnuFilter.disableProperty().bind(topLayerSelectedBooleanProperty.not());
-        mnuEffect.disableProperty().bind(elementSelectedBooleanProperty.not());
+        mnuFilter.disableProperty().bind(BindingsEx.not(topLayerSelectedBooleanProperty));
+        mnuEffect.disableProperty().bind(BindingsEx.not(elementSelectedBooleanProperty));
         miClose.disableProperty().bind(tabPicture.getSelectionModel().selectedItemProperty().isNull());
         miSave.disableProperty().bind(tabPicture.getSelectionModel().selectedItemProperty().isNull());
         miSaveAs.disableProperty().bind(tabPicture.getSelectionModel().selectedItemProperty().isNull());
         mnuEdit.disableProperty().bind(tabPicture.getSelectionModel().selectedItemProperty().isNull());
-        mnuPaste.disableProperty().bind(Bindings.or(topLayerSelectedBooleanProperty.not(), menuEmptyBooleanProperty.toBinding()));
-        miLayerTurnLeft.disableProperty().bind(topLayerSelectedBooleanProperty.not());
-        miLayerTurnRight.disableProperty().bind(topLayerSelectedBooleanProperty.not());
-        miLayerMirrorHorizontal.disableProperty().bind(topLayerSelectedBooleanProperty.not());
-        miLayerMirrorVertical.disableProperty().bind(topLayerSelectedBooleanProperty.not());
+        mnuPaste.disableProperty().bind(Bindings.or(BindingsEx.not(topLayerSelectedBooleanProperty), BindingsEx.convert(menuEmptyBooleanProperty)));
+        miLayerTurnLeft.disableProperty().bind(BindingsEx.not(topLayerSelectedBooleanProperty));
+        miLayerTurnRight.disableProperty().bind(BindingsEx.not(topLayerSelectedBooleanProperty));
+        miLayerMirrorHorizontal.disableProperty().bind(BindingsEx.not(topLayerSelectedBooleanProperty));
+        miLayerMirrorVertical.disableProperty().bind(BindingsEx.not(topLayerSelectedBooleanProperty));
 
         btnNewEmpty.disableProperty().bind(miProjectNewEmpty.disableProperty().or(mnuFile.disableProperty()));
         btnOpen.disableProperty().bind(miOpen.disableProperty().or(mnuFile.disableProperty()));
@@ -752,7 +752,7 @@ public class MainWindowView implements FxmlView<MainWindowViewModel>, Initializa
     //<editor-fold desc="Local Helper Properties">
     private final class ElementSelectedBooleanProperty extends ExtendedWrapperProperty<Boolean> {
         public ElementSelectedBooleanProperty() {
-            super(tabPicture.getSelectionModel().selectedIndexProperty());
+            super(tabPicture.getSelectionModel().selectedItemProperty());
 
             tabPicture.getSelectionModel().selectedItemProperty().addListener((v, o, n) -> {
                 if (o != null) {
@@ -762,10 +762,6 @@ public class MainWindowView implements FxmlView<MainWindowViewModel>, Initializa
                     ((PictureEditorPane) n.getContent()).selectedItemProperty().addListener(this::invalidated);
                 }
             });
-        }
-
-        public BooleanBinding not() {
-            return Bindings.createBooleanBinding(() -> !getValue(), this);
         }
 
         @Override
@@ -797,10 +793,6 @@ public class MainWindowView implements FxmlView<MainWindowViewModel>, Initializa
                     ((PictureEditorPane) n.getContent()).selectedTopLayerProperty().addListener(this::invalidated);
                 }
             });
-        }
-
-        public BooleanBinding not() {
-            return Bindings.createBooleanBinding(() -> !getValue(), this);
         }
 
         @Override
@@ -839,10 +831,6 @@ public class MainWindowView implements FxmlView<MainWindowViewModel>, Initializa
                     }
                 }
             });
-        }
-
-        public BooleanBinding toBinding() {
-            return Bindings.createBooleanBinding(this::getValue, this);
         }
 
         @Override

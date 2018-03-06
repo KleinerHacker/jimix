@@ -8,7 +8,9 @@ import javafx.beans.property.SimpleObjectProperty;
 import org.pcsoft.app.jimix.plugin.common.api.annotation.JimixProperty;
 import org.pcsoft.app.jimix.plugin.mani.api.config.JimixRendererConfiguration;
 
-public class NoiseRendererConfiguration implements JimixRendererConfiguration {
+import java.io.*;
+
+public class NoiseRendererConfiguration implements JimixRendererConfiguration<NoiseRendererConfiguration> {
     @JimixProperty(fieldType = boolean.class, name = "Colored", description = "Noise with color or not")
     private final BooleanProperty colored = new SimpleBooleanProperty(true);
     @JimixProperty(fieldType = Long.class, name = "Base Value", description = "Base value for random")
@@ -39,8 +41,35 @@ public class NoiseRendererConfiguration implements JimixRendererConfiguration {
     }
 
     @Override
+    public void update(NoiseRendererConfiguration newConfiguration) {
+        this.colored.set(newConfiguration.colored.get());
+        this.randomBaseValue.set(newConfiguration.randomBaseValue.get());
+    }
+
+    @Override
+    public NoiseRendererConfiguration copy() {
+        final NoiseRendererConfiguration configuration = new NoiseRendererConfiguration();
+        configuration.colored.set(this.colored.get());
+        configuration.randomBaseValue.set(this.randomBaseValue.get());
+
+        return configuration;
+    }
+
+    @Override
+    public void save(ObjectOutputStream out) throws IOException {
+        out.writeBoolean(this.colored.get());
+        out.writeLong(this.randomBaseValue.get());
+    }
+
+    @Override
+    public void load(ObjectInputStream in) throws IOException {
+        this.colored.set(in.readBoolean());
+        this.randomBaseValue.set(in.readLong());
+    }
+
+    @Override
     public Observable[] getObservables() {
-        return new Observable[] {
+        return new Observable[]{
                 colored, randomBaseValue
         };
     }

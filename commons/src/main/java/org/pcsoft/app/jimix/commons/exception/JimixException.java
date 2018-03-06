@@ -1,6 +1,6 @@
 package org.pcsoft.app.jimix.commons.exception;
 
-public class JimixException extends Exception {
+public class JimixException extends RuntimeException {
     public JimixException() {
     }
 

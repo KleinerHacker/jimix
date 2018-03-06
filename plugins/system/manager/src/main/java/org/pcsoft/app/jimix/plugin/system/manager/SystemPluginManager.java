@@ -28,6 +28,8 @@ public final class SystemPluginManager implements PluginManager {
     private final Map<String, JimixImageFileTypeProviderPlugin> imageFileTypeProviderMap = new HashMap<>();
     private final Map<String, JimixProjectFileTypeProviderPlugin> projectFileTypeProviderMap = new HashMap<>();
 
+    private ClassLoader classLoader;
+
     private SystemPluginManager() {
     }
 
@@ -43,7 +45,7 @@ public final class SystemPluginManager implements PluginManager {
             pluginUrlList.add(pluginPath.toURI().toURL());
         }
 
-        final ClassLoader classLoader = new URLClassLoader(pluginUrlList.toArray(new URL[pluginUrlList.size()]),
+        classLoader = new URLClassLoader(pluginUrlList.toArray(new URL[pluginUrlList.size()]),
                 SystemPluginManager.class.getClassLoader());
 
         loadImageFileTypeProvider(classLoader);
@@ -97,5 +99,10 @@ public final class SystemPluginManager implements PluginManager {
 
     public JimixProjectFileTypeProviderPlugin getProjectFileTypeProvider(final String fileTypeProviderClassName) {
         return projectFileTypeProviderMap.get(fileTypeProviderClassName);
+    }
+
+    @Override
+    public ClassLoader getClassLoader() {
+        return classLoader;
     }
 }

@@ -32,6 +32,8 @@ public final class ManipulationPluginManager implements PluginManager {
     private final Map<String, JimixClipboardProviderPlugin> clipboardProviderMap = new HashMap<>();
     private final Map<Class<? extends JimixPluginElement>, JimixElementDrawerPlugin> elementDrawerMap = new HashMap<>();
 
+    private ClassLoader classLoader;
+
     private ManipulationPluginManager() {
     }
 
@@ -47,7 +49,7 @@ public final class ManipulationPluginManager implements PluginManager {
             pluginUrlList.add(pluginPath.toURI().toURL());
         }
 
-        final ClassLoader classLoader = new URLClassLoader(pluginUrlList.toArray(new URL[pluginUrlList.size()]),
+        classLoader = new URLClassLoader(pluginUrlList.toArray(new URL[pluginUrlList.size()]),
                 ManipulationPluginManager.class.getClassLoader());
         
         loadEffects(classLoader);
@@ -222,5 +224,10 @@ public final class ManipulationPluginManager implements PluginManager {
 
     public JimixElementDrawerPlugin getElementDrawer(final Class<? extends JimixPluginElement> elementModelClass) {
         return elementDrawerMap.get(elementModelClass);
+    }
+
+    @Override
+    public ClassLoader getClassLoader() {
+        return classLoader;
     }
 }

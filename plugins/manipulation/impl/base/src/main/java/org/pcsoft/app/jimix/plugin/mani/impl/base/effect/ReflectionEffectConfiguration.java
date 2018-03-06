@@ -9,6 +9,8 @@ import org.pcsoft.app.jimix.plugin.common.api.annotation.JimixProperty;
 import org.pcsoft.app.jimix.plugin.common.api.annotation.JimixPropertyDoubleRestriction;
 import org.pcsoft.app.jimix.plugin.mani.api.config.JimixEffectConfiguration;
 
+import java.io.*;
+
 public class ReflectionEffectConfiguration implements JimixEffectConfiguration<ReflectionEffectConfiguration> {
     @JimixProperty(fieldType = Integer.class, name = "Offset", description = "Top Offset")
     private final IntegerProperty offset = new SimpleIntegerProperty(0);
@@ -21,14 +23,6 @@ public class ReflectionEffectConfiguration implements JimixEffectConfiguration<R
     @JimixProperty(fieldType = Double.class, name = "Fraction", description = "Fraction")
     @JimixPropertyDoubleRestriction(minValue = 0.1d, maxValue = 1d)
     private final DoubleProperty fraction = new SimpleDoubleProperty(0.75d);
-
-    @Override
-    public void update(ReflectionEffectConfiguration configuration) {
-        this.offset.set(configuration.offset.get());
-        this.topOpacity.set(configuration.topOpacity.get());
-        this.bottomOpacity.set(configuration.bottomOpacity.get());
-        this.fraction.set(configuration.fraction.get());
-    }
 
     public int getOffset() {
         return offset.get();
@@ -79,8 +73,43 @@ public class ReflectionEffectConfiguration implements JimixEffectConfiguration<R
     }
 
     @Override
+    public void update(ReflectionEffectConfiguration configuration) {
+        this.offset.set(configuration.offset.get());
+        this.topOpacity.set(configuration.topOpacity.get());
+        this.bottomOpacity.set(configuration.bottomOpacity.get());
+        this.fraction.set(configuration.fraction.get());
+    }
+
+    @Override
+    public ReflectionEffectConfiguration copy() {
+        final ReflectionEffectConfiguration configuration = new ReflectionEffectConfiguration();
+        configuration.offset.set(this.offset.get());
+        configuration.topOpacity.set(this.topOpacity.get());
+        configuration.bottomOpacity.set(this.bottomOpacity.get());
+        configuration.fraction.set(this.fraction.get());
+
+        return configuration;
+    }
+
+    @Override
+    public void save(ObjectOutputStream out) throws IOException {
+        out.writeInt(this.offset.get());
+        out.writeDouble(this.topOpacity.get());
+        out.writeDouble(this.bottomOpacity.get());
+        out.writeDouble(this.fraction.get());
+    }
+
+    @Override
+    public void load(ObjectInputStream in) throws IOException {
+        this.offset.set(in.readInt());
+        this.topOpacity.set(in.readDouble());
+        this.bottomOpacity.set(in.readDouble());
+        this.fraction.set(in.readDouble());
+    }
+
+    @Override
     public Observable[] getObservables() {
-        return new Observable[] {
+        return new Observable[]{
                 offset, topOpacity, bottomOpacity, fraction
         };
     }

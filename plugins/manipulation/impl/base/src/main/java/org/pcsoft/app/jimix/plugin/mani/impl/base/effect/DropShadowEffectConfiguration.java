@@ -8,6 +8,8 @@ import org.pcsoft.app.jimix.plugin.common.api.annotation.JimixProperty;
 import org.pcsoft.app.jimix.plugin.common.api.annotation.JimixPropertyDoubleRestriction;
 import org.pcsoft.app.jimix.plugin.mani.api.config.JimixEffectConfiguration;
 
+import java.io.*;
+
 public class DropShadowEffectConfiguration implements JimixEffectConfiguration<DropShadowEffectConfiguration> {
     @JimixProperty(fieldType = BlurType.class, name = "Blur Type", description = "Blur Type", category = "Blur")
     private final ObjectProperty<BlurType> blurType = new SimpleObjectProperty<>(BlurType.GAUSSIAN);
@@ -107,8 +109,50 @@ public class DropShadowEffectConfiguration implements JimixEffectConfiguration<D
     }
 
     @Override
+    public DropShadowEffectConfiguration copy() {
+        final DropShadowEffectConfiguration configuration = new DropShadowEffectConfiguration();
+        configuration.blurType.set(this.blurType.get());
+        configuration.radius.set(this.radius.get());
+        configuration.color.set(this.color.get());
+        configuration.spread.set(this.spread.get());
+        configuration.offsetX.set(this.offsetX.get());
+        configuration.offsetY.set(this.offsetY.get());
+
+        return configuration;
+    }
+
+    @Override
+    public void save(ObjectOutputStream out) throws IOException {
+        out.writeInt(this.blurType.get().ordinal());
+        out.writeDouble(this.radius.get());
+        out.writeDouble(this.color.get().getRed());
+        out.writeDouble(this.color.get().getGreen());
+        out.writeDouble(this.color.get().getBlue());
+        out.writeDouble(this.color.get().getOpacity());
+        out.writeDouble(this.spread.get());
+        out.writeInt(this.offsetX.get());
+        out.writeInt(this.offsetY.get());
+    }
+
+    @Override
+    public void load(ObjectInputStream in) throws IOException {
+        try {
+            this.blurType.set(BlurType.values()[in.readInt()]);
+        } catch (IOException e) {
+            throw e;
+        } catch (Exception e) {
+            throw new IOException("Unable to read blur type");
+        }
+        this.radius.set(in.readDouble());
+        this.color.set(new Color(in.readDouble(), in.readDouble(), in.readDouble(), in.readDouble()));
+        this.spread.set(in.readDouble());
+        this.offsetX.set(in.readInt());
+        this.offsetY.set(in.readInt());
+    }
+
+    @Override
     public Observable[] getObservables() {
-        return new Observable[] {
+        return new Observable[]{
                 blurType, radius, spread, offsetX, offsetY, color
         };
     }

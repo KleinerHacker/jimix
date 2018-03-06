@@ -26,20 +26,21 @@ public class EffectList extends ListViewEx<JimixEffectInstance, String> {
         setHeaderCellRendererCallback(this::drawHeader);
         setValueComparator(Comparator.comparing(o -> o.getPlugin().getName()));
         setValueCellRendererCallback(this::drawValue);
+        getItems().setAll(extractEffects());
+    }
 
-        setItemLoader(() -> {
-            final List<JimixEffectInstance> instanceList = new ArrayList<>();
-            for (final JimixEffectPlugin plugin : ManipulationPluginManager.getInstance().getAllEffects()) {
-                try {
-                    final JimixEffectInstance instance = plugin.createInstance();
-                    instanceList.add(instance);
-                } catch (JimixPluginException e) {
-                    LOGGER.error("Unable to create instance for effect " + plugin.getIdentifier() + ", skip", e);
-                    continue;
-                }
+    private List<JimixEffectInstance> extractEffects() {
+        final List<JimixEffectInstance> instanceList = new ArrayList<>();
+        for (final JimixEffectPlugin plugin : ManipulationPluginManager.getInstance().getAllEffects()) {
+            try {
+                final JimixEffectInstance instance = plugin.createInstance();
+                instanceList.add(instance);
+            } catch (JimixPluginException e) {
+                LOGGER.error("Unable to create instance for effect " + plugin.getIdentifier() + ", skip", e);
+                continue;
             }
-            return instanceList;
-        });
+        }
+        return instanceList;
     }
 
     private void drawValue(ListCell cell, JimixEffectInstance item, boolean empty) {

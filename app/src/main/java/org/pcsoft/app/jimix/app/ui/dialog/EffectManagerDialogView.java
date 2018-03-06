@@ -8,23 +8,24 @@ import javafx.collections.ListChangeListener;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.Slider;
+import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import org.pcsoft.app.jimix.app.ui.component.EffectList;
 import org.pcsoft.app.jimix.app.ui.component.VariantComboBox;
 import org.pcsoft.app.jimix.app.ui.component.prop_sheet.JimixPropertySheet;
 import org.pcsoft.app.jimix.app.util.PropertyUtils;
+import org.pcsoft.app.jimix.plugin.mani.api.config.JimixEffectConfiguration;
 import org.pcsoft.app.jimix.plugin.mani.api.type.JimixEffectVariant;
 import org.pcsoft.app.jimix.plugin.mani.manager.ManipulationPluginVariantManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 
 public class EffectManagerDialogView implements FxmlView<EffectManagerDialogViewModel>, Initializable {
@@ -50,6 +51,8 @@ public class EffectManagerDialogView implements FxmlView<EffectManagerDialogView
     @InjectViewModel
     private EffectManagerDialogViewModel viewModel;
 
+    private final AtomicBoolean ignoreConfigUpdate = new AtomicBoolean(false);
+
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         btnAdd.disableProperty().bind(cmbVariants.valueProperty().isNotNull());
@@ -59,19 +62,18 @@ public class EffectManagerDialogView implements FxmlView<EffectManagerDialogView
         ));
         pnlPreview.disableProperty().bind(viewModel.selectedEffectProperty().isNull());
 
-        cmbVariants.setItemLoader(() -> viewModel.getSelectedEffect() == null ? new ArrayList<>() : extractEffectVariants());
-
         imgPreview.imageProperty().bind(viewModel.resultImageProperty());
         viewModel.selectedEffectProperty().bind(lstEffect.getSelectionModel().selectedItemProperty());
         //Update variants and properties
         viewModel.selectedEffectProperty().addListener(o -> {
             propSheet.getItems().clear();
             cmbVariants.setValue(null);
-            cmbVariants.refresh();
+            cmbVariants.getItems().clear();
 
             if (viewModel.getSelectedEffect() == null)
                 return;
 
+            cmbVariants.getItems().setAll(extractEffectVariants());
             PropertyUtils.addProperties(propSheet, viewModel.getSelectedEffect().getConfiguration());
         });
         //Reset variants selection in case of changing settings
@@ -87,13 +89,20 @@ public class EffectManagerDialogView implements FxmlView<EffectManagerDialogView
                 }
             }
         });
-        ManipulationPluginVariantManager.effectVariantListProperty().addListener((ListChangeListener<JimixEffectVariant>) c -> cmbVariants.refresh());
+        ManipulationPluginVariantManager.effectVariantListProperty().addListener(
+                (ListChangeListener<JimixEffectVariant>) c -> cmbVariants.getItems().setAll(extractEffectVariants()));
         //Copy configuration values from variant into instance configuration
         cmbVariants.valueProperty().addListener((v, o, n) -> {
             if (n == null)
                 return;
 
-            viewModel.getSelectedEffect().getConfiguration().update(n.getConfiguration());
+            //Setup configuration from combo box, so ignore update to stop reset to null
+            ignoreConfigUpdate.set(true);
+            try {
+                viewModel.getSelectedEffect().getConfiguration().update(n.getConfiguration());
+            } finally {
+                ignoreConfigUpdate.set(false);
+            }
         });
         viewModel.zoomProperty().bind(sldZoom.valueProperty());
     }
@@ -106,15 +115,29 @@ public class EffectManagerDialogView implements FxmlView<EffectManagerDialogView
 
     @FXML
     private void onActionAddVariant(ActionEvent actionEvent) {
-
+        final Optional<String> result = new TextInputDialog() {{
+            setTitle("New Effect Variant");
+            setContentText("Enter name:");
+        }}.showAndWait();
+        if (result.isPresent()) {
+            ManipulationPluginVariantManager.getEffectVariantList().add(
+                    JimixEffectVariant.createCustom(result.get(), (JimixEffectConfiguration) viewModel.getSelectedEffect().getConfiguration().copy())
+            );
+        }
     }
 
     @FXML
     private void onActionRemoveVariant(ActionEvent actionEvent) {
-
+        final Optional<ButtonType> result = new Alert(Alert.AlertType.WARNING, "You are sure to remove effect variant?", ButtonType.YES, ButtonType.NO).showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.YES) {
+            ManipulationPluginVariantManager.getEffectVariantList().remove(cmbVariants.getValue());
+        }
     }
 
     private void onConfigurationInvalidated(Observable obs) {
+        if (ignoreConfigUpdate.get())
+            return;
+
         cmbVariants.setValue(null);
     }
 }
