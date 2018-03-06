@@ -1,0 +1,11 @@
+package org.pcsoft.app.jimix.plugin.common.api.annotation;
+
+import java.lang.annotation.*;
+
+@Documented
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.FIELD)
+public @interface JimixPropertyIntegerRestriction {
+    int minValue();
+    int maxValue();
+}

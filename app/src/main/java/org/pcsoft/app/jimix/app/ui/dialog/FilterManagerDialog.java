@@ -9,7 +9,7 @@ import javafx.scene.image.Image;
 import javafx.stage.StageStyle;
 import javafx.stage.Window;
 import org.pcsoft.app.jimix.app.language.LanguageResources;
-import org.pcsoft.app.jimix.plugins.manager.type.JimixFilterInstance;
+import org.pcsoft.app.jimix.plugin.mani.manager.type.JimixFilterInstance;
 import org.pcsoft.framework.jfex.component.HeaderPane;
 
 public class FilterManagerDialog extends Dialog<FilterManagerDialog.Result> {

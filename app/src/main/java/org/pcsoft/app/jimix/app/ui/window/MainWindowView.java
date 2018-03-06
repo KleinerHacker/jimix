@@ -35,8 +35,11 @@ import org.pcsoft.app.jimix.core.project.ProjectManager;
 import org.pcsoft.app.jimix.core.tooling.RecentFileManager;
 import org.pcsoft.app.jimix.core.util.FileTypeUtils;
 import org.pcsoft.app.jimix.core.util.ImageBuilder;
-import org.pcsoft.app.jimix.plugins.manager.PluginManager;
-import org.pcsoft.app.jimix.plugins.manager.type.*;
+import org.pcsoft.app.jimix.plugin.mani.manager.ManipulationPluginManager;
+import org.pcsoft.app.jimix.plugin.mani.manager.type.*;
+import org.pcsoft.app.jimix.plugin.system.manager.type.JimixImageFileTypeProviderInstance;
+import org.pcsoft.app.jimix.plugin.system.manager.type.JimixProjectFileTypeProviderInstance;
+import org.pcsoft.app.jimix.project.JimixProjectModel;
 import org.pcsoft.framework.jfex.component.StatusProgressIndicatorPane;
 import org.pcsoft.framework.jfex.property.ExtendedWrapperProperty;
 import org.pcsoft.framework.jfex.threading.JfxUiThreadPool;
@@ -245,7 +248,7 @@ public class MainWindowView implements FxmlView<MainWindowViewModel>, Initializa
     }
 
     private void buildPasteMenu() {
-        for (final JimixClipboardProviderPlugin clipboardProviderPlugin : PluginManager.getInstance().getAllClipboardProviders()) {
+        for (final JimixClipboardProviderPlugin clipboardProviderPlugin : ManipulationPluginManager.getInstance().getAllClipboardProviders()) {
             try {
                 final JimixClipboardProviderInstance clipboardProviderInstance = clipboardProviderPlugin.createInstance();
 
@@ -272,7 +275,7 @@ public class MainWindowView implements FxmlView<MainWindowViewModel>, Initializa
     private void buildFilterMenu() {
         final Map<String, Menu> menuMap = new HashMap<>();
 
-        for (final JimixFilterPlugin filterPlugin : PluginManager.getInstance().getAllFilters()) {
+        for (final JimixFilterPlugin filterPlugin : ManipulationPluginManager.getInstance().getAllFilters()) {
             final MenuItem menuItem = new MenuItem(filterPlugin.getName());
             if (filterPlugin.getIcon() != null) {
                 menuItem.setGraphic(new ImageView(filterPlugin.getIcon()));
@@ -296,7 +299,7 @@ public class MainWindowView implements FxmlView<MainWindowViewModel>, Initializa
     private void buildEffectMenu() {
         final Map<String, Menu> menuMap = new HashMap<>();
 
-        for (final JimixEffectPlugin effectPlugin : PluginManager.getInstance().getAllEffects()) {
+        for (final JimixEffectPlugin effectPlugin : ManipulationPluginManager.getInstance().getAllEffects()) {
             final MenuItem menuItem = new MenuItem(effectPlugin.getName());
             if (effectPlugin.getIcon() != null) {
                 menuItem.setGraphic(new ImageView(effectPlugin.getIcon()));
@@ -335,7 +338,13 @@ public class MainWindowView implements FxmlView<MainWindowViewModel>, Initializa
                 () -> project.getFile() != null ? project.getFile().getName() : "<unnamed>",
                 project.fileProperty()
         ));
-        tab.setContent(new PictureEditorPane(project));
+        final PictureEditorPane pictureEditorPane = new PictureEditorPane(project);
+        if (!project.getLayerList().isEmpty() && !project.getLayerList().get(0).getElementList().isEmpty()) {
+            pictureEditorPane.selectElement(project.getLayerList().get(0).getElementList().get(0));
+        } else if (!project.getLayerList().isEmpty()) {
+            pictureEditorPane.selectLayer(project.getLayerList().get(0));
+        }
+        tab.setContent(pictureEditorPane);
         tab.setOnClosed(e -> viewModel.getProjectList().remove(project));
 
         final Tooltip tooltip = new Tooltip();
@@ -447,12 +456,8 @@ public class MainWindowView implements FxmlView<MainWindowViewModel>, Initializa
         final Optional<FilterManagerDialog.Result> result = new FilterManagerDialog(pnlRoot.getScene().getWindow(), image).showAndWait();
         if (result.isPresent()) {
             pictureEditorPane.getSelectedTopLayer().getModel().getFilterList().add(result.get().getInstance());
+            pictureEditorPane.selectFilter(result.get().getInstance());
         }
-    }
-
-    @FXML
-    private void onActionPictureRendererManager(ActionEvent actionEvent) {
-
     }
 
     private void onActionPictureFilter(ActionEvent actionEvent) {
@@ -463,7 +468,9 @@ public class MainWindowView implements FxmlView<MainWindowViewModel>, Initializa
         final JimixFilterPlugin filterPlugin = (JimixFilterPlugin) ((MenuItem) actionEvent.getSource()).getUserData();
 
         try {
-            pictureEditorPane.getSelectedTopLayer().getModel().getFilterList().add(filterPlugin.createInstance());
+            final JimixFilterInstance filterInstance = filterPlugin.createInstance();
+            pictureEditorPane.getSelectedTopLayer().getModel().getFilterList().add(filterInstance);
+            pictureEditorPane.selectFilter(filterInstance);
         } catch (JimixPluginException e) {
             LOGGER.error("Unable to create filter instance " + filterPlugin.getIdentifier(), e);
             new Alert(Alert.AlertType.ERROR, "Unable to create filter instance: " + e.getMessage(), ButtonType.OK).showAndWait();
@@ -478,7 +485,9 @@ public class MainWindowView implements FxmlView<MainWindowViewModel>, Initializa
         final JimixEffectPlugin effectPlugin = (JimixEffectPlugin) ((MenuItem) actionEvent.getSource()).getUserData();
 
         try {
-            ((JimixElement)pictureEditorPane.getSelectedItem()).getModel().getEffectList().add(effectPlugin.createInstance());
+            final JimixEffectInstance effectInstance = effectPlugin.createInstance();
+            ((JimixElement) pictureEditorPane.getSelectedItem()).getModel().getEffectList().add(effectInstance);
+            pictureEditorPane.selectEffect(effectInstance);
         } catch (JimixPluginException e) {
             LOGGER.error("Unable to create effect instance " + effectPlugin.getIdentifier(), e);
             new Alert(Alert.AlertType.ERROR, "Unable to create effect instance: " + e.getMessage(), ButtonType.OK).showAndWait();
@@ -662,14 +671,16 @@ public class MainWindowView implements FxmlView<MainWindowViewModel>, Initializa
         final Tab tab = tabPicture.getSelectionModel().getSelectedItem();
         if (tab == null)
             return;
-        if (!(((PictureEditorPane) tab.getContent()).getSelectedItem() instanceof JimixElement))
+        final PictureEditorPane pictureEditorPane = (PictureEditorPane) tab.getContent();
+        if (!(pictureEditorPane.getSelectedItem() instanceof JimixElement))
             return;
-        final JimixElement element = (JimixElement) ((PictureEditorPane) tab.getContent()).getSelectedItem();
+        final JimixElement element = (JimixElement) pictureEditorPane.getSelectedItem();
 
         final Image image = ImageBuilder.getInstance().buildElementImage(element);
         final Optional<EffectManagerDialog.Result> result = new EffectManagerDialog(pnlRoot.getScene().getWindow(), image).showAndWait();
         if (result.isPresent()) {
             element.getModel().getEffectList().add(result.get().getInstance());
+            pictureEditorPane.selectEffect(result.get().getInstance());
         }
     }
 
@@ -706,13 +717,23 @@ public class MainWindowView implements FxmlView<MainWindowViewModel>, Initializa
                     }
 
                     try {
-                        final JimixFileTypeProviderInstance fileTypeProvider = FileTypeUtils.find(file);
-                        if (fileTypeProvider == null) {
-                            LOGGER.error("Unable to find any file type provider to open file " + file);
-                            Platform.runLater(() -> new Alert(Alert.AlertType.ERROR, "Unable to find provider to open file", ButtonType.OK).showAndWait());
+                        final JimixImageFileTypeProviderInstance imageFileTypeProvider = FileTypeUtils.findImageSupport(file);
+                        if (imageFileTypeProvider == null) {
+                            final JimixProjectFileTypeProviderInstance projectFileTypeProvider = FileTypeUtils.findProjectSupport(file);
+                            if (projectFileTypeProvider == null) {
+                                LOGGER.error("Unable to find any file type provider to open file " + file);
+                                Platform.runLater(() -> new Alert(Alert.AlertType.ERROR, "Unable to find provider to open file", ButtonType.OK).showAndWait());
+                                continue;
+                            }
+
+                            final JimixProjectModel projectModel = projectFileTypeProvider.load(file);
+                            final JimixProject jimixProject = ProjectManager.getInstance().createProjectNative(projectModel);
+                            jimixProject.setFile(file);
+                            Platform.runLater(() -> viewModel.getProjectList().add(jimixProject));
                             continue;
                         }
-                        final Image image = fileTypeProvider.load(file);
+
+                        final Image image = imageFileTypeProvider.load(file);
                         final JimixProject jimixProject = ProjectManager.getInstance().createProjectFromImage(image);
                         jimixProject.setFile(file);
                         Platform.runLater(() -> viewModel.getProjectList().add(jimixProject));

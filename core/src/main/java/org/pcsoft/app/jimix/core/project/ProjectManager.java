@@ -4,8 +4,8 @@ import javafx.scene.image.Image;
 import javafx.scene.input.Clipboard;
 import org.pcsoft.app.jimix.core.plugin.builtin.blender.OverlayBlender;
 import org.pcsoft.app.jimix.core.plugin.builtin.model.JimixImagePluginElement;
-import org.pcsoft.app.jimix.plugins.api.type.JimixPluginElement;
-import org.pcsoft.app.jimix.plugins.manager.type.JimixClipboardProviderInstance;
+import org.pcsoft.app.jimix.plugin.mani.api.type.JimixPluginElement;
+import org.pcsoft.app.jimix.plugin.mani.manager.type.JimixClipboardProviderInstance;
 import org.pcsoft.app.jimix.project.JimixElementModel;
 import org.pcsoft.app.jimix.project.JimixLayerModel;
 import org.pcsoft.app.jimix.project.JimixProjectModel;
@@ -30,6 +30,14 @@ public final class ProjectManager {
     }
 
     //<editor-fold desc="Project">
+    public JimixProject createProjectNative(final JimixProjectModel model) {
+        final JimixProject jimixProject = new JimixProject(model);
+        projectMap.put(jimixProject.getUuid(), jimixProject);
+        LOGGER.info("Create native project " + jimixProject.getUuid());
+
+        return jimixProject;
+    }
+
     public JimixProject createProjectFromImage(final Image image) {
         LOGGER.info("Create project from image");
 
@@ -40,16 +48,14 @@ public final class ProjectManager {
         //Create image element
         final JimixElement element = this.createImageElementForLayer(layer, image);
 
-        projectMap.put(project.getUuid(), project);
-
         return project;
     }
 
     public JimixProject createEmptyProject(final int width, final int height) {
+        LOGGER.info("Create empty project");
+        
         final JimixProjectModel model = new JimixProjectModel(width, height);
-        final JimixProject jimixProject = new JimixProject(model);
-        LOGGER.info("Create empty project " + jimixProject.getUuid());
-        projectMap.put(jimixProject.getUuid(), jimixProject);
+        final JimixProject jimixProject = this.createProjectNative(model);
 
         return jimixProject;
     }

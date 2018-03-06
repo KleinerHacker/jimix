@@ -13,8 +13,8 @@ import org.pcsoft.app.jimix.app.ui.component.prop_sheet.JimixPropertySheet;
 import org.pcsoft.app.jimix.app.util.PropertyUtils;
 import org.pcsoft.app.jimix.core.project.JimixElement;
 import org.pcsoft.app.jimix.core.project.JimixLayer;
-import org.pcsoft.app.jimix.plugins.manager.type.JimixEffectInstance;
-import org.pcsoft.app.jimix.plugins.manager.type.JimixFilterInstance;
+import org.pcsoft.app.jimix.plugin.mani.manager.type.JimixEffectInstance;
+import org.pcsoft.app.jimix.plugin.mani.manager.type.JimixFilterInstance;
 import org.pcsoft.framework.jfex.toolbox.ToolBox;
 
 import java.net.URL;
@@ -104,5 +104,21 @@ public class PictureEditorPaneView implements FxmlView<PictureEditorPaneViewMode
         } else if (lstLayer.getSelectedItem() instanceof JimixEffectInstance) {
             PropertyUtils.addProperties(propSheet, ((JimixEffectInstance) lstLayer.getSelectedItem()).getConfiguration());
         }
+    }
+
+    void selectEffect(JimixEffectInstance instance) {
+        lstLayer.selectEffect(instance);
+    }
+
+    void selectFilter(JimixFilterInstance instance) {
+        lstLayer.selectFilter(instance);
+    }
+
+    void selectElement(JimixElement element) {
+        lstLayer.selectElement(element);
+    }
+
+    void selectLayer(JimixLayer layer) {
+        lstLayer.selectLayer(layer);
     }
 }

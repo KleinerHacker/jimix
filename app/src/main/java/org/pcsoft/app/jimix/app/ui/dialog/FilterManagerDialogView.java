@@ -15,9 +15,9 @@ import org.pcsoft.app.jimix.app.ui.component.FilterList;
 import org.pcsoft.app.jimix.app.ui.component.VariantComboBox;
 import org.pcsoft.app.jimix.app.ui.component.prop_sheet.JimixPropertySheet;
 import org.pcsoft.app.jimix.app.util.PropertyUtils;
-import org.pcsoft.app.jimix.plugins.api.type.JimixEffectVariant;
-import org.pcsoft.app.jimix.plugins.api.type.JimixFilterVariant;
-import org.pcsoft.app.jimix.plugins.manager.PluginVariantManager;
+import org.pcsoft.app.jimix.plugin.mani.api.type.JimixEffectVariant;
+import org.pcsoft.app.jimix.plugin.mani.api.type.JimixFilterVariant;
+import org.pcsoft.app.jimix.plugin.mani.manager.ManipulationPluginVariantManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -85,7 +85,7 @@ public class FilterManagerDialogView implements FxmlView<FilterManagerDialogView
                 }
             }
         });
-        PluginVariantManager.effectVariantListProperty().addListener((ListChangeListener<JimixEffectVariant>) c -> cmbVariants.refresh());
+        ManipulationPluginVariantManager.effectVariantListProperty().addListener((ListChangeListener<JimixEffectVariant>) c -> cmbVariants.refresh());
         //Copy configuration values from variant into instance configuration
         cmbVariants.valueProperty().addListener((v, o, n) -> {
             if (n == null)
@@ -96,7 +96,7 @@ public class FilterManagerDialogView implements FxmlView<FilterManagerDialogView
     }
 
     private List<JimixFilterVariant> extractFilterVariants() {
-        return PluginVariantManager.getFilterVariantList().stream()
+        return ManipulationPluginVariantManager.getFilterVariantList().stream()
                 .filter(item -> item.getConfiguration().getClass() == viewModel.getSelectedFilter().getConfiguration().getClass())
                 .collect(Collectors.toList());
     }

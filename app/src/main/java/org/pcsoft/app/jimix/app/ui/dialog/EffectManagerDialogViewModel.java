@@ -9,7 +9,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import org.pcsoft.app.jimix.commons.exception.JimixPluginExecutionException;
 import org.pcsoft.app.jimix.commons.type.TransparentSnapshotParams;
-import org.pcsoft.app.jimix.plugins.manager.type.JimixEffectInstance;
+import org.pcsoft.app.jimix.plugin.mani.manager.type.JimixEffectInstance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

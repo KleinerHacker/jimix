@@ -16,8 +16,8 @@ import org.pcsoft.app.jimix.app.ui.component.EffectList;
 import org.pcsoft.app.jimix.app.ui.component.VariantComboBox;
 import org.pcsoft.app.jimix.app.ui.component.prop_sheet.JimixPropertySheet;
 import org.pcsoft.app.jimix.app.util.PropertyUtils;
-import org.pcsoft.app.jimix.plugins.api.type.JimixEffectVariant;
-import org.pcsoft.app.jimix.plugins.manager.PluginVariantManager;
+import org.pcsoft.app.jimix.plugin.mani.api.type.JimixEffectVariant;
+import org.pcsoft.app.jimix.plugin.mani.manager.ManipulationPluginVariantManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -87,7 +87,7 @@ public class EffectManagerDialogView implements FxmlView<EffectManagerDialogView
                 }
             }
         });
-        PluginVariantManager.effectVariantListProperty().addListener((ListChangeListener<JimixEffectVariant>) c -> cmbVariants.refresh());
+        ManipulationPluginVariantManager.effectVariantListProperty().addListener((ListChangeListener<JimixEffectVariant>) c -> cmbVariants.refresh());
         //Copy configuration values from variant into instance configuration
         cmbVariants.valueProperty().addListener((v, o, n) -> {
             if (n == null)
@@ -99,7 +99,7 @@ public class EffectManagerDialogView implements FxmlView<EffectManagerDialogView
     }
 
     private List<JimixEffectVariant> extractEffectVariants() {
-        return PluginVariantManager.getEffectVariantList().stream()
+        return ManipulationPluginVariantManager.getEffectVariantList().stream()
                 .filter(item -> item.getConfiguration().getClass() == viewModel.getSelectedEffect().getConfiguration().getClass())
                 .collect(Collectors.toList());
     }

@@ -7,12 +7,12 @@ import javafx.collections.ObservableList;
 import javafx.scene.image.Image;
 import javafx.util.Callback;
 import org.pcsoft.app.jimix.commons.exception.JimixPluginException;
-import org.pcsoft.app.jimix.plugins.api.JimixBlender;
-import org.pcsoft.app.jimix.plugins.api.annotation.JimixProperty;
-import org.pcsoft.app.jimix.plugins.api.annotation.JimixPropertyDoubleRestriction;
-import org.pcsoft.app.jimix.plugins.manager.type.JimixBlenderInstance;
-import org.pcsoft.app.jimix.plugins.manager.type.JimixBlenderPlugin;
-import org.pcsoft.app.jimix.plugins.manager.type.JimixFilterInstance;
+import org.pcsoft.app.jimix.plugin.common.api.annotation.JimixProperty;
+import org.pcsoft.app.jimix.plugin.common.api.annotation.JimixPropertyDoubleRestriction;
+import org.pcsoft.app.jimix.plugin.mani.api.JimixBlender;
+import org.pcsoft.app.jimix.plugin.mani.manager.type.JimixBlenderInstance;
+import org.pcsoft.app.jimix.plugin.mani.manager.type.JimixBlenderPlugin;
+import org.pcsoft.app.jimix.plugin.mani.manager.type.JimixFilterInstance;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -32,6 +32,10 @@ public final class JimixLayerModel implements JimixModel {
             new ReadOnlyListWrapper<>(FXCollections.observableArrayList(new JimixElementObserverCallback())).getReadOnlyProperty();
     private final ReadOnlyListProperty<JimixFilterInstance> filterList =
             new ReadOnlyListWrapper<JimixFilterInstance>(FXCollections.observableArrayList(param -> param.getConfiguration().getObservables())).getReadOnlyProperty();
+
+    public JimixLayerModel(final JimixBlenderInstance blender) {
+        this.blender = new ReadOnlyObjectWrapper<>(blender);
+    }
 
     public JimixLayerModel(final JimixBlender blender) {
         try {

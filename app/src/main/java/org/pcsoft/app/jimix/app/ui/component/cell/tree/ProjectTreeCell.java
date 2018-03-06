@@ -7,8 +7,8 @@ import org.pcsoft.app.jimix.app.ui.component.cell.pane.ElementTreeCellPane;
 import org.pcsoft.app.jimix.app.ui.component.cell.pane.LayerTreeCellPane;
 import org.pcsoft.app.jimix.core.project.JimixElement;
 import org.pcsoft.app.jimix.core.project.JimixLayer;
-import org.pcsoft.app.jimix.plugins.manager.type.JimixEffectInstance;
-import org.pcsoft.app.jimix.plugins.manager.type.JimixFilterInstance;
+import org.pcsoft.app.jimix.plugin.mani.manager.type.JimixEffectInstance;
+import org.pcsoft.app.jimix.plugin.mani.manager.type.JimixFilterInstance;
 
 public class ProjectTreeCell extends TreeCell<Object> {
     private final LayerTreeCellPane layerPane = new LayerTreeCellPane();

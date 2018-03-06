@@ -1,11 +1,12 @@
 package org.pcsoft.app.jimix.core.plugin.builtin.filter;
 
-import org.pcsoft.app.jimix.plugins.api.JimixFilterBase;
-import org.pcsoft.app.jimix.plugins.api.annotation.JimixFilterDescriptor;
-import org.pcsoft.app.jimix.plugins.api.type.JimixFilterVariant;
-import org.pcsoft.app.jimix.plugins.api.type.JimixPixelReader;
-import org.pcsoft.app.jimix.plugins.api.type.JimixPixelWriter;
-import org.pcsoft.app.jimix.plugins.api.type.JimixSource;
+
+import org.pcsoft.app.jimix.plugin.mani.api.JimixFilterBase;
+import org.pcsoft.app.jimix.plugin.mani.api.annotation.JimixFilterDescriptor;
+import org.pcsoft.app.jimix.plugin.mani.api.type.JimixFilterVariant;
+import org.pcsoft.app.jimix.plugin.mani.api.type.JimixPixelReader;
+import org.pcsoft.app.jimix.plugin.mani.api.type.JimixPixelWriter;
+import org.pcsoft.app.jimix.plugin.mani.api.type.JimixSource;
 
 import java.awt.*;
 
@@ -30,7 +31,7 @@ public class NegateEffect extends JimixFilterBase<NegateEffectConfiguration> {
     @Override
     public JimixFilterVariant<NegateEffectConfiguration>[] getVariants() {
         return new JimixFilterVariant[] {
-                new JimixFilterVariant<>("Default", new NegateEffectConfiguration())
+                JimixFilterVariant.createBuiltin("Default", new NegateEffectConfiguration())
         };
     }
 }

@@ -5,8 +5,8 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.effect.BlendMode;
 import javafx.scene.image.Image;
 import org.pcsoft.app.jimix.commons.type.TransparentSnapshotParams;
-import org.pcsoft.app.jimix.plugins.api.JimixBlender;
-import org.pcsoft.app.jimix.plugins.api.annotation.JimixBlenderDescriptor;
+import org.pcsoft.app.jimix.plugin.mani.api.JimixBlender;
+import org.pcsoft.app.jimix.plugin.mani.api.annotation.JimixBlenderDescriptor;
 
 @JimixBlenderDescriptor(name = "Darken", description = "Darken algorithm", iconPath = "/builtin/icons/ic_blender_subtract16.png")
 public class DarkenBlender implements JimixBlender {

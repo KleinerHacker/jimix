@@ -9,10 +9,10 @@ import javafx.scene.control.TreeItem;
 import javafx.scene.control.TreeView;
 import org.pcsoft.app.jimix.app.item.tree.*;
 import org.pcsoft.app.jimix.app.ui.component.cell.tree.ProjectTreeCell;
-import org.pcsoft.app.jimix.plugins.manager.type.JimixEffectInstance;
-import org.pcsoft.app.jimix.plugins.manager.type.JimixFilterInstance;
 import org.pcsoft.app.jimix.core.project.JimixElement;
 import org.pcsoft.app.jimix.core.project.JimixLayer;
+import org.pcsoft.app.jimix.plugin.mani.manager.type.JimixEffectInstance;
+import org.pcsoft.app.jimix.plugin.mani.manager.type.JimixFilterInstance;
 import org.pcsoft.framework.jfex.util.FXTreeUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -121,5 +121,21 @@ public class LayerListView implements FxmlView<LayerListViewModel>, Initializabl
                 ignoreSelectionUpdate.set(false);
             }
         }
+    }
+
+    void selectEffect(final JimixEffectInstance instance) {
+        FXTreeUtils.selectTreeItem(tvLayer, instance);
+    }
+
+    void selectFilter(final JimixFilterInstance instance) {
+        FXTreeUtils.selectTreeItem(tvLayer, instance);
+    }
+
+    void selectElement(final JimixElement element) {
+        FXTreeUtils.selectTreeItem(tvLayer, element);
+    }
+
+    void selectLayer(final JimixLayer layer) {
+        FXTreeUtils.selectTreeItem(tvLayer, layer);
     }
 }

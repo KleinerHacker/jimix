@@ -21,12 +21,7 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>jimix-plugins.manager</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>${project.groupId}</groupId>
-            <artifactId>jimix-plugins.api</artifactId>
+            <artifactId>jimix-plugins.manipulation.manager</artifactId>
             <version>${project.version}</version>
         </dependency>
 

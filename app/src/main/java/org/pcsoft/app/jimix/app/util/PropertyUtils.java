@@ -7,9 +7,9 @@ import org.controlsfx.control.PropertySheet;
 import org.controlsfx.property.editor.AbstractPropertyEditor;
 import org.pcsoft.app.jimix.app.language.LanguageResources;
 import org.pcsoft.app.jimix.app.ui.component.prop_sheet.JimixPropertySheet;
-import org.pcsoft.app.jimix.plugins.api.annotation.JimixProperty;
-import org.pcsoft.app.jimix.plugins.api.annotation.JimixPropertyDoubleRestriction;
-import org.pcsoft.app.jimix.plugins.api.annotation.JimixPropertyIntegerRestriction;
+import org.pcsoft.app.jimix.plugin.common.api.annotation.JimixProperty;
+import org.pcsoft.app.jimix.plugin.common.api.annotation.JimixPropertyDoubleRestriction;
+import org.pcsoft.app.jimix.plugin.common.api.annotation.JimixPropertyIntegerRestriction;
 import org.pcsoft.framework.jfex.property.SimpleWrapperProperty;
 import org.pcsoft.framework.jfex.type.SimpleProperty;
 

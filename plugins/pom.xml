@@ -14,8 +14,8 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>api</module>
-        <module>impl</module>
-        <module>manager</module>
+        <module>commons</module>
+        <module>manipulation</module>
+        <module>system</module>
     </modules>
 </project>

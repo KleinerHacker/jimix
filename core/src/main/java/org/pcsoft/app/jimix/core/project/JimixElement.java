@@ -11,6 +11,7 @@ import java.util.UUID;
  * Element holder for {@link JimixElementModel}, with additional app internal information
  */
 public final class JimixElement {
+    //Temporary identifier only
     private final ReadOnlyObjectProperty<UUID> uuid = new ReadOnlyObjectWrapper<>(UUID.randomUUID()).getReadOnlyProperty();
     private final ReadOnlyObjectProperty<JimixElementModel> model;
 

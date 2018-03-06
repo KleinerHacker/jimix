@@ -9,11 +9,13 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import org.pcsoft.app.jimix.app.language.LanguageResources;
-import org.pcsoft.app.jimix.plugins.manager.type.JimixFileTypeProviderInstance;
 import org.pcsoft.app.jimix.core.project.JimixProject;
 import org.pcsoft.app.jimix.core.project.ProjectManager;
 import org.pcsoft.app.jimix.core.tooling.RecentFileManager;
 import org.pcsoft.app.jimix.core.util.FileTypeUtils;
+import org.pcsoft.app.jimix.plugin.system.manager.type.JimixImageFileTypeProviderInstance;
+import org.pcsoft.app.jimix.plugin.system.manager.type.JimixProjectFileTypeProviderInstance;
+import org.pcsoft.app.jimix.project.JimixProjectModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -44,13 +46,26 @@ public class MainWindow extends Stage {
         }
         if (file != null) {
             try {
-                final JimixFileTypeProviderInstance fileTypeProvider = FileTypeUtils.find(file);
-                if (fileTypeProvider == null) {
-                    LOGGER.error("Unable to find any file type provider to open file " + file);
-                    Platform.runLater(() -> new Alert(Alert.AlertType.ERROR, "Unable to find provider to open file", ButtonType.OK).showAndWait());
+                final JimixImageFileTypeProviderInstance imageFileTypeProvider = FileTypeUtils.findImageSupport(file);
+                if (imageFileTypeProvider == null) {
+                    final JimixProjectFileTypeProviderInstance projectFileTypeProvider = FileTypeUtils.findProjectSupport(file);
+                    if (projectFileTypeProvider == null) {
+                        LOGGER.error("Unable to find any file type provider to open file " + file);
+                        Platform.runLater(() -> new Alert(Alert.AlertType.ERROR, "Unable to find provider to open file", ButtonType.OK).showAndWait());
+                        return;
+                    }
+
+                    final JimixProjectModel projectModel = projectFileTypeProvider.load(file);
+                    final JimixProject jimixProject = ProjectManager.getInstance().createProjectNative(projectModel);
+                    jimixProject.setFile(file);
+                    Platform.runLater(() -> {
+                        viewModel.getProjectList().add(jimixProject);
+                        RecentFileManager.getInstance().addFile(file);
+                    });
                     return;
                 }
-                final Image image = fileTypeProvider.load(file);
+
+                final Image image = imageFileTypeProvider.load(file);
                 final JimixProject jimixProject = ProjectManager.getInstance().createProjectFromImage(image);
                 jimixProject.setFile(file);
                 Platform.runLater(() -> {

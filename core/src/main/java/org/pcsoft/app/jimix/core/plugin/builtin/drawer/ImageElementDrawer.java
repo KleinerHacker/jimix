@@ -5,11 +5,11 @@ import org.pcsoft.app.jimix.commons.exception.JimixPluginException;
 import org.pcsoft.app.jimix.commons.exception.JimixPluginExecutionException;
 import org.pcsoft.app.jimix.core.plugin.builtin.model.JimixImagePluginElement;
 import org.pcsoft.app.jimix.core.plugin.builtin.scaler.DefaultScaler;
-import org.pcsoft.app.jimix.plugins.manager.type.JimixScalerInstance;
-import org.pcsoft.app.jimix.plugins.manager.type.JimixScalerPlugin;
-import org.pcsoft.app.jimix.plugins.api.JimixElementDrawer;
-import org.pcsoft.app.jimix.plugins.api.annotation.JimixElementDrawerDescriptor;
-import org.pcsoft.app.jimix.plugins.api.type.JimixSource;
+import org.pcsoft.app.jimix.plugin.mani.api.JimixElementDrawer;
+import org.pcsoft.app.jimix.plugin.mani.api.annotation.JimixElementDrawerDescriptor;
+import org.pcsoft.app.jimix.plugin.mani.api.type.JimixSource;
+import org.pcsoft.app.jimix.plugin.mani.manager.type.JimixScalerInstance;
+import org.pcsoft.app.jimix.plugin.mani.manager.type.JimixScalerPlugin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

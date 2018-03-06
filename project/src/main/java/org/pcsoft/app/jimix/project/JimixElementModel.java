@@ -5,10 +5,10 @@ import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import org.apache.commons.lang.ArrayUtils;
-import org.pcsoft.app.jimix.plugins.api.annotation.JimixProperty;
-import org.pcsoft.app.jimix.plugins.api.annotation.JimixPropertyDoubleRestriction;
-import org.pcsoft.app.jimix.plugins.api.type.JimixPluginElement;
-import org.pcsoft.app.jimix.plugins.manager.type.JimixEffectInstance;
+import org.pcsoft.app.jimix.plugin.common.api.annotation.JimixProperty;
+import org.pcsoft.app.jimix.plugin.common.api.annotation.JimixPropertyDoubleRestriction;
+import org.pcsoft.app.jimix.plugin.mani.api.type.JimixPluginElement;
+import org.pcsoft.app.jimix.plugin.mani.manager.type.JimixEffectInstance;
 
 import java.awt.*;
 

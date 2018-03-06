@@ -6,7 +6,8 @@ import org.apache.commons.lang.SystemUtils;
 import org.pcsoft.app.jimix.app.ui.splash.JimixSplash;
 import org.pcsoft.app.jimix.app.ui.window.MainWindow;
 import org.pcsoft.app.jimix.commons.JimixConstants;
-import org.pcsoft.app.jimix.plugins.manager.PluginManager;
+import org.pcsoft.app.jimix.plugin.mani.manager.ManipulationPluginManager;
+import org.pcsoft.app.jimix.plugin.system.manager.SystemPluginManager;
 import org.pcsoft.framework.jfex.splash.FXSplash;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,7 +45,8 @@ public class App extends MvvmfxCdiApplication {
 
         LOGGER.info("Load plugins...");
         try {
-            PluginManager.getInstance().init(pluginPathList);
+            ManipulationPluginManager.getInstance().init(pluginPathList);
+            SystemPluginManager.getInstance().init(pluginPathList);
         } catch (IOException e) {
             LOGGER.error("FATAL: Unable to load any plugin, app is closed immediately", e);
             System.exit(-1);

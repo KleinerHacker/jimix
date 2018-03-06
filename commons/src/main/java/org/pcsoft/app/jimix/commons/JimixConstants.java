@@ -7,7 +7,8 @@ import java.io.File;
 public final class JimixConstants {
     public static final File DEFAULT_PLUGIN_PATH = new File("plugins");
     public static final File DEFAULT_JIMIX_PATH = new File(SystemUtils.getUserDir(),".jimix");
-    public static final File DEFAULT_VARIANT_FILE = new File(DEFAULT_JIMIX_PATH, "variants.dat");
+    public static final File DEFAULT_MANIPULATION_VARIANT_FILE = new File(DEFAULT_JIMIX_PATH, "manipulation_variants.dat");
+    public static final File DEFAULT_SYSTEM_VARIANT_FILE = new File(DEFAULT_JIMIX_PATH, "system_variants.dat");
 
     static {
         if (!DEFAULT_PLUGIN_PATH.exists()) {

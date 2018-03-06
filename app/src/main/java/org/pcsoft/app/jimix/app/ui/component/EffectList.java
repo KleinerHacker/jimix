@@ -5,9 +5,9 @@ import javafx.scene.control.ListCell;
 import javafx.scene.image.ImageView;
 import org.pcsoft.app.jimix.app.language.LanguageResources;
 import org.pcsoft.app.jimix.commons.exception.JimixPluginException;
-import org.pcsoft.app.jimix.plugins.manager.PluginManager;
-import org.pcsoft.app.jimix.plugins.manager.type.JimixEffectInstance;
-import org.pcsoft.app.jimix.plugins.manager.type.JimixEffectPlugin;
+import org.pcsoft.app.jimix.plugin.mani.manager.ManipulationPluginManager;
+import org.pcsoft.app.jimix.plugin.mani.manager.type.JimixEffectInstance;
+import org.pcsoft.app.jimix.plugin.mani.manager.type.JimixEffectPlugin;
 import org.pcsoft.framework.jfex.data.ListViewEx;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,7 +29,7 @@ public class EffectList extends ListViewEx<JimixEffectInstance, String> {
 
         setItemLoader(() -> {
             final List<JimixEffectInstance> instanceList = new ArrayList<>();
-            for (final JimixEffectPlugin plugin : PluginManager.getInstance().getAllEffects()) {
+            for (final JimixEffectPlugin plugin : ManipulationPluginManager.getInstance().getAllEffects()) {
                 try {
                     final JimixEffectInstance instance = plugin.createInstance();
                     instanceList.add(instance);

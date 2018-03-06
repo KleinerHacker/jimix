@@ -12,9 +12,9 @@ import org.pcsoft.app.jimix.core.plugin.builtin.blender.OverlayBlender;
 import org.pcsoft.app.jimix.core.project.JimixElement;
 import org.pcsoft.app.jimix.core.project.JimixLayer;
 import org.pcsoft.app.jimix.core.project.JimixProject;
-import org.pcsoft.app.jimix.plugins.api.type.JimixSource;
-import org.pcsoft.app.jimix.plugins.manager.PluginManager;
-import org.pcsoft.app.jimix.plugins.manager.type.*;
+import org.pcsoft.app.jimix.plugin.mani.api.type.JimixSource;
+import org.pcsoft.app.jimix.plugin.mani.manager.ManipulationPluginManager;
+import org.pcsoft.app.jimix.plugin.mani.manager.type.*;
 import org.pcsoft.app.jimix.project.JimixElementModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -95,7 +95,7 @@ public final class ImageBuilder {
         gc.setGlobalAlpha(element.getModel().getOpacity());
 
         final JimixElementModel model = element.getModel();
-        final JimixElementDrawerPlugin elementDrawer = PluginManager.getInstance().getElementDrawer(model.getPluginElement().getClass());
+        final JimixElementDrawerPlugin elementDrawer = ManipulationPluginManager.getInstance().getElementDrawer(model.getPluginElement().getClass());
         if (elementDrawer == null) {
             LOGGER.error("unable to draw element " + element.getUuid() + ": no element drawer found, skip");
             return;

@@ -23,6 +23,7 @@ import java.util.*;
  * Layer holder for {@link JimixLayerModel}, with additional app internal information
  */
 public final class JimixLayer {
+    //Temporary identifier only
     private final ReadOnlyObjectProperty<UUID> uuid = new ReadOnlyObjectWrapper<>(UUID.randomUUID()).getReadOnlyProperty();
     private final ReadOnlyObjectProperty<JimixLayerModel> model;
     private final ReadOnlyMapProperty<UUID, JimixElement> elementMap =

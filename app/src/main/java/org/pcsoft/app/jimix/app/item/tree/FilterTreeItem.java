@@ -1,7 +1,7 @@
 package org.pcsoft.app.jimix.app.item.tree;
 
 import javafx.scene.control.TreeItem;
-import org.pcsoft.app.jimix.plugins.manager.type.JimixFilterInstance;
+import org.pcsoft.app.jimix.plugin.mani.manager.type.JimixFilterInstance;
 
 import java.util.Objects;
 

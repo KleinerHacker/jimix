@@ -5,9 +5,9 @@ import javafx.scene.control.ListCell;
 import javafx.scene.image.ImageView;
 import org.pcsoft.app.jimix.app.language.LanguageResources;
 import org.pcsoft.app.jimix.commons.exception.JimixPluginException;
-import org.pcsoft.app.jimix.plugins.manager.PluginManager;
-import org.pcsoft.app.jimix.plugins.manager.type.JimixFilterInstance;
-import org.pcsoft.app.jimix.plugins.manager.type.JimixFilterPlugin;
+import org.pcsoft.app.jimix.plugin.mani.manager.ManipulationPluginManager;
+import org.pcsoft.app.jimix.plugin.mani.manager.type.JimixFilterInstance;
+import org.pcsoft.app.jimix.plugin.mani.manager.type.JimixFilterPlugin;
 import org.pcsoft.framework.jfex.data.ListViewEx;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,7 +29,7 @@ public class FilterList extends ListViewEx<JimixFilterInstance, String> {
 
         setItemLoader(() -> {
             final List<JimixFilterInstance> instanceList = new ArrayList<>();
-            for (final JimixFilterPlugin plugin : PluginManager.getInstance().getAllFilters()) {
+            for (final JimixFilterPlugin plugin : ManipulationPluginManager.getInstance().getAllFilters()) {
                 try {
                     final JimixFilterInstance instance = plugin.createInstance();
                     instanceList.add(instance);

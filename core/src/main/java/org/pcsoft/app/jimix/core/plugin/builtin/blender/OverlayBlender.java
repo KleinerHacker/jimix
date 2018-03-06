@@ -4,8 +4,8 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import org.pcsoft.app.jimix.commons.type.TransparentSnapshotParams;
-import org.pcsoft.app.jimix.plugins.api.JimixBlender;
-import org.pcsoft.app.jimix.plugins.api.annotation.JimixBlenderDescriptor;
+import org.pcsoft.app.jimix.plugin.mani.api.JimixBlender;
+import org.pcsoft.app.jimix.plugin.mani.api.annotation.JimixBlenderDescriptor;
 
 @JimixBlenderDescriptor(name = "Overlay", description = "Overlay layers (default)", iconPath = "/builtin/icons/ic_blender_overlay16.png")
 public class OverlayBlender implements JimixBlender {

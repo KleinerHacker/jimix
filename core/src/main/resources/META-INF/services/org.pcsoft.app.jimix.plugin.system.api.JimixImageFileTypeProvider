@@ -1,0 +1,3 @@
+org.pcsoft.app.jimix.core.plugin.builtin.filetype.BmpImageFileTypeProvider
+org.pcsoft.app.jimix.core.plugin.builtin.filetype.PngImageFileTypeProvider
+org.pcsoft.app.jimix.core.plugin.builtin.filetype.JpegImageFileTypeProvider

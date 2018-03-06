@@ -25,6 +25,7 @@ import java.util.UUID;
  * Project host for the {@link JimixProjectModel} self, with additional app internal information
  */
 public final class JimixProject {
+    //Temporary identifier only
     private final ReadOnlyObjectProperty<UUID> uuid = new ReadOnlyObjectWrapper<>(UUID.randomUUID()).getReadOnlyProperty();
     private final ReadOnlyObjectProperty<JimixProjectModel> model;
     private final ObjectProperty<File> file = new SimpleObjectProperty<>();

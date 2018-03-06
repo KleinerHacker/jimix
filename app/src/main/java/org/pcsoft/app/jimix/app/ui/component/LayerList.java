@@ -7,7 +7,10 @@ import javafx.beans.property.ObjectProperty;
 import javafx.collections.ObservableList;
 import javafx.scene.layout.HBox;
 import org.pcsoft.app.jimix.app.language.LanguageResources;
+import org.pcsoft.app.jimix.core.project.JimixElement;
 import org.pcsoft.app.jimix.core.project.JimixLayer;
+import org.pcsoft.app.jimix.plugin.mani.manager.type.JimixEffectInstance;
+import org.pcsoft.app.jimix.plugin.mani.manager.type.JimixFilterInstance;
 
 public class LayerList extends HBox {
     private final LayerListView controller;
@@ -54,5 +57,21 @@ public class LayerList extends HBox {
 
     public void setSelectedItem(Object selectedItem) {
         viewModel.setSelectedItem(selectedItem);
+    }
+
+    public void selectEffect(JimixEffectInstance instance) {
+        controller.selectEffect(instance);
+    }
+
+    public void selectFilter(JimixFilterInstance instance) {
+        controller.selectFilter(instance);
+    }
+
+    public void selectElement(JimixElement element) {
+        controller.selectElement(element);
+    }
+
+    public void selectLayer(JimixLayer layer) {
+        controller.selectLayer(layer);
     }
 }

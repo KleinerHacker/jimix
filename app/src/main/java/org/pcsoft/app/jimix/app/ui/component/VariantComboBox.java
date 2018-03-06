@@ -3,7 +3,7 @@ package org.pcsoft.app.jimix.app.ui.component;
 import javafx.geometry.Insets;
 import javafx.scene.control.ListCell;
 import org.pcsoft.app.jimix.app.language.LanguageResources;
-import org.pcsoft.app.jimix.plugins.api.type.JimixVariant;
+import org.pcsoft.app.jimix.plugin.mani.api.type.JimixVariant;
 import org.pcsoft.framework.jfex.data.ComboBoxEx;
 
 import java.util.Comparator;

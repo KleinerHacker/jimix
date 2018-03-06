@@ -8,9 +8,9 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.image.Image;
 import org.pcsoft.app.jimix.commons.exception.JimixPluginException;
 import org.pcsoft.app.jimix.core.plugin.builtin.scaler.DefaultScaler;
-import org.pcsoft.app.jimix.plugins.api.type.JimixPluginElement;
-import org.pcsoft.app.jimix.plugins.manager.type.JimixScalerInstance;
-import org.pcsoft.app.jimix.plugins.manager.type.JimixScalerPlugin;
+import org.pcsoft.app.jimix.plugin.mani.api.type.JimixPluginElement;
+import org.pcsoft.app.jimix.plugin.mani.manager.type.JimixScalerInstance;
+import org.pcsoft.app.jimix.plugin.mani.manager.type.JimixScalerPlugin;
 
 import java.awt.*;
 
