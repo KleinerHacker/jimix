@@ -14,13 +14,9 @@ public interface Jimix3DElementBuilder<T extends JimixPlugin3DElement> extends J
      * Build the {@link JimixPlugin3DElement} and return it to add it to a group
      *
      * @param pluginElement element to build
-     * @param x             setup
-     * @param y             setup
-     * @param width         width setup
-     * @param height        height setup
      * @return
      */
-    Node buildNode(final T pluginElement, final int x, final int y, final int width, final int height);
+    Node buildNode(final T pluginElement, int width, int height);
 
     @Override
     default JimixElementType getType() {

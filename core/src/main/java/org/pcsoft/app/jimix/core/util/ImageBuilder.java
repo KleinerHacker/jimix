@@ -114,10 +114,12 @@ public final class ImageBuilder {
                 elementNode = applyEffects(element, tmpNode);
             } else if (elementBuilder instanceof Jimix3DElementBuilderPlugin) {
                 Node tmpNode = ((Jimix3DElementBuilderPlugin) elementBuilder).buildNode((JimixPlugin3DElement) model.getPluginElement(),
-                        model.getX(), model.getY(), model.getWidth(), model.getHeight());
+                        model.getWidth(), model.getHeight());
                 tmpNode = apply3DEffects(element, tmpNode); //Run 3D effects first on original 3D object
                 final Image tmpImage = tmpNode.snapshot(new TransparentSnapshotParams(), null); //Create temporary image from 3D object
                 final ImageView tmpImageNode = new ImageView(tmpImage); //Temporary node
+                tmpImageNode.setTranslateX(model.getX());
+                tmpImageNode.setTranslateY(model.getY());
                 applyViewSettings(element, tmpImageNode);
                 elementNode = apply2DEffects(element, tmpImageNode);
             } else
@@ -178,5 +180,6 @@ public final class ImageBuilder {
             elementNode.setRotate(element.getModel().getRotation());
             elementNode.setRotationAxis(new Point3D(0, 0, 1));
         }
+        elementNode.setOpacity(element.getModel().getOpacity());
     }
 }

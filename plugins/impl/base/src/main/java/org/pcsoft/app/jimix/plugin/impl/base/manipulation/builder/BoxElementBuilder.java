@@ -15,7 +15,7 @@ import org.pcsoft.app.jimix.plugin.manipulation.api.annotation.JimixElementBuild
         manualAddable = true, elementModelClass = BoxPluginElement.class)
 public class BoxElementBuilder implements Jimix3DElementBuilder<BoxPluginElement> {
     @Override
-    public Node buildNode(BoxPluginElement pluginElement, int x, int y, int width, int height) {
+    public Node buildNode(BoxPluginElement pluginElement, int width, int height) {
         final Group group = new Group();
 
         final Box box = new Box(pluginElement.getWidth(), pluginElement.getHeight(), pluginElement.getDepth());
@@ -34,9 +34,6 @@ public class BoxElementBuilder implements Jimix3DElementBuilder<BoxPluginElement
         light.setTranslateX(pluginElement.getLightPositionZ());
         group.getChildren().add(light);
         group.getChildren().add(new AmbientLight(Color.WHITE));
-
-        group.setTranslateX(x);
-        group.setTranslateY(y);
 
         return group;
     }
