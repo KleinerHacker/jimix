@@ -8,6 +8,7 @@ import org.pcsoft.app.jimix.app.ui.component.cell.pane.LayerTreeCellPane;
 import org.pcsoft.app.jimix.core.project.JimixElement;
 import org.pcsoft.app.jimix.core.project.JimixLayer;
 import org.pcsoft.app.jimix.plugin.manipulation.manager.type.Jimix2DEffectInstance;
+import org.pcsoft.app.jimix.plugin.manipulation.manager.type.JimixEffectInstance;
 import org.pcsoft.app.jimix.plugin.manipulation.manager.type.JimixFilterInstance;
 
 public class ProjectTreeCell extends TreeCell<Object> {
@@ -37,8 +38,8 @@ public class ProjectTreeCell extends TreeCell<Object> {
             } else if (getTreeItem() instanceof EffectRootTreeItem) {
                 setText("Effects");
             } else if (getTreeItem() instanceof EffectTreeItem) {
-                setText(((Jimix2DEffectInstance) item).getPlugin().getName());
-                setGraphic(new ImageView(((Jimix2DEffectInstance) item).getPlugin().getIcon()));
+                setText(((JimixEffectInstance) item).getPlugin().getName());
+                setGraphic(new ImageView(((JimixEffectInstance) item).getPlugin().getIcon()));
             }
         }
     }

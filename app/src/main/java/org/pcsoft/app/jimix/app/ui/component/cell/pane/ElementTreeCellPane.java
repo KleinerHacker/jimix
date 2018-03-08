@@ -9,6 +9,7 @@ import org.pcsoft.app.jimix.app.language.LanguageResources;
 import org.pcsoft.app.jimix.core.project.JimixElement;
 import org.pcsoft.app.jimix.plugin.manipulation.manager.ManipulationPluginManager;
 import org.pcsoft.app.jimix.plugin.manipulation.manager.type.Jimix2DElementBuilderPlugin;
+import org.pcsoft.app.jimix.plugin.manipulation.manager.type.JimixElementBuilderPlugin;
 
 public class ElementTreeCellPane extends HBox {
     private final ElementTreeCellPaneView controller;
@@ -28,7 +29,7 @@ public class ElementTreeCellPane extends HBox {
             }
 
             if (n != null) {
-                final Jimix2DElementBuilderPlugin elementBuilder = ManipulationPluginManager.getInstance().get2DElementBuilder(n.getModel().getPluginElement().getClass());
+                final JimixElementBuilderPlugin elementBuilder = ManipulationPluginManager.getInstance().getElementBuilder(n.getModel().getPluginElement().getClass());
                 viewModel.setTitle(elementBuilder == null ? "<unknown>" : elementBuilder.getName());
                 viewModel.visibilityProperty().bindBidirectional(n.getModel().visibilityProperty());
                 viewModel.previewProperty().bind(n.getModel().getPluginElement().previewProperty());

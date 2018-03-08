@@ -9,43 +9,44 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableMap;
 import org.pcsoft.app.jimix.plugin.manipulation.manager.ManipulationPluginManager;
 import org.pcsoft.app.jimix.plugin.manipulation.manager.type.Jimix2DElementBuilderPlugin;
+import org.pcsoft.app.jimix.plugin.manipulation.manager.type.JimixElementBuilderPlugin;
 
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class ElementSelectorViewModel implements ViewModel {
-    private final ReadOnlyMapProperty<String, List<Jimix2DElementBuilderPlugin>> builderMap =
-            new ReadOnlyMapWrapper<String, List<Jimix2DElementBuilderPlugin>>(FXCollections.observableHashMap()).getReadOnlyProperty();
+    private final ReadOnlyMapProperty<String, List<JimixElementBuilderPlugin>> builderMap =
+            new ReadOnlyMapWrapper<String, List<JimixElementBuilderPlugin>>(FXCollections.observableHashMap()).getReadOnlyProperty();
 
-    private final ObjectProperty<Jimix2DElementBuilderPlugin> selectedElementBuilder = new SimpleObjectProperty<>();
+    private final ObjectProperty<JimixElementBuilderPlugin> selectedElementBuilder = new SimpleObjectProperty<>();
 
     public ElementSelectorViewModel() {
         builderMap.clear();
         builderMap.putAll(
-                Stream.of(ManipulationPluginManager.getInstance().getAll2DElementBuilders())
-                        .filter(Jimix2DElementBuilderPlugin::manualAddable)
-                        .collect(Collectors.groupingBy(Jimix2DElementBuilderPlugin::getGroup))
+                Stream.of(ManipulationPluginManager.getInstance().getAllElementBuilders())
+                        .filter(JimixElementBuilderPlugin::manualAddable)
+                        .collect(Collectors.groupingBy(JimixElementBuilderPlugin::getGroup))
         );
     }
 
-    public ObservableMap<String, List<Jimix2DElementBuilderPlugin>> getBuilderMap() {
+    public ObservableMap<String, List<JimixElementBuilderPlugin>> getBuilderMap() {
         return builderMap.get();
     }
 
-    public ReadOnlyMapProperty<String, List<Jimix2DElementBuilderPlugin>> builderMapProperty() {
+    public ReadOnlyMapProperty<String, List<JimixElementBuilderPlugin>> builderMapProperty() {
         return builderMap;
     }
 
-    public Jimix2DElementBuilderPlugin getSelectedElementBuilder() {
+    public JimixElementBuilderPlugin getSelectedElementBuilder() {
         return selectedElementBuilder.get();
     }
 
-    public ObjectProperty<Jimix2DElementBuilderPlugin> selectedElementBuilderProperty() {
+    public ObjectProperty<JimixElementBuilderPlugin> selectedElementBuilderProperty() {
         return selectedElementBuilder;
     }
 
-    public void setSelectedElementBuilder(Jimix2DElementBuilderPlugin selectedElementBuilder) {
+    public void setSelectedElementBuilder(JimixElementBuilderPlugin selectedElementBuilder) {
         this.selectedElementBuilder.set(selectedElementBuilder);
     }
 }

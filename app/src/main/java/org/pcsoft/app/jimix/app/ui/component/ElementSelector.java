@@ -6,6 +6,7 @@ import javafx.beans.property.ObjectProperty;
 import javafx.scene.layout.VBox;
 import org.pcsoft.app.jimix.app.language.LanguageResources;
 import org.pcsoft.app.jimix.plugin.manipulation.manager.type.Jimix2DElementBuilderPlugin;
+import org.pcsoft.app.jimix.plugin.manipulation.manager.type.JimixElementBuilderPlugin;
 
 public class ElementSelector extends VBox {
 
@@ -19,15 +20,15 @@ public class ElementSelector extends VBox {
         controller = viewTuple.getCodeBehind();
     }
 
-    public Jimix2DElementBuilderPlugin getSelectedElementBuilder() {
+    public JimixElementBuilderPlugin getSelectedElementBuilder() {
         return viewModel.getSelectedElementBuilder();
     }
 
-    public ObjectProperty<Jimix2DElementBuilderPlugin> selectedElementBuilderProperty() {
+    public ObjectProperty<JimixElementBuilderPlugin> selectedElementBuilderProperty() {
         return viewModel.selectedElementBuilderProperty();
     }
 
-    public void setSelectedElementBuilder(Jimix2DElementBuilderPlugin selectedElementBuilder) {
+    public void setSelectedElementBuilder(JimixElementBuilderPlugin selectedElementBuilder) {
         viewModel.setSelectedElementBuilder(selectedElementBuilder);
     }
 }

@@ -12,6 +12,7 @@ import org.pcsoft.app.jimix.app.ui.component.cell.tree.ProjectTreeCell;
 import org.pcsoft.app.jimix.core.project.JimixElement;
 import org.pcsoft.app.jimix.core.project.JimixLayer;
 import org.pcsoft.app.jimix.plugin.manipulation.manager.type.Jimix2DEffectInstance;
+import org.pcsoft.app.jimix.plugin.manipulation.manager.type.JimixEffectInstance;
 import org.pcsoft.app.jimix.plugin.manipulation.manager.type.JimixFilterInstance;
 import org.pcsoft.framework.jfex.util.FXTreeUtils;
 import org.slf4j.Logger;
@@ -93,7 +94,7 @@ public class LayerListView implements FxmlView<LayerListViewModel>, Initializabl
 
                     final EffectRootTreeItem effectRootTreeItem = new EffectRootTreeItem();
                     //1.1 Effects
-                    for (final Jimix2DEffectInstance effectInstance : element.getModel().getEffectList()) {
+                    for (final JimixEffectInstance effectInstance : element.getModel().getEffectList()) {
                         final EffectTreeItem effectTreeItem = new EffectTreeItem(effectInstance);
                         effectRootTreeItem.getChildren().add(effectTreeItem);
                     }
@@ -123,7 +124,7 @@ public class LayerListView implements FxmlView<LayerListViewModel>, Initializabl
         }
     }
 
-    void selectEffect(final Jimix2DEffectInstance instance) {
+    void selectEffect(final JimixEffectInstance instance) {
         FXTreeUtils.selectTreeItem(tvLayer, instance);
     }
 

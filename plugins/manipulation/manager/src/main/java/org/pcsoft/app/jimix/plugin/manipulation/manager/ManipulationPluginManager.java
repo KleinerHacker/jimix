@@ -4,6 +4,8 @@ import org.apache.commons.lang.StringUtils;
 import org.pcsoft.app.jimix.commons.exception.JimixPluginException;
 import org.pcsoft.app.jimix.commons.util.ComparatorUtils;
 import org.pcsoft.app.jimix.plugin.common.api.type.JimixPlugin2DElement;
+import org.pcsoft.app.jimix.plugin.common.api.type.JimixPlugin3DElement;
+import org.pcsoft.app.jimix.plugin.common.api.type.JimixPluginElement;
 import org.pcsoft.app.jimix.plugin.common.manager.PluginManager;
 import org.pcsoft.app.jimix.plugin.manipulation.api.*;
 import org.pcsoft.app.jimix.plugin.manipulation.manager.type.*;
@@ -26,11 +28,13 @@ public final class ManipulationPluginManager implements PluginManager {
     }
 
     private final Map<String, Jimix2DEffectPlugin> effect2DMap = new HashMap<>();
+    private final Map<String, Jimix3DEffectPlugin> effect3DMap = new HashMap<>();
     private final Map<String, JimixFilterPlugin> filterMap = new HashMap<>();
     private final Map<String, JimixRendererPlugin> rendererMap = new HashMap<>();
     private final Map<String, JimixBlenderPlugin> blenderMap = new HashMap<>();
     private final Map<String, JimixScalerPlugin> scalerMap = new HashMap<>();
     private final Map<Class<? extends JimixPlugin2DElement>, Jimix2DElementBuilderPlugin> element2DBuilderMap = new HashMap<>();
+    private final Map<Class<? extends JimixPlugin3DElement>, Jimix3DElementBuilderPlugin> element3DBuilderMap = new HashMap<>();
 
     private ClassLoader classLoader;
 
@@ -43,11 +47,13 @@ public final class ManipulationPluginManager implements PluginManager {
 
         //Cleanup
         effect2DMap.clear();
+        effect3DMap.clear();
         filterMap.clear();
         rendererMap.clear();
         blenderMap.clear();
         scalerMap.clear();
         element2DBuilderMap.clear();
+        element3DBuilderMap.clear();
 
         if (LOGGER.isDebugEnabled()) {
             LOGGER.debug("> Load plugins from paths: [" + StringUtils.join(pluginPathList.stream().map(File::getAbsolutePath).collect(Collectors.toList()), ',') + "]");
@@ -62,14 +68,17 @@ public final class ManipulationPluginManager implements PluginManager {
                 ManipulationPluginManager.class.getClassLoader());
 
         load2DEffects(classLoader);
+        load3DEffects(classLoader);
         loadFilter(classLoader);
         loadRenderer(classLoader);
         loadBlender(classLoader);
         loadScaler(classLoader);
         load2DElementBuilderProvider(classLoader);
+        load3DElementBuilderProvider(classLoader);
 
-        LOGGER.debug("Found {} 2D effects, {} filters, {} renderer, {} blender, {} scaler, {} 2D element builders",
-                effect2DMap.size(), filterMap.size(), rendererMap.size(), blenderMap.size(), scalerMap.size(), element2DBuilderMap.size());
+        LOGGER.debug("Found {} 2D effects, {} 3D effect, {} filters, {} renderer, {} blender, {} scaler, {} 2D element builders, {} 3D element builders",
+                effect2DMap.size(), effect3DMap.size(), filterMap.size(), rendererMap.size(), blenderMap.size(), scalerMap.size(),
+                element2DBuilderMap.size(), element3DBuilderMap.size());
     }
 
     private void load2DEffects(final ClassLoader classLoader) {
@@ -83,6 +92,21 @@ public final class ManipulationPluginManager implements PluginManager {
                 LOGGER.trace(">>> {}", jimix2DEffectPlugin.getIdentifier());
             } catch (JimixPluginException e) {
                 LOGGER.error("Unable to load 2D effect " + jimix2DEffect.getClass().getName(), e);
+            }
+        }
+    }
+
+    private void load3DEffects(final ClassLoader classLoader) {
+        LOGGER.debug("> Load 3D effect plugins");
+
+        final ServiceLoader<Jimix3DEffect> jimix3DEffects = ServiceLoader.load(Jimix3DEffect.class, classLoader);
+        for (final Jimix3DEffect jimix3DEffect : jimix3DEffects) {
+            try {
+                final Jimix3DEffectPlugin jimix3DEffectPlugin = new Jimix3DEffectPlugin(jimix3DEffect);
+                effect3DMap.put(jimix3DEffectPlugin.getIdentifier(), jimix3DEffectPlugin);
+                LOGGER.trace(">>> {}", jimix3DEffectPlugin.getIdentifier());
+            } catch (JimixPluginException e) {
+                LOGGER.error("Unable to load 3D effect " + jimix3DEffect.getClass().getName(), e);
             }
         }
     }
@@ -162,6 +186,21 @@ public final class ManipulationPluginManager implements PluginManager {
         }
     }
 
+    private void load3DElementBuilderProvider(final ClassLoader classLoader) {
+        LOGGER.debug("> Load 3D element builder plugins");
+
+        final ServiceLoader<Jimix3DElementBuilder> jimix3DElementBuilders = ServiceLoader.load(Jimix3DElementBuilder.class, classLoader);
+        for (final Jimix3DElementBuilder jimix3DElementBuilder : jimix3DElementBuilders) {
+            try {
+                final Jimix3DElementBuilderPlugin jimix3DElementBuilderPlugin = new Jimix3DElementBuilderPlugin(jimix3DElementBuilder);
+                element3DBuilderMap.put(jimix3DElementBuilderPlugin.getElementModelClass(), jimix3DElementBuilderPlugin);
+                LOGGER.trace(">>> {}", jimix3DElementBuilderPlugin.getIdentifier());
+            } catch (JimixPluginException e) {
+                LOGGER.error("Unable to load 3D element builder " + jimix3DElementBuilder.getClass().getName(), e);
+            }
+        }
+    }
+
     public Jimix2DEffectPlugin[] getAll2DEffects() {
         return effect2DMap.values().stream()
                 .sorted(ComparatorUtils.chainedComparator(
@@ -173,6 +212,39 @@ public final class ManipulationPluginManager implements PluginManager {
 
     public Jimix2DEffectPlugin get2DEffect(final String effectClassName) {
         return effect2DMap.get(effectClassName);
+    }
+
+    public Jimix3DEffectPlugin[] getAll3DEffects() {
+        return effect3DMap.values().stream()
+                .sorted(ComparatorUtils.chainedComparator(
+                        ComparatorUtils.compareWithNull(Jimix3DEffectPlugin::getGroup, ComparatorUtils.ComparatorDirection.GoToBottom),
+                        Comparator.comparing(Jimix3DEffectPlugin::getName)
+                ))
+                .toArray(Jimix3DEffectPlugin[]::new);
+    }
+
+    public Jimix3DEffectPlugin get3DEffect(final String effectClassName) {
+        return effect3DMap.get(effectClassName);
+    }
+
+    public JimixEffectPlugin[] getAllEffects() {
+        final List<JimixEffectPlugin> list = new ArrayList<>();
+        list.addAll(effect2DMap.values());
+        list.addAll(effect3DMap.values());
+
+        return list.stream()
+                .sorted(ComparatorUtils.chainedComparator(
+                        ComparatorUtils.compareWithNull(JimixEffectPlugin::getGroup, ComparatorUtils.ComparatorDirection.GoToBottom),
+                        Comparator.comparing(JimixEffectPlugin::getName)
+                ))
+                .toArray(JimixEffectPlugin[]::new);
+    }
+
+    public JimixEffectPlugin getEffect(final String effectClassName) {
+        if (effect2DMap.containsKey(effectClassName))
+            return effect2DMap.get(effectClassName);
+
+        return effect3DMap.get(effectClassName);
     }
 
     public JimixFilterPlugin[] getAllFilters() {
@@ -227,6 +299,30 @@ public final class ManipulationPluginManager implements PluginManager {
 
     public Jimix2DElementBuilderPlugin get2DElementBuilder(final Class<? extends JimixPlugin2DElement> elementModelClass) {
         return element2DBuilderMap.get(elementModelClass);
+    }
+
+    public Jimix3DElementBuilderPlugin[] getAll3DElementBuilders() {
+        return element3DBuilderMap.values().toArray(new Jimix3DElementBuilderPlugin[element3DBuilderMap.size()]);
+    }
+
+    public Jimix3DElementBuilderPlugin get3DElementBuilder(final Class<? extends JimixPlugin3DElement> elementModelClass) {
+        return element3DBuilderMap.get(elementModelClass);
+    }
+
+    public JimixElementBuilderPlugin[] getAllElementBuilders() {
+        final List<JimixElementBuilderPlugin> list = new ArrayList<>();
+        list.addAll(element2DBuilderMap.values());
+        list.addAll(element3DBuilderMap.values());
+
+        return list.toArray(new JimixElementBuilderPlugin[list.size()]);
+    }
+
+    @SuppressWarnings({"unchecked", "SuspiciousMethodCalls"})
+    public JimixElementBuilderPlugin getElementBuilder(final Class<? extends JimixPluginElement> elementModelClass) {
+        if (element2DBuilderMap.containsKey(elementModelClass))
+            return element2DBuilderMap.get(elementModelClass);
+
+        return element3DBuilderMap.get(elementModelClass);
     }
 
     @Override

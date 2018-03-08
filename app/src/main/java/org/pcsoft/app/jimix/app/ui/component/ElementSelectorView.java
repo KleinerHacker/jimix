@@ -13,6 +13,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
 import org.pcsoft.app.jimix.plugin.manipulation.manager.type.Jimix2DElementBuilderPlugin;
+import org.pcsoft.app.jimix.plugin.manipulation.manager.type.JimixElementBuilderPlugin;
 import org.pcsoft.framework.jfex.component.DetailTooltip;
 
 import java.net.URL;
@@ -40,7 +41,7 @@ public class ElementSelectorView implements FxmlView<ElementSelectorViewModel>, 
             pnlRoot.getChildren().add(label);
 
             final FlowPane pane = new FlowPane(Orientation.HORIZONTAL);
-            for (final Jimix2DElementBuilderPlugin elementBuilderPlugin : viewModel.getBuilderMap().get(groupName)) {
+            for (final JimixElementBuilderPlugin elementBuilderPlugin : viewModel.getBuilderMap().get(groupName)) {
                 final ToggleButton button = new ToggleButton("", new ImageView(elementBuilderPlugin.getIcon()));
                 button.setTooltip(new DetailTooltip(elementBuilderPlugin.getName(), elementBuilderPlugin.getDescription()));
                 button.setToggleGroup(baseGroup);
@@ -52,7 +53,7 @@ public class ElementSelectorView implements FxmlView<ElementSelectorViewModel>, 
         }
 
         viewModel.selectedElementBuilderProperty().bind(Bindings.createObjectBinding(
-                () -> baseGroup.getSelectedToggle() == null ? null : (Jimix2DElementBuilderPlugin) baseGroup.getSelectedToggle().getUserData(),
+                () -> baseGroup.getSelectedToggle() == null ? null : (JimixElementBuilderPlugin) baseGroup.getSelectedToggle().getUserData(),
                 baseGroup.selectedToggleProperty()
         ));
     }

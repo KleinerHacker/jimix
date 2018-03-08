@@ -19,7 +19,9 @@ import org.pcsoft.app.jimix.core.project.JimixElement;
 import org.pcsoft.app.jimix.core.project.JimixLayer;
 import org.pcsoft.app.jimix.core.project.ProjectManager;
 import org.pcsoft.app.jimix.plugin.common.api.type.JimixPlugin2DElement;
+import org.pcsoft.app.jimix.plugin.common.api.type.JimixPluginElement;
 import org.pcsoft.app.jimix.plugin.manipulation.manager.type.Jimix2DEffectInstance;
+import org.pcsoft.app.jimix.plugin.manipulation.manager.type.JimixEffectInstance;
 import org.pcsoft.app.jimix.plugin.manipulation.manager.type.JimixFilterInstance;
 import org.pcsoft.framework.jfex.toolbox.ToolBox;
 import org.slf4j.Logger;
@@ -116,12 +118,12 @@ public class PictureEditorPaneView implements FxmlView<PictureEditorPaneViewMode
             PropertyUtils.addProperties(propSheet, (((JimixElement) lstLayer.getSelectedItem()).getModel()).getPluginElement());
         } else if (lstLayer.getSelectedItem() instanceof JimixFilterInstance) {
             PropertyUtils.addProperties(propSheet, ((JimixFilterInstance) lstLayer.getSelectedItem()).getConfiguration());
-        } else if (lstLayer.getSelectedItem() instanceof Jimix2DEffectInstance) {
-            PropertyUtils.addProperties(propSheet, ((Jimix2DEffectInstance) lstLayer.getSelectedItem()).getConfiguration());
+        } else if (lstLayer.getSelectedItem() instanceof JimixEffectInstance) {
+            PropertyUtils.addProperties(propSheet, ((JimixEffectInstance) lstLayer.getSelectedItem()).getConfiguration());
         }
     }
 
-    void selectEffect(Jimix2DEffectInstance instance) {
+    void selectEffect(JimixEffectInstance instance) {
         lstLayer.selectEffect(instance);
     }
 
@@ -147,7 +149,7 @@ public class PictureEditorPaneView implements FxmlView<PictureEditorPaneViewMode
             return;
 
         try {
-            final JimixPlugin2DElement pluginElement = elementSelector.getSelectedElementBuilder().getElementModelClass().newInstance();
+            final JimixPluginElement pluginElement = (JimixPluginElement) elementSelector.getSelectedElementBuilder().getElementModelClass().newInstance();
             ProjectManager.getInstance().createElementForLayer(lstLayer.getSelectedTopLayer(), pluginElement);
         } catch (InstantiationException | IllegalAccessException e1) {
             LOGGER.error("Unable to create element " + elementSelector.getSelectedElementBuilder().getElementModelClass().getName(), e1);

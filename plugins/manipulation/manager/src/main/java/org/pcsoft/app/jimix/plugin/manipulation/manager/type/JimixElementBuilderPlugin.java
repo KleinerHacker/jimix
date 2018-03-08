@@ -2,36 +2,43 @@ package org.pcsoft.app.jimix.plugin.manipulation.manager.type;
 
 import javafx.scene.image.Image;
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.time.StopWatch;
 import org.pcsoft.app.jimix.commons.exception.JimixPluginAnnotationException;
 import org.pcsoft.app.jimix.commons.exception.JimixPluginException;
+import org.pcsoft.app.jimix.plugin.common.api.type.JimixElementType;
+import org.pcsoft.app.jimix.plugin.common.api.type.JimixPluginElement;
 import org.pcsoft.app.jimix.plugin.common.manager.type.JimixPlugin;
-import org.pcsoft.app.jimix.plugin.manipulation.api.JimixEffect;
-import org.pcsoft.app.jimix.plugin.manipulation.api.annotation.JimixEffectDescriptor;
-import org.pcsoft.app.jimix.plugin.manipulation.api.type.JimixEffectType;
-import org.pcsoft.app.jimix.plugin.manipulation.api.type.JimixEffectVariant;
+import org.pcsoft.app.jimix.plugin.manipulation.api.JimixElementBuilder;
+import org.pcsoft.app.jimix.plugin.manipulation.api.annotation.JimixElementBuilderDescriptor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.Objects;
 import java.util.ResourceBundle;
 
-public abstract class JimixEffectPlugin<T extends JimixEffectInstance, E extends JimixEffect> implements JimixPlugin<T> {
+public abstract class JimixElementBuilderPlugin<T extends JimixElementBuilderInstance, E extends JimixElementBuilder, M extends JimixPluginElement> implements JimixPlugin<T> {
+    private static final Logger LOGGER = LoggerFactory.getLogger(Jimix2DEffectPlugin.class);
+    private static final StopWatch STOP_WATCH = new StopWatch();
+
     protected final E instance;
-    protected final JimixEffectDescriptor descriptor;
+    protected final JimixElementBuilderDescriptor descriptor;
     protected final ResourceBundle resourceBundle;
     protected final Image icon;
 
-    public JimixEffectPlugin(E instance) throws JimixPluginException {
-        if (!instance.getClass().isAnnotationPresent(JimixEffectDescriptor.class))
-            throw new JimixPluginAnnotationException("Unable to find needed annotation " + JimixEffectDescriptor.class.getName() + " on effect class " + instance.getClass().getName());
+    public JimixElementBuilderPlugin(E instance) throws JimixPluginException {
+        if (!instance.getClass().isAnnotationPresent(JimixElementBuilderDescriptor.class))
+            throw new JimixPluginAnnotationException("Unable to find needed annotation " + JimixElementBuilderDescriptor.class.getName() + " on element drawer class " + instance.getClass().getName());
 
         this.instance = instance;
-        this.descriptor = instance.getClass().getAnnotation(JimixEffectDescriptor.class);
+        this.descriptor = instance.getClass().getAnnotation(JimixElementBuilderDescriptor.class);
+
         if (!StringUtils.isEmpty(descriptor.resourceBundle())) {
             try {
                 resourceBundle = ResourceBundle.getBundle(descriptor.resourceBundle(), Locale.getDefault(), instance.getClass().getClassLoader());
             } catch (MissingResourceException e) {
-                throw new JimixPluginAnnotationException("Unable to find resource bundle " + descriptor.resourceBundle() + " for effect " + instance.getClass().getName(), e);
+                throw new JimixPluginAnnotationException("Unable to find resource bundle " + descriptor.resourceBundle() + " for filter " + instance.getClass().getName(), e);
             }
         } else {
             resourceBundle = null;
@@ -40,20 +47,16 @@ public abstract class JimixEffectPlugin<T extends JimixEffectInstance, E extends
             try {
                 icon = new Image(instance.getClass().getResourceAsStream(descriptor.iconPath()));
             } catch (Exception e) {
-                throw new JimixPluginAnnotationException("Unable to find icon " + descriptor.iconPath() + " for effect " + instance.getClass().getName(), e);
+                throw new JimixPluginAnnotationException("Unable to find icon " + descriptor.iconPath() + " for filter " + instance.getClass().getName(), e);
             }
         } else {
             icon = null;
         }
     }
 
-    public JimixEffectVariant[] getVariants() {
-        return instance.getVariants();
-    }
-
-    @Override
-    public String getIdentifier() {
-        return instance.getClass().getName();
+    @SuppressWarnings("unchecked")
+    public Class<? extends M> getElementModelClass() {
+        return (Class<? extends M>) descriptor.elementModelClass();
     }
 
     @Override
@@ -72,6 +75,19 @@ public abstract class JimixEffectPlugin<T extends JimixEffectInstance, E extends
         return descriptor.description();
     }
 
+    @Override
+    public String getIdentifier() {
+        return instance.getClass().getName();
+    }
+
+    public Image getIcon() {
+        return icon;
+    }
+
+    public JimixElementType getType() {
+        return instance.getType();
+    }
+
     public String getGroup() {
         if (StringUtils.isEmpty(descriptor.group()))
             return null;
@@ -81,12 +97,8 @@ public abstract class JimixEffectPlugin<T extends JimixEffectInstance, E extends
         return descriptor.group();
     }
 
-    public Image getIcon() {
-        return icon;
-    }
-
-    public JimixEffectType getType() {
-        return instance.getType();
+    public boolean manualAddable() {
+        return descriptor.manualAddable();
     }
 
     @Override
