@@ -44,8 +44,6 @@ public class EffectManagerDialogView implements FxmlView<EffectManagerDialogView
     @FXML
     private Button btnRemove;
     @FXML
-    private Slider sldZoom;
-    @FXML
     private VBox pnlPreview;
 
     @InjectViewModel
@@ -104,7 +102,6 @@ public class EffectManagerDialogView implements FxmlView<EffectManagerDialogView
                 ignoreConfigUpdate.set(false);
             }
         });
-        viewModel.zoomProperty().bind(sldZoom.valueProperty());
     }
 
     private List<JimixEffectVariant> extractEffectVariants() {

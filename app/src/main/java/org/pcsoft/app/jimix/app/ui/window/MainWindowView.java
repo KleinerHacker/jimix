@@ -35,7 +35,13 @@ import org.pcsoft.app.jimix.core.tooling.RecentFileManager;
 import org.pcsoft.app.jimix.core.util.FileTypeUtils;
 import org.pcsoft.app.jimix.core.util.ImageBuilder;
 import org.pcsoft.app.jimix.plugin.mani.manager.ManipulationPluginManager;
-import org.pcsoft.app.jimix.plugin.mani.manager.type.*;
+import org.pcsoft.app.jimix.plugin.mani.manager.type.JimixEffectInstance;
+import org.pcsoft.app.jimix.plugin.mani.manager.type.JimixEffectPlugin;
+import org.pcsoft.app.jimix.plugin.mani.manager.type.JimixFilterInstance;
+import org.pcsoft.app.jimix.plugin.mani.manager.type.JimixFilterPlugin;
+import org.pcsoft.app.jimix.plugin.system.manager.SystemPluginManager;
+import org.pcsoft.app.jimix.plugin.system.manager.type.JimixClipboardProviderInstance;
+import org.pcsoft.app.jimix.plugin.system.manager.type.JimixClipboardProviderPlugin;
 import org.pcsoft.app.jimix.plugin.system.manager.type.JimixImageFileTypeProviderInstance;
 import org.pcsoft.app.jimix.plugin.system.manager.type.JimixProjectFileTypeProviderInstance;
 import org.pcsoft.app.jimix.project.JimixProjectModel;
@@ -248,7 +254,7 @@ public class MainWindowView implements FxmlView<MainWindowViewModel>, Initializa
     }
 
     private void buildPasteMenu() {
-        for (final JimixClipboardProviderPlugin clipboardProviderPlugin : ManipulationPluginManager.getInstance().getAllClipboardProviders()) {
+        for (final JimixClipboardProviderPlugin clipboardProviderPlugin : SystemPluginManager.getInstance().getAllClipboardProviders()) {
             try {
                 final JimixClipboardProviderInstance clipboardProviderInstance = clipboardProviderPlugin.createInstance();
 

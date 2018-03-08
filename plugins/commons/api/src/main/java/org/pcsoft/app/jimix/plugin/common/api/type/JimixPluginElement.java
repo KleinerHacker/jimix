@@ -1,4 +1,4 @@
-package org.pcsoft.app.jimix.plugin.mani.api.type;
+package org.pcsoft.app.jimix.plugin.common.api.type;
 
 import javafx.beans.Observable;
 import javafx.beans.property.ReadOnlyObjectProperty;
@@ -10,7 +10,6 @@ public interface JimixPluginElement {
     Observable[] getObservables();
 
     Dimension getPreferedSize();
-    String getName();
 
     Image getPreview();
     ReadOnlyObjectProperty<Image> previewProperty();

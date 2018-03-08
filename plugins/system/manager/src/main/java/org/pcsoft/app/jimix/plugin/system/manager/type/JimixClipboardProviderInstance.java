@@ -1,8 +1,8 @@
-package org.pcsoft.app.jimix.plugin.mani.manager.type;
+package org.pcsoft.app.jimix.plugin.system.manager.type;
 
 import javafx.scene.input.Clipboard;
 import org.pcsoft.app.jimix.plugin.common.manager.type.JimixInstance;
-import org.pcsoft.app.jimix.plugin.mani.api.type.JimixPluginElement;
+import org.pcsoft.app.jimix.plugin.common.api.type.JimixPluginElement;
 
 public final class JimixClipboardProviderInstance implements JimixInstance<JimixClipboardProviderPlugin> {
     private final JimixClipboardProviderPlugin plugin;

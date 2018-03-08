@@ -4,9 +4,10 @@ import de.saxsys.mvvmfx.ViewModel;
 import javafx.beans.Observable;
 import javafx.beans.binding.BooleanBinding;
 import javafx.beans.property.*;
-import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.Node;
 import javafx.scene.image.Image;
+import javafx.scene.paint.ImagePattern;
+import javafx.scene.shape.Rectangle;
 import org.pcsoft.app.jimix.commons.exception.JimixPluginExecutionException;
 import org.pcsoft.app.jimix.commons.type.TransparentSnapshotParams;
 import org.pcsoft.app.jimix.plugin.mani.manager.type.JimixEffectInstance;
@@ -18,7 +19,6 @@ public class EffectManagerDialogViewModel implements ViewModel {
 
     private final ObjectProperty<Image> sourceImage = new SimpleObjectProperty<>();
     private final ObjectProperty<JimixEffectInstance> selectedEffect = new SimpleObjectProperty<>();
-    private final DoubleProperty zoom = new SimpleDoubleProperty(2d);
 
     private final ReadOnlyObjectWrapper<Image> resultImageWrapper = new ReadOnlyObjectWrapper<>();
     private final ReadOnlyObjectProperty<Image> resultImage = resultImageWrapper.getReadOnlyProperty();
@@ -41,7 +41,6 @@ public class EffectManagerDialogViewModel implements ViewModel {
 
             refreshResultImage();
         });
-        zoom.addListener(o -> refreshResultImage());
 
         allowSubmit = selectedEffect.isNotNull();
     }
@@ -57,17 +56,10 @@ public class EffectManagerDialogViewModel implements ViewModel {
             resultImageWrapper.set(sourceImage.get());
         } else {
             try {
-                //Calculate new width / height with zoom
-                final int width = (int) (sourceImage.get().getWidth() * zoom.get());
-                final int height = (int) (sourceImage.get().getHeight() * zoom.get());
-                final Canvas canvas = new Canvas(width, height);
-                final GraphicsContext gc = canvas.getGraphicsContext2D();
-                //Calculate middle position for image
-                final int x = (int) (width / 2 - sourceImage.get().getWidth() / 2);
-                final int y = (int) (height / 2 - sourceImage.get().getHeight() / 2);
-                gc.drawImage(sourceImage.get(), x, y);
-                selectedEffect.get().apply(sourceImage.get(), x, y, gc);
-                resultImageWrapper.set(canvas.snapshot(new TransparentSnapshotParams(), null));
+                final Rectangle rectangle = new Rectangle(0, 0, sourceImage.get().getWidth(), sourceImage.get().getHeight());
+                rectangle.setFill(new ImagePattern(sourceImage.get()));
+                final Node node = selectedEffect.get().apply(rectangle, 0, 0, (int) sourceImage.get().getWidth(), (int) sourceImage.get().getHeight());
+                resultImageWrapper.set(node.snapshot(new TransparentSnapshotParams(), null));
             } catch (JimixPluginExecutionException e) {
                 LOGGER.error("Unable to run filter " + selectedEffect.get().getPlugin().getIdentifier(), e);
             }
@@ -112,17 +104,5 @@ public class EffectManagerDialogViewModel implements ViewModel {
 
     public BooleanBinding allowSubmitProperty() {
         return allowSubmit;
-    }
-
-    public double getZoom() {
-        return zoom.get();
-    }
-
-    public DoubleProperty zoomProperty() {
-        return zoom;
-    }
-
-    public void setZoom(double zoom) {
-        this.zoom.set(zoom);
     }
 }

@@ -3,8 +3,10 @@ package org.pcsoft.app.jimix.plugin.system.manager;
 import org.apache.commons.lang.StringUtils;
 import org.pcsoft.app.jimix.commons.exception.JimixPluginException;
 import org.pcsoft.app.jimix.plugin.common.manager.PluginManager;
+import org.pcsoft.app.jimix.plugin.system.api.JimixClipboardProvider;
 import org.pcsoft.app.jimix.plugin.system.api.JimixImageFileTypeProvider;
 import org.pcsoft.app.jimix.plugin.system.api.JimixProjectFileTypeProvider;
+import org.pcsoft.app.jimix.plugin.system.manager.type.JimixClipboardProviderPlugin;
 import org.pcsoft.app.jimix.plugin.system.manager.type.JimixImageFileTypeProviderPlugin;
 import org.pcsoft.app.jimix.plugin.system.manager.type.JimixProjectFileTypeProviderPlugin;
 import org.slf4j.Logger;
@@ -25,6 +27,7 @@ public final class SystemPluginManager implements PluginManager {
         return instance;
     }
 
+    private final Map<String, JimixClipboardProviderPlugin> clipboardProviderMap = new HashMap<>();
     private final Map<String, JimixImageFileTypeProviderPlugin> imageFileTypeProviderMap = new HashMap<>();
     private final Map<String, JimixProjectFileTypeProviderPlugin> projectFileTypeProviderMap = new HashMap<>();
 
@@ -48,11 +51,27 @@ public final class SystemPluginManager implements PluginManager {
         classLoader = new URLClassLoader(pluginUrlList.toArray(new URL[pluginUrlList.size()]),
                 SystemPluginManager.class.getClassLoader());
 
+        loadClipboardProvider(classLoader);
         loadImageFileTypeProvider(classLoader);
         loadProjectFileTypeProvider(classLoader);
 
-        LOGGER.debug("Found {} image file type providers, {} project file type providers",
-                imageFileTypeProviderMap.size(), projectFileTypeProviderMap.size());
+        LOGGER.debug("Found {} clipboard providers, {} image file type providers, {} project file type providers",
+                clipboardProviderMap.size(), imageFileTypeProviderMap.size(), projectFileTypeProviderMap.size());
+    }
+
+    private void loadClipboardProvider(final ClassLoader classLoader) {
+        LOGGER.debug("> Load clipboard provider plugins");
+
+        final ServiceLoader<JimixClipboardProvider> jimixClipboardProviders = ServiceLoader.load(JimixClipboardProvider.class, classLoader);
+        for (final JimixClipboardProvider jimixClipboardProvider : jimixClipboardProviders) {
+            try {
+                final JimixClipboardProviderPlugin jimixClipboardProviderInstance = new JimixClipboardProviderPlugin(jimixClipboardProvider);
+                clipboardProviderMap.put(jimixClipboardProviderInstance.getIdentifier(), jimixClipboardProviderInstance);
+                LOGGER.trace(">>> {}", jimixClipboardProviderInstance.getIdentifier());
+            } catch (JimixPluginException e) {
+                LOGGER.error("Unable to load clipboard provider " + jimixClipboardProvider.getClass().getName(), e);
+            }
+        }
     }
 
     private void loadImageFileTypeProvider(final ClassLoader classLoader) {
@@ -99,6 +118,14 @@ public final class SystemPluginManager implements PluginManager {
 
     public JimixProjectFileTypeProviderPlugin getProjectFileTypeProvider(final String fileTypeProviderClassName) {
         return projectFileTypeProviderMap.get(fileTypeProviderClassName);
+    }
+
+    public JimixClipboardProviderPlugin[] getAllClipboardProviders() {
+        return clipboardProviderMap.values().toArray(new JimixClipboardProviderPlugin[clipboardProviderMap.size()]);
+    }
+
+    public JimixClipboardProviderPlugin getClipboardProvider(final String clipboardProviderClassName) {
+        return clipboardProviderMap.get(clipboardProviderClassName);
     }
 
     @Override

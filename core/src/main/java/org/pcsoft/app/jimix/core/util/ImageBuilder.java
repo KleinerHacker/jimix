@@ -1,10 +1,10 @@
 package org.pcsoft.app.jimix.core.util;
 
 import javafx.geometry.Point3D;
-import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.image.WritableImage;
+import javafx.scene.layout.Pane;
 import org.pcsoft.app.jimix.commons.exception.JimixPluginException;
 import org.pcsoft.app.jimix.commons.exception.JimixPluginExecutionException;
 import org.pcsoft.app.jimix.commons.type.TransparentSnapshotParams;
@@ -60,17 +60,16 @@ public final class ImageBuilder {
     public Image buildLayerImage(final JimixLayer layer) {
         final WritableImage image = new WritableImage(layer.getProject().getModel().getWidth(), layer.getProject().getModel().getHeight());
 
-        final Canvas canvas = new Canvas(layer.getProject().getModel().getWidth(), layer.getProject().getModel().getHeight());
-        final GraphicsContext gc = canvas.getGraphicsContext2D();
+        final Pane pane = new Pane();
         for (final JimixElement element : layer.getElementList()) {
             if (!element.getModel().isVisibility()) {
                 LOGGER.trace("element " + element.getUuid() + " invisible");
                 continue;
             }
 
-            drawElement(element, gc);
+            buildElementNode(element, pane);
         }
-        canvas.snapshot(new TransparentSnapshotParams(), image);
+        pane.snapshot(new TransparentSnapshotParams(), image);
 
         Image resultImage = image;
         for (final JimixFilterInstance filterInstance : layer.getModel().getFilterList()) {
@@ -85,60 +84,51 @@ public final class ImageBuilder {
     }
 
     public Image buildElementImage(final JimixElement element) {
-        final Canvas canvas = new Canvas(element.getModel().getWidth(), element.getModel().getHeight());
-        drawElement(element, canvas.getGraphicsContext2D());
+        final Pane pane = new Pane();
+        buildElementNode(element, pane);
 
-        return canvas.snapshot(new TransparentSnapshotParams(), null);
+        return pane.snapshot(new TransparentSnapshotParams(), null);
     }
 
-    private void drawElement(JimixElement element, GraphicsContext gc) {
-        gc.setGlobalAlpha(element.getModel().getOpacity());
-
+    private void buildElementNode(JimixElement element, Pane pane) {
         final JimixElementModel model = element.getModel();
-        final JimixElementDrawerPlugin elementDrawer = ManipulationPluginManager.getInstance().getElementDrawer(model.getPluginElement().getClass());
-        if (elementDrawer == null) {
-            LOGGER.error("unable to draw element " + element.getUuid() + ": no element drawer found, skip");
+        final JimixElementBuilderPlugin elementBuilder = ManipulationPluginManager.getInstance().getElementBuilder(model.getPluginElement().getClass());
+        if (elementBuilder == null) {
+            LOGGER.error("unable to build element " + element.getUuid() + ": no element builder found, skip");
             return;
         }
 
         try {
-            final Image elementImage = elementDrawer.draw(model.getPluginElement(), model.getWidth(), model.getHeight());
-            final Image elementImageWithViewSettings = drawImageWithViewSettings(element, elementImage);
-            final WritableImage elementImageWithEffects = drawImageWithEffects(element, gc.getCanvas().getWidth(), gc.getCanvas().getHeight(), elementImageWithViewSettings);
+            final Node elementNode = elementBuilder.buildNode(model.getPluginElement(), model.getX(), model.getY(), model.getWidth(), model.getHeight());
+            elementNode.setOpacity(model.getOpacity());
+            applyViewSettings(element, elementNode);
+            final Node effectNode = applyEffects(element, elementNode);
 
             //Draw result image (original project size)
-            gc.drawImage(elementImageWithEffects, 0, 0);
+            pane.getChildren().add(effectNode);
         } catch (JimixPluginExecutionException e) {
             LOGGER.error("unable to draw element " + element.getUuid() + ": execution error of plugin, skip", e);
         }
     }
 
-    private WritableImage drawImageWithEffects(JimixElement element, double width, double height, Image elementImageWithViewSettings) throws JimixPluginExecutionException {
-        //Draw image with effects (original project size)
-        final Canvas effectCanvas = new Canvas(width, height);
-        final GraphicsContext effectGc = effectCanvas.getGraphicsContext2D();
-        effectGc.drawImage(elementImageWithViewSettings, element.getModel().getX(), element.getModel().getY());
+    private Node applyEffects(JimixElement element, Node elementNode) throws JimixPluginExecutionException {
         //Draw effects on / outside image
         for (final JimixEffectInstance instance : element.getModel().getEffectList()) {
-            instance.apply(elementImageWithViewSettings, element.getModel().getX(), element.getModel().getY(), effectGc);
+            elementNode = instance.apply(elementNode, element.getModel().getX(), element.getModel().getY(), element.getModel().getWidth(), element.getModel().getHeight());
         }
-        return effectCanvas.snapshot(new TransparentSnapshotParams(), null);
+        return elementNode;
     }
 
-    private Image drawImageWithViewSettings(JimixElement element, Image elementImage) {
-        final Canvas elementCanvas = new Canvas(elementImage.getWidth(), elementImage.getHeight());
-        final GraphicsContext elementGc = elementCanvas.getGraphicsContext2D();
+    private void applyViewSettings(JimixElement element, Node elementNode) {
         if (element.getModel().isMirrorHorizontal()) {
-            elementCanvas.setScaleX(-1);
+            elementNode.setScaleX(-1);
         }
         if (element.getModel().isMirrorVertical()) {
-            elementCanvas.setScaleY(-1);
+            elementNode.setScaleY(-1);
         }
         if (element.getModel().getRotation() != 0d) {
-            elementCanvas.setRotate(element.getModel().getRotation());
-            elementCanvas.setRotationAxis(new Point3D(0, 0, 1));
+            elementNode.setRotate(element.getModel().getRotation());
+            elementNode.setRotationAxis(new Point3D(0, 0, 1));
         }
-        elementGc.drawImage(elementImage, 0, 0, element.getModel().getWidth(), element.getModel().getHeight());
-        return elementCanvas.snapshot(new TransparentSnapshotParams(), null);
     }
 }

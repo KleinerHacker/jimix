@@ -4,7 +4,7 @@ import org.apache.commons.lang.StringUtils;
 import org.pcsoft.app.jimix.commons.exception.JimixPluginException;
 import org.pcsoft.app.jimix.plugin.common.manager.PluginManager;
 import org.pcsoft.app.jimix.plugin.mani.api.*;
-import org.pcsoft.app.jimix.plugin.mani.api.type.JimixPluginElement;
+import org.pcsoft.app.jimix.plugin.common.api.type.JimixPluginElement;
 import org.pcsoft.app.jimix.plugin.mani.manager.type.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,8 +29,7 @@ public final class ManipulationPluginManager implements PluginManager {
     private final Map<String, JimixRendererPlugin> rendererMap = new HashMap<>();
     private final Map<String, JimixBlenderPlugin> blenderMap = new HashMap<>();
     private final Map<String, JimixScalerPlugin> scalerMap = new HashMap<>();
-    private final Map<String, JimixClipboardProviderPlugin> clipboardProviderMap = new HashMap<>();
-    private final Map<Class<? extends JimixPluginElement>, JimixElementDrawerPlugin> elementDrawerMap = new HashMap<>();
+    private final Map<Class<? extends JimixPluginElement>, JimixElementBuilderPlugin> elementBuilderMap = new HashMap<>();
 
     private ClassLoader classLoader;
 
@@ -51,18 +50,16 @@ public final class ManipulationPluginManager implements PluginManager {
 
         classLoader = new URLClassLoader(pluginUrlList.toArray(new URL[pluginUrlList.size()]),
                 ManipulationPluginManager.class.getClassLoader());
-        
+
         loadEffects(classLoader);
         loadFilter(classLoader);
         loadRenderer(classLoader);
         loadBlender(classLoader);
         loadScaler(classLoader);
-        loadClipboardProvider(classLoader);
-        loadElementDrawerProvider(classLoader);
+        loadElementBuilderProvider(classLoader);
 
-        LOGGER.debug("Found {} effects, {} filters, {} renderer, {} blender, {} scaler, {} clipboard providers, {} element drawers",
-                effectMap.size(), filterMap.size(), rendererMap.size(), blenderMap.size(), scalerMap.size(), clipboardProviderMap.size(),
-                elementDrawerMap.size());
+        LOGGER.debug("Found {} effects, {} filters, {} renderer, {} blender, {} scaler, {} element builders",
+                effectMap.size(), filterMap.size(), rendererMap.size(), blenderMap.size(), scalerMap.size(), elementBuilderMap.size());
     }
 
     private void loadEffects(final ClassLoader classLoader) {
@@ -140,32 +137,17 @@ public final class ManipulationPluginManager implements PluginManager {
         }
     }
 
-    private void loadClipboardProvider(final ClassLoader classLoader) {
-        LOGGER.debug("> Load clipboard provider plugins");
+    private void loadElementBuilderProvider(final ClassLoader classLoader) {
+        LOGGER.debug("> Load element builder plugins");
 
-        final ServiceLoader<JimixClipboardProvider> jimixClipboardProviders = ServiceLoader.load(JimixClipboardProvider.class, classLoader);
-        for (final JimixClipboardProvider jimixClipboardProvider : jimixClipboardProviders) {
+        final ServiceLoader<JimixElementBuilder> jimixElementBuilders = ServiceLoader.load(JimixElementBuilder.class, classLoader);
+        for (final JimixElementBuilder jimixElementBuilder : jimixElementBuilders) {
             try {
-                final JimixClipboardProviderPlugin jimixClipboardProviderInstance = new JimixClipboardProviderPlugin(jimixClipboardProvider);
-                clipboardProviderMap.put(jimixClipboardProviderInstance.getIdentifier(), jimixClipboardProviderInstance);
-                LOGGER.trace(">>> {}", jimixClipboardProviderInstance.getIdentifier());
+                final JimixElementBuilderPlugin jimixElementBuilderPlugin = new JimixElementBuilderPlugin(jimixElementBuilder);
+                elementBuilderMap.put(jimixElementBuilderPlugin.getElementModelClass(), jimixElementBuilderPlugin);
+                LOGGER.trace(">>> {}", jimixElementBuilderPlugin.getIdentifier());
             } catch (JimixPluginException e) {
-                LOGGER.error("Unable to load clipboard provider " + jimixClipboardProvider.getClass().getName(), e);
-            }
-        }
-    }
-
-    private void loadElementDrawerProvider(final ClassLoader classLoader) {
-        LOGGER.debug("> Load element drawer plugins");
-
-        final ServiceLoader<JimixElementDrawer> jimixElementDrawers = ServiceLoader.load(JimixElementDrawer.class, classLoader);
-        for (final JimixElementDrawer jimixElementDrawer : jimixElementDrawers) {
-            try {
-                final JimixElementDrawerPlugin jimixElementDrawerPlugin = new JimixElementDrawerPlugin(jimixElementDrawer);
-                elementDrawerMap.put(jimixElementDrawerPlugin.getElementModelClass(), jimixElementDrawerPlugin);
-                LOGGER.trace(">>> {}", jimixElementDrawerPlugin.getIdentifier());
-            } catch (JimixPluginException e) {
-                LOGGER.error("Unable to load element drawer " + jimixElementDrawer.getClass().getName(), e);
+                LOGGER.error("Unable to load element builder " + jimixElementBuilder.getClass().getName(), e);
             }
         }
     }
@@ -210,20 +192,12 @@ public final class ManipulationPluginManager implements PluginManager {
         return scalerMap.get(scalerClassName);
     }
 
-    public JimixClipboardProviderPlugin[] getAllClipboardProviders() {
-        return clipboardProviderMap.values().toArray(new JimixClipboardProviderPlugin[clipboardProviderMap.size()]);
+    public JimixElementBuilderPlugin[] getAllElementBuilders() {
+        return elementBuilderMap.values().toArray(new JimixElementBuilderPlugin[elementBuilderMap.size()]);
     }
 
-    public JimixClipboardProviderPlugin getClipboardProvider(final String clipboardProviderClassName) {
-        return clipboardProviderMap.get(clipboardProviderClassName);
-    }
-
-    public JimixElementDrawerPlugin[] getAllElementDrawers() {
-        return elementDrawerMap.values().toArray(new JimixElementDrawerPlugin[elementDrawerMap.size()]);
-    }
-
-    public JimixElementDrawerPlugin getElementDrawer(final Class<? extends JimixPluginElement> elementModelClass) {
-        return elementDrawerMap.get(elementModelClass);
+    public JimixElementBuilderPlugin getElementBuilder(final Class<? extends JimixPluginElement> elementModelClass) {
+        return elementBuilderMap.get(elementModelClass);
     }
 
     @Override

@@ -1,4 +1,4 @@
-package org.pcsoft.app.jimix.plugin.mani.api.annotation;
+package org.pcsoft.app.jimix.plugin.system.api.annotation;
 
 import java.lang.annotation.*;
 

@@ -3,9 +3,9 @@ package org.pcsoft.app.jimix.core.project;
 import javafx.scene.image.Image;
 import javafx.scene.input.Clipboard;
 import org.pcsoft.app.jimix.core.plugin.builtin.blender.OverlayBlender;
-import org.pcsoft.app.jimix.core.plugin.builtin.model.JimixImagePluginElement;
-import org.pcsoft.app.jimix.plugin.mani.api.type.JimixPluginElement;
-import org.pcsoft.app.jimix.plugin.mani.manager.type.JimixClipboardProviderInstance;
+import org.pcsoft.app.jimix.core.plugin.builtin.model.ImagePluginElement;
+import org.pcsoft.app.jimix.plugin.common.api.type.JimixPluginElement;
+import org.pcsoft.app.jimix.plugin.system.manager.type.JimixClipboardProviderInstance;
 import org.pcsoft.app.jimix.project.JimixElementModel;
 import org.pcsoft.app.jimix.project.JimixLayerModel;
 import org.pcsoft.app.jimix.project.JimixProjectModel;
@@ -142,7 +142,7 @@ public final class ProjectManager {
     }
 
     public JimixElement createImageElementForLayer(final JimixLayer layer, final Image image) {
-        final JimixImagePluginElement pluginElement = new JimixImagePluginElement(image);
+        final ImagePluginElement pluginElement = new ImagePluginElement(image);
         final JimixElementModel model = new JimixElementModel(pluginElement);
         final JimixElement element = new JimixElement(layer.getProject(), layer, model);
         LOGGER.info("Create image element " + element.getUuid() + " for layer " + layer.getUuid());

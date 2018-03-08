@@ -1,4 +1,4 @@
-package org.pcsoft.app.jimix.plugin.mani.manager.type;
+package org.pcsoft.app.jimix.plugin.system.manager.type;
 
 import javafx.scene.image.Image;
 import javafx.scene.input.Clipboard;
@@ -6,10 +6,11 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.StopWatch;
 import org.pcsoft.app.jimix.commons.exception.JimixPluginAnnotationException;
 import org.pcsoft.app.jimix.commons.exception.JimixPluginException;
+import org.pcsoft.app.jimix.plugin.common.api.type.JimixPluginElement;
 import org.pcsoft.app.jimix.plugin.common.manager.type.JimixPlugin;
-import org.pcsoft.app.jimix.plugin.mani.api.JimixClipboardProvider;
-import org.pcsoft.app.jimix.plugin.mani.api.annotation.JimixClipboardProviderDescriptor;
-import org.pcsoft.app.jimix.plugin.mani.api.type.JimixPluginElement;
+import org.pcsoft.app.jimix.plugin.mani.manager.type.JimixEffectPlugin;
+import org.pcsoft.app.jimix.plugin.system.api.JimixClipboardProvider;
+import org.pcsoft.app.jimix.plugin.system.api.annotation.JimixClipboardProviderDescriptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

@@ -7,6 +7,8 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.layout.HBox;
 import org.pcsoft.app.jimix.app.language.LanguageResources;
 import org.pcsoft.app.jimix.core.project.JimixElement;
+import org.pcsoft.app.jimix.plugin.mani.manager.ManipulationPluginManager;
+import org.pcsoft.app.jimix.plugin.mani.manager.type.JimixElementBuilderPlugin;
 
 public class ElementTreeCellPane extends HBox {
     private final ElementTreeCellPaneView controller;
@@ -26,7 +28,8 @@ public class ElementTreeCellPane extends HBox {
             }
 
             if (n != null) {
-                viewModel.setTitle(n.getModel().getPluginElement().getName());
+                final JimixElementBuilderPlugin elementBuilder = ManipulationPluginManager.getInstance().getElementBuilder(n.getModel().getPluginElement().getClass());
+                viewModel.setTitle(elementBuilder == null ? "<unknown>" : elementBuilder.getName());
                 viewModel.visibilityProperty().bindBidirectional(n.getModel().visibilityProperty());
                 viewModel.previewProperty().bind(n.getModel().getPluginElement().previewProperty());
             }

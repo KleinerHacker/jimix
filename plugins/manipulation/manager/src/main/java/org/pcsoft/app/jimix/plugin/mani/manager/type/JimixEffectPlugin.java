@@ -1,6 +1,6 @@
 package org.pcsoft.app.jimix.plugin.mani.manager.type;
 
-import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.Node;
 import javafx.scene.image.Image;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.DurationFormatUtils;
@@ -55,14 +55,15 @@ public final class JimixEffectPlugin implements JimixPlugin<JimixEffectInstance>
         }
     }
 
-    void apply(final Image image, final int x, final int y, final GraphicsContext gc, JimixEffectConfiguration configuration) throws JimixPluginExecutionException {
+    Node apply(final Node node, final int x, final int y, final int width, final int height, JimixEffectConfiguration configuration) throws JimixPluginExecutionException {
         if (LOGGER.isTraceEnabled()) {
             STOP_WATCH.reset();
             STOP_WATCH.start();
         }
 
+        final Node resultNode;
         try {
-            instance.apply(image, x, y, gc, configuration);
+            resultNode = instance.apply(node, x, y, width, height, configuration);
         } catch (Exception e) {
             throw new JimixPluginExecutionException("Error while running effect", e);
         }
@@ -71,6 +72,8 @@ public final class JimixEffectPlugin implements JimixPlugin<JimixEffectInstance>
             STOP_WATCH.stop();
             LOGGER.trace("Effect run time: " + DurationFormatUtils.formatDuration(STOP_WATCH.getTime(), "ss:SSS"));
         }
+
+        return resultNode;
     }
 
     public JimixEffectVariant[] getVariants() {

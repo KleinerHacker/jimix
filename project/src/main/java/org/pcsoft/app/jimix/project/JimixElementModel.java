@@ -7,7 +7,7 @@ import javafx.collections.ObservableList;
 import org.apache.commons.lang.ArrayUtils;
 import org.pcsoft.app.jimix.plugin.common.api.annotation.JimixProperty;
 import org.pcsoft.app.jimix.plugin.common.api.annotation.JimixPropertyDoubleRestriction;
-import org.pcsoft.app.jimix.plugin.mani.api.type.JimixPluginElement;
+import org.pcsoft.app.jimix.plugin.common.api.type.JimixPluginElement;
 import org.pcsoft.app.jimix.plugin.mani.manager.type.JimixEffectInstance;
 
 import java.awt.*;

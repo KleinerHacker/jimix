@@ -46,7 +46,6 @@
                 <Insets left="5.0" top="5.0" right="5.0" bottom="5.0"/>
             </VBox.margin>
         </ImageView>
-        <Slider fx:id="sldZoom" min="1" max="5" value="2"/>
         <JimixPropertySheet fx:id="propSheet" mode="CATEGORY" maxHeight="1.7976931348623157E308" VBox.vgrow="ALWAYS"/>
     </VBox>
 </SplitPane>

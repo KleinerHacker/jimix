@@ -8,18 +8,18 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.image.Image;
 import org.pcsoft.app.jimix.commons.exception.JimixPluginException;
 import org.pcsoft.app.jimix.core.plugin.builtin.scaler.DefaultScaler;
-import org.pcsoft.app.jimix.plugin.mani.api.type.JimixPluginElement;
+import org.pcsoft.app.jimix.plugin.common.api.type.JimixPluginElement;
 import org.pcsoft.app.jimix.plugin.mani.manager.type.JimixScalerInstance;
 import org.pcsoft.app.jimix.plugin.mani.manager.type.JimixScalerPlugin;
 
 import java.awt.*;
 
-public final class JimixImagePluginElement implements JimixPluginElement {
+public final class ImagePluginElement implements JimixPluginElement {
     private final ReadOnlyObjectWrapper<Image> value = new ReadOnlyObjectWrapper<>();
     private final ReadOnlyObjectProperty<Image> readOnlyValue = value.getReadOnlyProperty();
     private final ObjectProperty<JimixScalerInstance> scaler;
 
-    public JimixImagePluginElement() {
+    public ImagePluginElement() {
         try {
             scaler = new SimpleObjectProperty<>(new JimixScalerPlugin(new DefaultScaler()).createInstance());
         } catch (JimixPluginException e) {
@@ -27,7 +27,7 @@ public final class JimixImagePluginElement implements JimixPluginElement {
         }
     }
 
-    public JimixImagePluginElement(final Image image) {
+    public ImagePluginElement(final Image image) {
         this();
         this.value.set(image);
     }
@@ -54,11 +54,6 @@ public final class JimixImagePluginElement implements JimixPluginElement {
 
     public void setScaler(JimixScalerInstance scaler) {
         this.scaler.set(scaler);
-    }
-
-    @Override
-    public String getName() {
-        return "Image";
     }
 
     @Override

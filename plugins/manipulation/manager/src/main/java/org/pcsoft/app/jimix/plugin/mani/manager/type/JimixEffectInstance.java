@@ -1,7 +1,6 @@
 package org.pcsoft.app.jimix.plugin.mani.manager.type;
 
-import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.image.Image;
+import javafx.scene.Node;
 import org.pcsoft.app.jimix.commons.exception.JimixPluginExecutionException;
 import org.pcsoft.app.jimix.plugin.common.manager.type.JimixInstance;
 import org.pcsoft.app.jimix.plugin.mani.api.config.JimixEffectConfiguration;
@@ -19,8 +18,8 @@ public final class JimixEffectInstance implements JimixInstance<JimixEffectPlugi
         this.configuration = configuration;
     }
 
-    public void apply(Image image, int x, int y, GraphicsContext gc) throws JimixPluginExecutionException {
-        plugin.apply(image, x, y, gc, configuration);
+    public Node apply(Node node, int x, int y, int width, int height) throws JimixPluginExecutionException {
+        return plugin.apply(node, x, y, width, height, configuration);
     }
 
     @Override
