@@ -10,8 +10,8 @@ import org.pcsoft.app.jimix.app.language.LanguageResources;
 import org.pcsoft.app.jimix.core.project.JimixElement;
 import org.pcsoft.app.jimix.core.project.JimixLayer;
 import org.pcsoft.app.jimix.core.project.JimixProject;
-import org.pcsoft.app.jimix.plugin.mani.manager.type.JimixEffectInstance;
-import org.pcsoft.app.jimix.plugin.mani.manager.type.JimixFilterInstance;
+import org.pcsoft.app.jimix.plugin.manipulation.manager.type.Jimix2DEffectInstance;
+import org.pcsoft.app.jimix.plugin.manipulation.manager.type.JimixFilterInstance;
 
 public class PictureEditorPane extends BorderPane {
 
@@ -63,7 +63,7 @@ public class PictureEditorPane extends BorderPane {
         viewModel.setSelectedItem(selectedItem);
     }
 
-    public void selectEffect(JimixEffectInstance instance) {
+    public void selectEffect(Jimix2DEffectInstance instance) {
         controller.selectEffect(instance);
     }
 

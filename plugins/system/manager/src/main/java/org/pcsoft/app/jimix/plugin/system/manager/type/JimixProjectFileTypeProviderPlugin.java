@@ -5,6 +5,7 @@ import org.apache.commons.lang.time.StopWatch;
 import org.pcsoft.app.jimix.commons.exception.JimixPluginAnnotationException;
 import org.pcsoft.app.jimix.commons.exception.JimixPluginException;
 import org.pcsoft.app.jimix.plugin.common.manager.type.JimixPlugin;
+import org.pcsoft.app.jimix.plugin.manipulation.manager.type.Jimix2DElementBuilderPlugin;
 import org.pcsoft.app.jimix.plugin.system.api.JimixProjectFileTypeProvider;
 import org.pcsoft.app.jimix.plugin.system.api.annotation.JimixFileTypeProviderDescriptor;
 import org.pcsoft.app.jimix.project.JimixProjectModel;
@@ -17,6 +18,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Locale;
 import java.util.MissingResourceException;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 public final class JimixProjectFileTypeProviderPlugin implements JimixPlugin<JimixProjectFileTypeProviderInstance> {
@@ -91,5 +93,19 @@ public final class JimixProjectFileTypeProviderPlugin implements JimixPlugin<Jim
 
     public String[] getExtensions() {
         return descriptor.extensions();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Jimix2DElementBuilderPlugin that = (Jimix2DElementBuilderPlugin) o;
+        return Objects.equals(getIdentifier(), that.getIdentifier());
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(getIdentifier());
     }
 }

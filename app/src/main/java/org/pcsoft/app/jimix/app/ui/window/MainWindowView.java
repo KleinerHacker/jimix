@@ -34,11 +34,11 @@ import org.pcsoft.app.jimix.core.project.ProjectManager;
 import org.pcsoft.app.jimix.core.tooling.RecentFileManager;
 import org.pcsoft.app.jimix.core.util.FileTypeUtils;
 import org.pcsoft.app.jimix.core.util.ImageBuilder;
-import org.pcsoft.app.jimix.plugin.mani.manager.ManipulationPluginManager;
-import org.pcsoft.app.jimix.plugin.mani.manager.type.JimixEffectInstance;
-import org.pcsoft.app.jimix.plugin.mani.manager.type.JimixEffectPlugin;
-import org.pcsoft.app.jimix.plugin.mani.manager.type.JimixFilterInstance;
-import org.pcsoft.app.jimix.plugin.mani.manager.type.JimixFilterPlugin;
+import org.pcsoft.app.jimix.plugin.manipulation.manager.ManipulationPluginManager;
+import org.pcsoft.app.jimix.plugin.manipulation.manager.type.Jimix2DEffectInstance;
+import org.pcsoft.app.jimix.plugin.manipulation.manager.type.Jimix2DEffectPlugin;
+import org.pcsoft.app.jimix.plugin.manipulation.manager.type.JimixFilterInstance;
+import org.pcsoft.app.jimix.plugin.manipulation.manager.type.JimixFilterPlugin;
 import org.pcsoft.app.jimix.plugin.system.manager.SystemPluginManager;
 import org.pcsoft.app.jimix.plugin.system.manager.type.JimixClipboardProviderInstance;
 import org.pcsoft.app.jimix.plugin.system.manager.type.JimixClipboardProviderPlugin;
@@ -305,7 +305,7 @@ public class MainWindowView implements FxmlView<MainWindowViewModel>, Initializa
     private void buildEffectMenu() {
         final Map<String, Menu> menuMap = new HashMap<>();
 
-        for (final JimixEffectPlugin effectPlugin : ManipulationPluginManager.getInstance().getAllEffects()) {
+        for (final Jimix2DEffectPlugin effectPlugin : ManipulationPluginManager.getInstance().getAll2DEffects()) {
             final MenuItem menuItem = new MenuItem(effectPlugin.getName());
             if (effectPlugin.getIcon() != null) {
                 menuItem.setGraphic(new ImageView(effectPlugin.getIcon()));
@@ -488,10 +488,10 @@ public class MainWindowView implements FxmlView<MainWindowViewModel>, Initializa
         if (tab == null)
             return;
         final PictureEditorPane pictureEditorPane = (PictureEditorPane) tab.getContent();
-        final JimixEffectPlugin effectPlugin = (JimixEffectPlugin) ((MenuItem) actionEvent.getSource()).getUserData();
+        final Jimix2DEffectPlugin effectPlugin = (Jimix2DEffectPlugin) ((MenuItem) actionEvent.getSource()).getUserData();
 
         try {
-            final JimixEffectInstance effectInstance = effectPlugin.createInstance();
+            final Jimix2DEffectInstance effectInstance = effectPlugin.createInstance();
             ((JimixElement) pictureEditorPane.getSelectedItem()).getModel().getEffectList().add(effectInstance);
             pictureEditorPane.selectEffect(effectInstance);
         } catch (JimixPluginException e) {

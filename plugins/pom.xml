@@ -15,6 +15,7 @@
 
     <modules>
         <module>commons</module>
+        <module>impl</module>
         <module>manipulation</module>
         <module>system</module>
     </modules>

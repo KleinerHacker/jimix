@@ -10,6 +10,7 @@
 <?import org.pcsoft.app.jimix.app.ui.component.LayerList?>
 <?import org.pcsoft.app.jimix.app.ui.component.prop_sheet.JimixPropertySheet?>
 <?import org.pcsoft.framework.jfex.toolbox.*?>
+<?import org.pcsoft.app.jimix.app.ui.component.ElementSelector?>
 <fx:root type="BorderPane" xmlns="http://javafx.com/javafx"
          xmlns:fx="http://javafx.com/fxml"
          fx:controller="org.pcsoft.app.jimix.app.ui.component.PictureEditorPaneView">
@@ -34,9 +35,7 @@
             <items>
                 <ToolBoxDescriptor title="Editor">
                     <content>
-                        <VBox prefWidth="50">
-                            <Label text="Editor"/>
-                        </VBox>
+                        <ElementSelector fx:id="elementSelector"/>
                     </content>
                 </ToolBoxDescriptor>
             </items>
@@ -46,8 +45,8 @@
         <ScrollPane>
             <StackPane>
                 <Canvas fx:id="canvasGround"/>
-                <ImageView fx:id="imgPicture"/>
-                <ImageView fx:id="imgMask"/>
+                <ImageView fx:id="imgPicture" onMouseClicked="#onPictureMouseClicked"/>
+                <ImageView fx:id="imgMask" onMouseClicked="#onMaskMouseClicked"/>
             </StackPane>
         </ScrollPane>
     </center>

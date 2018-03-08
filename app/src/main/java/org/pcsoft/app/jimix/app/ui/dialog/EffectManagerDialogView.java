@@ -15,9 +15,9 @@ import org.pcsoft.app.jimix.app.ui.component.EffectList;
 import org.pcsoft.app.jimix.app.ui.component.VariantComboBox;
 import org.pcsoft.app.jimix.app.ui.component.prop_sheet.JimixPropertySheet;
 import org.pcsoft.app.jimix.app.util.PropertyUtils;
-import org.pcsoft.app.jimix.plugin.mani.api.config.JimixEffectConfiguration;
-import org.pcsoft.app.jimix.plugin.mani.api.type.JimixEffectVariant;
-import org.pcsoft.app.jimix.plugin.mani.manager.ManipulationPluginVariantManager;
+import org.pcsoft.app.jimix.plugin.manipulation.api.config.JimixEffectConfiguration;
+import org.pcsoft.app.jimix.plugin.manipulation.api.type.JimixEffectVariant;
+import org.pcsoft.app.jimix.plugin.manipulation.manager.ManipulationPluginVariantManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

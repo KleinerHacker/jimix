@@ -12,9 +12,9 @@ import org.pcsoft.app.jimix.core.plugin.builtin.blender.OverlayBlender;
 import org.pcsoft.app.jimix.core.project.JimixElement;
 import org.pcsoft.app.jimix.core.project.JimixLayer;
 import org.pcsoft.app.jimix.core.project.JimixProject;
-import org.pcsoft.app.jimix.plugin.mani.api.type.JimixSource;
-import org.pcsoft.app.jimix.plugin.mani.manager.ManipulationPluginManager;
-import org.pcsoft.app.jimix.plugin.mani.manager.type.*;
+import org.pcsoft.app.jimix.plugin.manipulation.api.type.JimixSource;
+import org.pcsoft.app.jimix.plugin.manipulation.manager.ManipulationPluginManager;
+import org.pcsoft.app.jimix.plugin.manipulation.manager.type.*;
 import org.pcsoft.app.jimix.project.JimixElementModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -92,7 +92,7 @@ public final class ImageBuilder {
 
     private void buildElementNode(JimixElement element, Pane pane) {
         final JimixElementModel model = element.getModel();
-        final JimixElementBuilderPlugin elementBuilder = ManipulationPluginManager.getInstance().getElementBuilder(model.getPluginElement().getClass());
+        final Jimix2DElementBuilderPlugin elementBuilder = ManipulationPluginManager.getInstance().get2DElementBuilder(model.getPluginElement().getClass());
         if (elementBuilder == null) {
             LOGGER.error("unable to build element " + element.getUuid() + ": no element builder found, skip");
             return;
@@ -100,7 +100,6 @@ public final class ImageBuilder {
 
         try {
             final Node elementNode = elementBuilder.buildNode(model.getPluginElement(), model.getX(), model.getY(), model.getWidth(), model.getHeight());
-            elementNode.setOpacity(model.getOpacity());
             applyViewSettings(element, elementNode);
             final Node effectNode = applyEffects(element, elementNode);
 
@@ -113,7 +112,7 @@ public final class ImageBuilder {
 
     private Node applyEffects(JimixElement element, Node elementNode) throws JimixPluginExecutionException {
         //Draw effects on / outside image
-        for (final JimixEffectInstance instance : element.getModel().getEffectList()) {
+        for (final Jimix2DEffectInstance instance : element.getModel().getEffectList()) {
             elementNode = instance.apply(elementNode, element.getModel().getX(), element.getModel().getY(), element.getModel().getWidth(), element.getModel().getHeight());
         }
         return elementNode;

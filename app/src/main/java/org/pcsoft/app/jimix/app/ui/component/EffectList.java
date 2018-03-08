@@ -5,9 +5,9 @@ import javafx.scene.control.ListCell;
 import javafx.scene.image.ImageView;
 import org.pcsoft.app.jimix.app.language.LanguageResources;
 import org.pcsoft.app.jimix.commons.exception.JimixPluginException;
-import org.pcsoft.app.jimix.plugin.mani.manager.ManipulationPluginManager;
-import org.pcsoft.app.jimix.plugin.mani.manager.type.JimixEffectInstance;
-import org.pcsoft.app.jimix.plugin.mani.manager.type.JimixEffectPlugin;
+import org.pcsoft.app.jimix.plugin.manipulation.manager.ManipulationPluginManager;
+import org.pcsoft.app.jimix.plugin.manipulation.manager.type.Jimix2DEffectInstance;
+import org.pcsoft.app.jimix.plugin.manipulation.manager.type.Jimix2DEffectPlugin;
 import org.pcsoft.framework.jfex.data.ListViewEx;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,7 +16,7 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-public class EffectList extends ListViewEx<JimixEffectInstance, String> {
+public class EffectList extends ListViewEx<Jimix2DEffectInstance, String> {
     private static final Logger LOGGER = LoggerFactory.getLogger(EffectList.class);
 
     public EffectList() {
@@ -29,11 +29,11 @@ public class EffectList extends ListViewEx<JimixEffectInstance, String> {
         getItems().setAll(extractEffects());
     }
 
-    private List<JimixEffectInstance> extractEffects() {
-        final List<JimixEffectInstance> instanceList = new ArrayList<>();
-        for (final JimixEffectPlugin plugin : ManipulationPluginManager.getInstance().getAllEffects()) {
+    private List<Jimix2DEffectInstance> extractEffects() {
+        final List<Jimix2DEffectInstance> instanceList = new ArrayList<>();
+        for (final Jimix2DEffectPlugin plugin : ManipulationPluginManager.getInstance().getAll2DEffects()) {
             try {
-                final JimixEffectInstance instance = plugin.createInstance();
+                final Jimix2DEffectInstance instance = plugin.createInstance();
                 instanceList.add(instance);
             } catch (JimixPluginException e) {
                 LOGGER.error("Unable to create instance for effect " + plugin.getIdentifier() + ", skip", e);
@@ -43,7 +43,7 @@ public class EffectList extends ListViewEx<JimixEffectInstance, String> {
         return instanceList;
     }
 
-    private void drawValue(ListCell cell, JimixEffectInstance item, boolean empty) {
+    private void drawValue(ListCell cell, Jimix2DEffectInstance item, boolean empty) {
         cell.setText(null);
         cell.setGraphic(null);
         cell.setStyle("");

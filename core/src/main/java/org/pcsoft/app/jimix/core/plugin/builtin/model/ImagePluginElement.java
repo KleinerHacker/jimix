@@ -8,13 +8,13 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.image.Image;
 import org.pcsoft.app.jimix.commons.exception.JimixPluginException;
 import org.pcsoft.app.jimix.core.plugin.builtin.scaler.DefaultScaler;
-import org.pcsoft.app.jimix.plugin.common.api.type.JimixPluginElement;
-import org.pcsoft.app.jimix.plugin.mani.manager.type.JimixScalerInstance;
-import org.pcsoft.app.jimix.plugin.mani.manager.type.JimixScalerPlugin;
+import org.pcsoft.app.jimix.plugin.common.api.type.JimixPlugin2DElement;
+import org.pcsoft.app.jimix.plugin.manipulation.manager.type.JimixScalerInstance;
+import org.pcsoft.app.jimix.plugin.manipulation.manager.type.JimixScalerPlugin;
 
 import java.awt.*;
 
-public final class ImagePluginElement implements JimixPluginElement {
+public final class ImagePluginElement implements JimixPlugin2DElement {
     private final ReadOnlyObjectWrapper<Image> value = new ReadOnlyObjectWrapper<>();
     private final ReadOnlyObjectProperty<Image> readOnlyValue = value.getReadOnlyProperty();
     private final ObjectProperty<JimixScalerInstance> scaler;

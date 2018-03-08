@@ -8,17 +8,17 @@ import org.pcsoft.app.jimix.commons.exception.JimixPluginException;
 import org.pcsoft.app.jimix.commons.exception.JimixPluginExecutionException;
 import org.pcsoft.app.jimix.core.plugin.builtin.model.ImagePluginElement;
 import org.pcsoft.app.jimix.core.plugin.builtin.scaler.DefaultScaler;
-import org.pcsoft.app.jimix.plugin.mani.api.JimixElementBuilder;
-import org.pcsoft.app.jimix.plugin.mani.api.annotation.JimixElementBuilderDescriptor;
-import org.pcsoft.app.jimix.plugin.mani.api.type.JimixSource;
-import org.pcsoft.app.jimix.plugin.mani.manager.type.JimixScalerInstance;
-import org.pcsoft.app.jimix.plugin.mani.manager.type.JimixScalerPlugin;
+import org.pcsoft.app.jimix.plugin.manipulation.api.Jimix2DElementBuilder;
+import org.pcsoft.app.jimix.plugin.manipulation.api.annotation.JimixElementBuilderDescriptor;
+import org.pcsoft.app.jimix.plugin.manipulation.api.type.JimixSource;
+import org.pcsoft.app.jimix.plugin.manipulation.manager.type.JimixScalerInstance;
+import org.pcsoft.app.jimix.plugin.manipulation.manager.type.JimixScalerPlugin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 @JimixElementBuilderDescriptor(name = "Image", description = "Add an image element",
         elementModelClass = ImagePluginElement.class)
-public class ImageElementBuilder implements JimixElementBuilder<ImagePluginElement> {
+public class ImageElementBuilder implements Jimix2DElementBuilder<ImagePluginElement> {
     private static final Logger LOGGER = LoggerFactory.getLogger(ImageElementBuilder.class);
 
     @Override

@@ -1,7 +1,7 @@
 package org.pcsoft.app.jimix.core.plugin.builtin.filter;
 
 import javafx.beans.Observable;
-import org.pcsoft.app.jimix.plugin.mani.api.config.JimixFilterConfiguration;
+import org.pcsoft.app.jimix.plugin.manipulation.api.config.JimixFilterConfiguration;
 
 import java.io.*;
 

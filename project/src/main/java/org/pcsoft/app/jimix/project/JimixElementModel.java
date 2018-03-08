@@ -7,8 +7,8 @@ import javafx.collections.ObservableList;
 import org.apache.commons.lang.ArrayUtils;
 import org.pcsoft.app.jimix.plugin.common.api.annotation.JimixProperty;
 import org.pcsoft.app.jimix.plugin.common.api.annotation.JimixPropertyDoubleRestriction;
-import org.pcsoft.app.jimix.plugin.common.api.type.JimixPluginElement;
-import org.pcsoft.app.jimix.plugin.mani.manager.type.JimixEffectInstance;
+import org.pcsoft.app.jimix.plugin.common.api.type.JimixPlugin2DElement;
+import org.pcsoft.app.jimix.plugin.manipulation.manager.type.Jimix2DEffectInstance;
 
 import java.awt.*;
 
@@ -33,22 +33,22 @@ public final class JimixElementModel implements JimixModel {
     @JimixPropertyDoubleRestriction(minValue = -180, maxValue = 180)
     private final DoubleProperty rotation = new SimpleDoubleProperty(0);
 
-    private final ReadOnlyListProperty<JimixEffectInstance> effectList =
-            new ReadOnlyListWrapper<JimixEffectInstance>(FXCollections.observableArrayList(param -> param.getConfiguration().getObservables())).getReadOnlyProperty();
+    private final ReadOnlyListProperty<Jimix2DEffectInstance> effectList =
+            new ReadOnlyListWrapper<Jimix2DEffectInstance>(FXCollections.observableArrayList(param -> param.getConfiguration().getObservables())).getReadOnlyProperty();
     private final BooleanProperty visibility = new SimpleBooleanProperty(true);
 
-    private final ReadOnlyObjectProperty<JimixPluginElement> pluginElement;
+    private final ReadOnlyObjectProperty<JimixPlugin2DElement> pluginElement;
 
-    public JimixElementModel(final JimixPluginElement pluginElement) {
+    public JimixElementModel(final JimixPlugin2DElement pluginElement) {
         this.pluginElement = new ReadOnlyObjectWrapper<>(pluginElement).getReadOnlyProperty();
         setDimension(this.pluginElement.get().getPreferedSize());
     }
 
-    public JimixPluginElement getPluginElement() {
+    public JimixPlugin2DElement getPluginElement() {
         return pluginElement.get();
     }
 
-    public ReadOnlyObjectProperty<JimixPluginElement> pluginElementProperty() {
+    public ReadOnlyObjectProperty<JimixPlugin2DElement> pluginElementProperty() {
         return pluginElement;
     }
 
@@ -196,7 +196,7 @@ public final class JimixElementModel implements JimixModel {
         this.rotation.set(rotation);
     }
 
-    public ObservableList<JimixEffectInstance> getEffectList() {
+    public ObservableList<Jimix2DEffectInstance> getEffectList() {
         return effectList.get();
     }
 
@@ -204,7 +204,7 @@ public final class JimixElementModel implements JimixModel {
      * List of effects to apply for this element
      * @return
      */
-    public ReadOnlyListProperty<JimixEffectInstance> effectListProperty() {
+    public ReadOnlyListProperty<Jimix2DEffectInstance> effectListProperty() {
         return effectList;
     }
 

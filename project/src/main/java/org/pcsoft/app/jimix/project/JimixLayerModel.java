@@ -9,10 +9,10 @@ import javafx.util.Callback;
 import org.pcsoft.app.jimix.commons.exception.JimixPluginException;
 import org.pcsoft.app.jimix.plugin.common.api.annotation.JimixProperty;
 import org.pcsoft.app.jimix.plugin.common.api.annotation.JimixPropertyDoubleRestriction;
-import org.pcsoft.app.jimix.plugin.mani.api.JimixBlender;
-import org.pcsoft.app.jimix.plugin.mani.manager.type.JimixBlenderInstance;
-import org.pcsoft.app.jimix.plugin.mani.manager.type.JimixBlenderPlugin;
-import org.pcsoft.app.jimix.plugin.mani.manager.type.JimixFilterInstance;
+import org.pcsoft.app.jimix.plugin.manipulation.api.JimixBlender;
+import org.pcsoft.app.jimix.plugin.manipulation.manager.type.JimixBlenderInstance;
+import org.pcsoft.app.jimix.plugin.manipulation.manager.type.JimixBlenderPlugin;
+import org.pcsoft.app.jimix.plugin.manipulation.manager.type.JimixFilterInstance;
 
 import java.util.ArrayList;
 import java.util.Arrays;

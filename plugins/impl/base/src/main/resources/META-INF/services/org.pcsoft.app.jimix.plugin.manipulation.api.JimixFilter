@@ -1,0 +1,2 @@
+org.pcsoft.app.jimix.plugin.impl.base.manipulation.filter.GaussianBlurFilter
+org.pcsoft.app.jimix.plugin.impl.base.manipulation.filter.MotionBlurFilter

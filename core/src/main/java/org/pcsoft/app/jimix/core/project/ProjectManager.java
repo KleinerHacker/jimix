@@ -4,7 +4,7 @@ import javafx.scene.image.Image;
 import javafx.scene.input.Clipboard;
 import org.pcsoft.app.jimix.core.plugin.builtin.blender.OverlayBlender;
 import org.pcsoft.app.jimix.core.plugin.builtin.model.ImagePluginElement;
-import org.pcsoft.app.jimix.plugin.common.api.type.JimixPluginElement;
+import org.pcsoft.app.jimix.plugin.common.api.type.JimixPlugin2DElement;
 import org.pcsoft.app.jimix.plugin.system.manager.type.JimixClipboardProviderInstance;
 import org.pcsoft.app.jimix.project.JimixElementModel;
 import org.pcsoft.app.jimix.project.JimixLayerModel;
@@ -46,14 +46,14 @@ public final class ProjectManager {
         //Create base layer
         final JimixLayer layer = this.createLayerForProject(project);
         //Create image element
-        final JimixElement element = this.createImageElementForLayer(layer, image);
+        final JimixElement element = this.createElementForLayer(layer, new ImagePluginElement(image));
 
         return project;
     }
 
     public JimixProject createEmptyProject(final int width, final int height) {
         LOGGER.info("Create empty project");
-        
+
         final JimixProjectModel model = new JimixProjectModel(width, height);
         final JimixProject jimixProject = this.createProjectNative(model);
 
@@ -132,7 +132,7 @@ public final class ProjectManager {
 
     //<editor-fold desc="Element">
     public JimixElement createElementFromClipboardForLayer(final JimixLayer layer, final JimixClipboardProviderInstance instance) {
-        final JimixPluginElement pluginElement = instance.createElementFromClipboard(Clipboard.getSystemClipboard());
+        final JimixPlugin2DElement pluginElement = instance.createElementFromClipboard(Clipboard.getSystemClipboard());
         final JimixElementModel model = new JimixElementModel(pluginElement);
         final JimixElement element = new JimixElement(layer.getProject(), layer, model);
         LOGGER.info("Create element " + element.getUuid() + " from clipboard for layer " + layer.getUuid());
@@ -141,11 +141,10 @@ public final class ProjectManager {
         return element;
     }
 
-    public JimixElement createImageElementForLayer(final JimixLayer layer, final Image image) {
-        final ImagePluginElement pluginElement = new ImagePluginElement(image);
+    public JimixElement createElementForLayer(final JimixLayer layer, JimixPlugin2DElement pluginElement) {
         final JimixElementModel model = new JimixElementModel(pluginElement);
         final JimixElement element = new JimixElement(layer.getProject(), layer, model);
-        LOGGER.info("Create image element " + element.getUuid() + " for layer " + layer.getUuid());
+        LOGGER.info("Create element " + element.getUuid() + " (" + pluginElement.getClass().getName() + ") for layer " + layer.getUuid());
         layer.getElementMap().put(element.getUuid(), element);
 
         return element;

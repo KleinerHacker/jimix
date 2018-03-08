@@ -1,0 +1,7 @@
+org.pcsoft.app.jimix.plugin.impl.base.manipulation.effect.DropShadowEffect
+org.pcsoft.app.jimix.plugin.impl.base.manipulation.effect.InnerShadowEffect
+org.pcsoft.app.jimix.plugin.impl.base.manipulation.effect.ReflectionEffect
+org.pcsoft.app.jimix.plugin.impl.base.manipulation.effect.BloomEffect
+org.pcsoft.app.jimix.plugin.impl.base.manipulation.effect.DistantLightEffect
+org.pcsoft.app.jimix.plugin.impl.base.manipulation.effect.PointLightEffect
+org.pcsoft.app.jimix.plugin.impl.base.manipulation.effect.SpotLightEffect

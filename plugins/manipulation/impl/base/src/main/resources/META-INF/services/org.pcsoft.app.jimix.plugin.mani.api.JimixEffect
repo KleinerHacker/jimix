@@ -1,7 +1,0 @@
-org.pcsoft.app.jimix.plugin.mani.impl.base.effect.DropShadowEffect
-org.pcsoft.app.jimix.plugin.mani.impl.base.effect.InnerShadowEffect
-org.pcsoft.app.jimix.plugin.mani.impl.base.effect.ReflectionEffect
-org.pcsoft.app.jimix.plugin.mani.impl.base.effect.BloomEffect
-org.pcsoft.app.jimix.plugin.mani.impl.base.effect.DistantLightEffect
-org.pcsoft.app.jimix.plugin.mani.impl.base.effect.PointLightEffect
-org.pcsoft.app.jimix.plugin.mani.impl.base.effect.SpotLightEffect

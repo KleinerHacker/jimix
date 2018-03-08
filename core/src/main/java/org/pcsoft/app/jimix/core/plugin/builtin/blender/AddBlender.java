@@ -5,8 +5,8 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.effect.BlendMode;
 import javafx.scene.image.Image;
 import org.pcsoft.app.jimix.commons.type.TransparentSnapshotParams;
-import org.pcsoft.app.jimix.plugin.mani.api.JimixBlender;
-import org.pcsoft.app.jimix.plugin.mani.api.annotation.JimixBlenderDescriptor;
+import org.pcsoft.app.jimix.plugin.manipulation.api.JimixBlender;
+import org.pcsoft.app.jimix.plugin.manipulation.api.annotation.JimixBlenderDescriptor;
 
 @JimixBlenderDescriptor(name = "Add", description = "Add pictures", iconPath = "/builtin/icons/ic_blender_add16.png")
 public class AddBlender implements JimixBlender {

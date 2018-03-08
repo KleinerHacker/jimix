@@ -4,9 +4,9 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import org.pcsoft.app.jimix.commons.type.TransparentSnapshotParams;
-import org.pcsoft.app.jimix.plugin.mani.api.JimixScaler;
-import org.pcsoft.app.jimix.plugin.mani.api.annotation.JimixScalerDescriptor;
-import org.pcsoft.app.jimix.plugin.mani.api.type.JimixSource;
+import org.pcsoft.app.jimix.plugin.manipulation.api.JimixScaler;
+import org.pcsoft.app.jimix.plugin.manipulation.api.annotation.JimixScalerDescriptor;
+import org.pcsoft.app.jimix.plugin.manipulation.api.type.JimixSource;
 
 @JimixScalerDescriptor(name = "Default", description = "Default JavaFX image scaling algorithm")
 public class DefaultScaler implements JimixScaler {

@@ -1,17 +1,17 @@
 package org.pcsoft.app.jimix.app.item.tree;
 
 import javafx.scene.control.TreeItem;
-import org.pcsoft.app.jimix.plugin.mani.manager.type.JimixEffectInstance;
+import org.pcsoft.app.jimix.plugin.manipulation.manager.type.Jimix2DEffectInstance;
 
 import java.util.Objects;
 
 public class EffectTreeItem extends TreeItem<Object> {
-    public EffectTreeItem(final JimixEffectInstance effectInstance) {
+    public EffectTreeItem(final Jimix2DEffectInstance effectInstance) {
         super(effectInstance);
     }
 
-    public JimixEffectInstance getInstance() {
-        return (JimixEffectInstance) getValue();
+    public Jimix2DEffectInstance getInstance() {
+        return (Jimix2DEffectInstance) getValue();
     }
 
     @Override

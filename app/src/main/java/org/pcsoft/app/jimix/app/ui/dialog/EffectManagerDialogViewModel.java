@@ -10,7 +10,7 @@ import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
 import org.pcsoft.app.jimix.commons.exception.JimixPluginExecutionException;
 import org.pcsoft.app.jimix.commons.type.TransparentSnapshotParams;
-import org.pcsoft.app.jimix.plugin.mani.manager.type.JimixEffectInstance;
+import org.pcsoft.app.jimix.plugin.manipulation.manager.type.Jimix2DEffectInstance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,7 +18,7 @@ public class EffectManagerDialogViewModel implements ViewModel {
     private static final Logger LOGGER = LoggerFactory.getLogger(EffectManagerDialogViewModel.class);
 
     private final ObjectProperty<Image> sourceImage = new SimpleObjectProperty<>();
-    private final ObjectProperty<JimixEffectInstance> selectedEffect = new SimpleObjectProperty<>();
+    private final ObjectProperty<Jimix2DEffectInstance> selectedEffect = new SimpleObjectProperty<>();
 
     private final ReadOnlyObjectWrapper<Image> resultImageWrapper = new ReadOnlyObjectWrapper<>();
     private final ReadOnlyObjectProperty<Image> resultImage = resultImageWrapper.getReadOnlyProperty();
@@ -78,15 +78,15 @@ public class EffectManagerDialogViewModel implements ViewModel {
         this.sourceImage.set(sourceImage);
     }
 
-    public JimixEffectInstance getSelectedEffect() {
+    public Jimix2DEffectInstance getSelectedEffect() {
         return selectedEffect.get();
     }
 
-    public ObjectProperty<JimixEffectInstance> selectedEffectProperty() {
+    public ObjectProperty<Jimix2DEffectInstance> selectedEffectProperty() {
         return selectedEffect;
     }
 
-    public void setSelectedEffect(JimixEffectInstance selectedEffect) {
+    public void setSelectedEffect(Jimix2DEffectInstance selectedEffect) {
         this.selectedEffect.set(selectedEffect);
     }
 

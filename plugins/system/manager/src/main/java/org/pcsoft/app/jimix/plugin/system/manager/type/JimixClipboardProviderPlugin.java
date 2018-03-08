@@ -6,9 +6,10 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.commons.lang.time.StopWatch;
 import org.pcsoft.app.jimix.commons.exception.JimixPluginAnnotationException;
 import org.pcsoft.app.jimix.commons.exception.JimixPluginException;
-import org.pcsoft.app.jimix.plugin.common.api.type.JimixPluginElement;
+import org.pcsoft.app.jimix.plugin.common.api.type.JimixPlugin2DElement;
 import org.pcsoft.app.jimix.plugin.common.manager.type.JimixPlugin;
-import org.pcsoft.app.jimix.plugin.mani.manager.type.JimixEffectPlugin;
+import org.pcsoft.app.jimix.plugin.manipulation.manager.type.Jimix2DEffectPlugin;
+import org.pcsoft.app.jimix.plugin.manipulation.manager.type.Jimix2DElementBuilderPlugin;
 import org.pcsoft.app.jimix.plugin.system.api.JimixClipboardProvider;
 import org.pcsoft.app.jimix.plugin.system.api.annotation.JimixClipboardProviderDescriptor;
 import org.slf4j.Logger;
@@ -16,10 +17,11 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Locale;
 import java.util.MissingResourceException;
+import java.util.Objects;
 import java.util.ResourceBundle;
 
 public final class JimixClipboardProviderPlugin implements JimixPlugin<JimixClipboardProviderInstance> {
-    private static final Logger LOGGER = LoggerFactory.getLogger(JimixEffectPlugin.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(Jimix2DEffectPlugin.class);
     private static final StopWatch STOP_WATCH = new StopWatch();
 
     private final JimixClipboardProvider instance;
@@ -57,7 +59,7 @@ public final class JimixClipboardProviderPlugin implements JimixPlugin<JimixClip
         return instance.acceptClipboardContent(clipboard);
     }
 
-    JimixPluginElement createElementFromClipboard(Clipboard clipboard) {
+    JimixPlugin2DElement createElementFromClipboard(Clipboard clipboard) {
         return instance.createElementFromClipboard(clipboard);
     }
 
@@ -89,5 +91,19 @@ public final class JimixClipboardProviderPlugin implements JimixPlugin<JimixClip
 
     public Image getIcon() {
         return icon;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Jimix2DElementBuilderPlugin that = (Jimix2DElementBuilderPlugin) o;
+        return Objects.equals(getIdentifier(), that.getIdentifier());
+    }
+
+    @Override
+    public int hashCode() {
+
+        return Objects.hash(getIdentifier());
     }
 }

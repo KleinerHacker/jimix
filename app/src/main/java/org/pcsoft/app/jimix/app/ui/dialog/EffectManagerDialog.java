@@ -9,18 +9,18 @@ import javafx.scene.image.Image;
 import javafx.stage.StageStyle;
 import javafx.stage.Window;
 import org.pcsoft.app.jimix.app.language.LanguageResources;
-import org.pcsoft.app.jimix.plugin.mani.manager.type.JimixEffectInstance;
+import org.pcsoft.app.jimix.plugin.manipulation.manager.type.Jimix2DEffectInstance;
 import org.pcsoft.framework.jfex.component.HeaderPane;
 
 public class EffectManagerDialog extends Dialog<EffectManagerDialog.Result> {
     public static final class Result {
-        private final JimixEffectInstance instance;
+        private final Jimix2DEffectInstance instance;
 
-        private Result(JimixEffectInstance instance) {
+        private Result(Jimix2DEffectInstance instance) {
             this.instance = instance;
         }
 
-        public JimixEffectInstance getInstance() {
+        public Jimix2DEffectInstance getInstance() {
             return instance;
         }
     }

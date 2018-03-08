@@ -4,14 +4,11 @@ import javafx.beans.Observable;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.scene.image.Image;
 
-import java.awt.*;
-
 public interface JimixPluginElement {
     Observable[] getObservables();
-
-    Dimension getPreferedSize();
 
     Image getPreview();
     ReadOnlyObjectProperty<Image> previewProperty();
 
+    JimixElementType getType();
 }

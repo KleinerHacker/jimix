@@ -1,12 +1,12 @@
 package org.pcsoft.app.jimix.core.plugin.builtin.filter;
 
 
-import org.pcsoft.app.jimix.plugin.mani.api.JimixFilterBase;
-import org.pcsoft.app.jimix.plugin.mani.api.annotation.JimixFilterDescriptor;
-import org.pcsoft.app.jimix.plugin.mani.api.type.JimixFilterVariant;
-import org.pcsoft.app.jimix.plugin.mani.api.type.JimixPixelReader;
-import org.pcsoft.app.jimix.plugin.mani.api.type.JimixPixelWriter;
-import org.pcsoft.app.jimix.plugin.mani.api.type.JimixSource;
+import org.pcsoft.app.jimix.plugin.manipulation.api.JimixFilterBase;
+import org.pcsoft.app.jimix.plugin.manipulation.api.annotation.JimixFilterDescriptor;
+import org.pcsoft.app.jimix.plugin.manipulation.api.type.JimixFilterVariant;
+import org.pcsoft.app.jimix.plugin.manipulation.api.type.JimixPixelReader;
+import org.pcsoft.app.jimix.plugin.manipulation.api.type.JimixPixelWriter;
+import org.pcsoft.app.jimix.plugin.manipulation.api.type.JimixSource;
 
 import java.awt.*;
 
