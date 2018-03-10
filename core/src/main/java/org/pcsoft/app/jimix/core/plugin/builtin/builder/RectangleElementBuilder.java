@@ -8,7 +8,7 @@ import org.pcsoft.app.jimix.plugin.manipulation.api.annotation.JimixElementBuild
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@JimixElementBuilderDescriptor(name = "Rectangle", description = "Add an rectangle element", group = "2D",
+@JimixElementBuilderDescriptor(name = "Rectangle", description = "Add an rectangle element", group = "2D", iconPath = "/builtin/icons/ic_element_rect16.png",
         elementModelClass = RectanglePluginElement.class, manualAddable = true)
 public class RectangleElementBuilder implements Jimix2DElementBuilder<RectanglePluginElement> {
     private static final Logger LOGGER = LoggerFactory.getLogger(RectangleElementBuilder.class);

@@ -147,7 +147,13 @@ public final class ProjectManager {
     }
 
     public JimixElement createElementForLayer(final JimixLayer layer, JimixPluginElement pluginElement) {
+        return createElementForLayer(layer, pluginElement, 0, 0);
+    }
+
+    public JimixElement createElementForLayer(final JimixLayer layer, JimixPluginElement pluginElement, int x, int y) {
         final JimixElementModel model = new JimixElementModel(pluginElement);
+        model.setX(x);
+        model.setY(y);
         final JimixElement element = new JimixElement(layer.getProject(), layer, model);
         LOGGER.info("Create element " + element.getUuid() + " (" + pluginElement.getClass().getName() + ") for layer " + layer.getUuid());
         layer.getElementMap().put(element.getUuid(), element);

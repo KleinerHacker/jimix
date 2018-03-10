@@ -151,10 +151,14 @@ public class PictureEditorPaneView implements FxmlView<PictureEditorPaneViewMode
 
         try {
             final JimixPluginElement pluginElement = (JimixPluginElement) elementSelector.getSelectedElementBuilder().getElementModelClass().newInstance();
-            final JimixElement element = ProjectManager.getInstance().createElementForLayer(lstLayer.getSelectedTopLayer(), pluginElement);
+            final JimixElement element = ProjectManager.getInstance().createElementForLayer(lstLayer.getSelectedTopLayer(), pluginElement, (int) e.getX(), (int) e.getY());
         } catch (InstantiationException | IllegalAccessException e1) {
             LOGGER.error("Unable to create element " + elementSelector.getSelectedElementBuilder().getElementModelClass().getName(), e1);
             new Alert(Alert.AlertType.ERROR, "Unable to create element: " + e1.getMessage(), ButtonType.OK).showAndWait();
+        } finally {
+            if (!e.isShiftDown()) {
+                elementSelector.setSelectedElementBuilder(null);
+            }
         }
     }
 

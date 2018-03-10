@@ -98,7 +98,7 @@ public class LayerListView implements FxmlView<LayerListViewModel>, Initializabl
                         final EffectTreeItem effectTreeItem = new EffectTreeItem(effectInstance);
                         effectRootTreeItem.getChildren().add(effectTreeItem);
                     }
-                    elementRootTreeItem.getChildren().add(effectRootTreeItem);
+                    elementTreeItem.getChildren().add(effectRootTreeItem);
                 }
                 layerTreeItem.getChildren().add(elementRootTreeItem);
 

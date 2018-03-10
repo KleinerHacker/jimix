@@ -3,10 +3,12 @@ package org.pcsoft.app.jimix.app.ui.component;
 import de.saxsys.mvvmfx.FxmlView;
 import de.saxsys.mvvmfx.InjectViewModel;
 import javafx.beans.binding.Bindings;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Orientation;
 import javafx.scene.control.Label;
+import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.image.ImageView;
@@ -14,6 +16,7 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
 import org.pcsoft.app.jimix.plugin.manipulation.manager.type.Jimix2DElementBuilderPlugin;
 import org.pcsoft.app.jimix.plugin.manipulation.manager.type.JimixElementBuilderPlugin;
+import org.pcsoft.framework.jfex.property.ExtendedWrapperProperty;
 import org.pcsoft.framework.jfex.ui.component.DetailTooltip;
 
 import java.net.URL;
@@ -52,9 +55,26 @@ public class ElementSelectorView implements FxmlView<ElementSelectorViewModel>, 
             pnlRoot.getChildren().add(pane);
         }
 
-        viewModel.selectedElementBuilderProperty().bind(Bindings.createObjectBinding(
-                () -> baseGroup.getSelectedToggle() == null ? null : (JimixElementBuilderPlugin) baseGroup.getSelectedToggle().getUserData(),
-                baseGroup.selectedToggleProperty()
-        ));
+        viewModel.selectedElementBuilderProperty().bindBidirectional(
+                new ExtendedWrapperProperty<JimixElementBuilderPlugin>(baseGroup.selectedToggleProperty()) {
+                    @Override
+                    protected JimixElementBuilderPlugin getPseudoValue() {
+                        return baseGroup.getSelectedToggle() == null ? null : (JimixElementBuilderPlugin) baseGroup.getSelectedToggle().getUserData();
+                    }
+
+                    @Override
+                    protected void setPseudoValue(JimixElementBuilderPlugin value) {
+                        final Toggle foundToggle = baseGroup.getToggles().stream()
+                                .filter(toggle -> toggle.getUserData().equals(value))
+                                .findFirst().orElse(null);
+
+                        if (foundToggle == null) {
+                            baseGroup.selectToggle(null);
+                        } else {
+                            baseGroup.selectToggle(foundToggle);
+                        }
+                    }
+                }
+        );
     }
 }
