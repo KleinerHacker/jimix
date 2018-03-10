@@ -89,8 +89,6 @@ public abstract class JimixElementBuilderPlugin<T extends JimixElementBuilderIns
     }
 
     public String getGroup() {
-        if (StringUtils.isEmpty(descriptor.group()))
-            return null;
         if (resourceBundle != null)
             return resourceBundle.getString(descriptor.group());
 

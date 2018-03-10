@@ -1,7 +1,7 @@
 package org.pcsoft.app.jimix.app.ui.splash;
 
 import org.pcsoft.app.jimix.app.language.LanguageResources;
-import org.pcsoft.framework.jfex.splash.FXSplash;
+import org.pcsoft.framework.jfex.ui.splash.FXSplash;
 
 import javax.imageio.ImageIO;
 import java.awt.*;

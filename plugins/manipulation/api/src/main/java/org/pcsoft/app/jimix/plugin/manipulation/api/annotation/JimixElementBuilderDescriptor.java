@@ -10,7 +10,7 @@ import java.lang.annotation.*;
 public @interface JimixElementBuilderDescriptor {
     String name();
     String description();
-    String group() default "";
+    String group();
     String resourceBundle() default "";
     String iconPath() default "";
 

@@ -9,8 +9,9 @@
 <?import javafx.scene.layout.VBox?>
 <?import org.pcsoft.app.jimix.app.ui.component.LayerList?>
 <?import org.pcsoft.app.jimix.app.ui.component.prop_sheet.JimixPropertySheet?>
-<?import org.pcsoft.framework.jfex.toolbox.*?>
 <?import org.pcsoft.app.jimix.app.ui.component.ElementSelector?>
+<?import org.pcsoft.framework.jfex.ui.component.toolbox.ToolBox?>
+<?import org.pcsoft.framework.jfex.ui.component.toolbox.ToolBoxDescriptor?>
 <fx:root type="BorderPane" xmlns="http://javafx.com/javafx"
          xmlns:fx="http://javafx.com/fxml"
          fx:controller="org.pcsoft.app.jimix.app.ui.component.PictureEditorPaneView">

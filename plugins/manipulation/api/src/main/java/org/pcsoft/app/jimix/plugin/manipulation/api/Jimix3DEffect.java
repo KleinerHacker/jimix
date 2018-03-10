@@ -17,13 +17,11 @@ public interface Jimix3DEffect<T extends JimixEffectConfiguration<T>> extends Ji
      * @param node          Node to apply effect into graphic context.
      * @param x             Left position to apply node effect to
      * @param y             Top position to apply node effect to
-     * @param width         Width of node
-     * @param height        Height of node
      * @param configuration Configuration for effect
      * @return New node instance with applyied effect. Can be the same instance like node
      * @throws Exception
      */
-    Node apply(final Node node, final int x, final int y, final int width, final int height, final T configuration) throws Exception;
+    Node apply(final Node node, final int x, final int y, final T configuration) throws Exception;
 
     @Override
     default JimixEffectType getType() {

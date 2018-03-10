@@ -15,7 +15,7 @@ import org.pcsoft.app.jimix.plugin.manipulation.api.annotation.JimixElementBuild
         manualAddable = true, elementModelClass = BoxPluginElement.class)
 public class BoxElementBuilder implements Jimix3DElementBuilder<BoxPluginElement> {
     @Override
-    public Node buildNode(BoxPluginElement pluginElement, int width, int height) {
+    public Node buildNode(BoxPluginElement pluginElement) {
         final Group group = new Group();
 
         final Box box = new Box(pluginElement.getWidth(), pluginElement.getHeight(), pluginElement.getDepth());

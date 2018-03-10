@@ -18,7 +18,7 @@ public final class Jimix3DElementBuilderPlugin extends JimixElementBuilderPlugin
         super(instance);
     }
 
-    public Node buildNode(final JimixPlugin3DElement elementModel, int width, int height) throws JimixPluginExecutionException {
+    public Node buildNode(final JimixPlugin3DElement elementModel) throws JimixPluginExecutionException {
         final Node resultNode;
 
         if (LOGGER.isTraceEnabled()) {
@@ -27,7 +27,7 @@ public final class Jimix3DElementBuilderPlugin extends JimixElementBuilderPlugin
         }
 
         try {
-            resultNode = instance.buildNode(elementModel, width, height);
+            resultNode = instance.buildNode(elementModel);
         } catch (Exception e) {
             throw new JimixPluginExecutionException("Error while running 3D element builder", e);
         }

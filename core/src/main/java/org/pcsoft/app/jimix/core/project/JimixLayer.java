@@ -149,7 +149,8 @@ public final class JimixLayer {
     public void mirrorHorizontal() {
         for (final JimixElement element : elementList) {
             element.getModel().setMirrorHorizontal(!element.getModel().isMirrorHorizontal());
-            element.getModel().setX(project.get().getModel().getWidth() - (element.getModel().getX() + element.getModel().getWidth()));
+            //TODO
+            //element.getModel().setX(project.get().getModel().getWidth() - (element.getModel().getX() + element.getModel().getWidth()));
         }
     }
 
@@ -159,7 +160,8 @@ public final class JimixLayer {
     public void mirrorVertical() {
         for (final JimixElement element : elementList) {
             element.getModel().setMirrorVertical(!element.getModel().isMirrorVertical());
-            element.getModel().setY(project.get().getModel().getHeight() - (element.getModel().getY() + element.getModel().getHeight()));
+            //TODO
+            //element.getModel().setY(project.get().getModel().getHeight() - (element.getModel().getY() + element.getModel().getHeight()));
         }
     }
 

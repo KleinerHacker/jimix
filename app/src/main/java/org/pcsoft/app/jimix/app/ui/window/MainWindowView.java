@@ -42,9 +42,9 @@ import org.pcsoft.app.jimix.plugin.system.manager.type.JimixClipboardProviderPlu
 import org.pcsoft.app.jimix.plugin.system.manager.type.JimixImageFileTypeProviderInstance;
 import org.pcsoft.app.jimix.plugin.system.manager.type.JimixProjectFileTypeProviderInstance;
 import org.pcsoft.app.jimix.project.JimixProjectModel;
-import org.pcsoft.framework.jfex.component.StatusProgressIndicatorPane;
 import org.pcsoft.framework.jfex.property.ExtendedWrapperProperty;
 import org.pcsoft.framework.jfex.threading.JfxUiThreadPool;
+import org.pcsoft.framework.jfex.ui.component.StatusProgressIndicatorPane;
 import org.pcsoft.framework.jfex.util.BindingsEx;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -375,7 +375,7 @@ public class MainWindowView implements FxmlView<MainWindowViewModel>, Initializa
     //<editor-fold desc="Menu Action">
     @FXML
     private void onActionOpen(ActionEvent actionEvent) {
-        final List<File> files = FileChooserUtils.showOpenPictureFileChooser();
+        final List<File> files = FileChooserUtils.showOpenPicturesFileChooser();
         if (files == null || files.isEmpty())
             return;
 

@@ -58,7 +58,7 @@ public class EffectManagerDialogViewModel implements ViewModel {
             try {
                 final Rectangle rectangle = new Rectangle(0, 0, sourceImage.get().getWidth(), sourceImage.get().getHeight());
                 rectangle.setFill(new ImagePattern(sourceImage.get()));
-                final Node node = selectedEffect.get().apply(rectangle, 0, 0, (int) sourceImage.get().getWidth(), (int) sourceImage.get().getHeight());
+                final Node node = selectedEffect.get().apply(rectangle, 0, 0);
                 resultImageWrapper.set(node.snapshot(new TransparentSnapshotParams(), null));
             } catch (JimixPluginExecutionException e) {
                 LOGGER.error("Unable to run filter " + selectedEffect.get().getPlugin().getIdentifier(), e);

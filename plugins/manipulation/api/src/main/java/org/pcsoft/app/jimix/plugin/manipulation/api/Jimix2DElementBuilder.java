@@ -16,11 +16,9 @@ public interface Jimix2DElementBuilder<T extends JimixPlugin2DElement> extends J
      * @param pluginElement element to build
      * @param x             setup
      * @param y             setup
-     * @param width         width setup
-     * @param height        height setup
      * @return
      */
-    Node buildNode(final T pluginElement, final int x, final int y, final int width, final int height);
+    Node buildNode(final T pluginElement, final int x, final int y);
 
     @Override
     default JimixElementType getType() {

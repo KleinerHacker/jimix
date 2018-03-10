@@ -18,7 +18,7 @@ public final class Jimix2DEffectPlugin extends JimixEffectPlugin<Jimix2DEffectIn
         super(instance);
     }
 
-    Node apply(final Node node, final int x, final int y, final int width, final int height, JimixEffectConfiguration configuration) throws JimixPluginExecutionException {
+    Node apply(final Node node, final int x, final int y, JimixEffectConfiguration configuration) throws JimixPluginExecutionException {
         if (LOGGER.isTraceEnabled()) {
             STOP_WATCH.reset();
             STOP_WATCH.start();
@@ -26,7 +26,7 @@ public final class Jimix2DEffectPlugin extends JimixEffectPlugin<Jimix2DEffectIn
 
         final Node resultNode;
         try {
-            resultNode = instance.apply(node, x, y, width, height, configuration);
+            resultNode = instance.apply(node, x, y, configuration);
         } catch (Exception e) {
             throw new JimixPluginExecutionException("Error while running 2D effect", e);
         }

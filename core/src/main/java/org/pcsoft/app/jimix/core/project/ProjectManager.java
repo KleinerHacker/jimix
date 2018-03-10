@@ -2,8 +2,9 @@ package org.pcsoft.app.jimix.core.project;
 
 import javafx.scene.image.Image;
 import javafx.scene.input.Clipboard;
+import javafx.scene.paint.ImagePattern;
 import org.pcsoft.app.jimix.core.plugin.builtin.blender.OverlayBlender;
-import org.pcsoft.app.jimix.core.plugin.builtin.model.ImagePluginElement;
+import org.pcsoft.app.jimix.core.plugin.builtin.model.RectanglePluginElement;
 import org.pcsoft.app.jimix.plugin.common.api.type.JimixPlugin2DElement;
 import org.pcsoft.app.jimix.plugin.common.api.type.JimixPluginElement;
 import org.pcsoft.app.jimix.plugin.system.manager.type.JimixClipboardProviderInstance;
@@ -13,6 +14,7 @@ import org.pcsoft.app.jimix.project.JimixProjectModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.awt.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -47,7 +49,9 @@ public final class ProjectManager {
         //Create base layer
         final JimixLayer layer = this.createLayerForProject(project);
         //Create image element
-        final JimixElement element = this.createElementForLayer(layer, new ImagePluginElement(image));
+        final RectanglePluginElement rectanglePluginElement = new RectanglePluginElement(new ImagePattern(image));
+        rectanglePluginElement.setSize(new Dimension((int) image.getWidth(), (int) image.getHeight()));
+        final JimixElement element = this.createElementForLayer(layer, rectanglePluginElement);
 
         return project;
     }

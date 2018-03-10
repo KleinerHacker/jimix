@@ -23,10 +23,11 @@ import org.pcsoft.app.jimix.plugin.common.api.type.JimixPluginElement;
 import org.pcsoft.app.jimix.plugin.manipulation.manager.type.Jimix2DEffectInstance;
 import org.pcsoft.app.jimix.plugin.manipulation.manager.type.JimixEffectInstance;
 import org.pcsoft.app.jimix.plugin.manipulation.manager.type.JimixFilterInstance;
-import org.pcsoft.framework.jfex.toolbox.ToolBox;
+import org.pcsoft.framework.jfex.ui.component.toolbox.ToolBox;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.awt.*;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -150,7 +151,7 @@ public class PictureEditorPaneView implements FxmlView<PictureEditorPaneViewMode
 
         try {
             final JimixPluginElement pluginElement = (JimixPluginElement) elementSelector.getSelectedElementBuilder().getElementModelClass().newInstance();
-            ProjectManager.getInstance().createElementForLayer(lstLayer.getSelectedTopLayer(), pluginElement);
+            final JimixElement element = ProjectManager.getInstance().createElementForLayer(lstLayer.getSelectedTopLayer(), pluginElement);
         } catch (InstantiationException | IllegalAccessException e1) {
             LOGGER.error("Unable to create element " + elementSelector.getSelectedElementBuilder().getElementModelClass().getName(), e1);
             new Alert(Alert.AlertType.ERROR, "Unable to create element: " + e1.getMessage(), ButtonType.OK).showAndWait();

@@ -8,7 +8,7 @@ import org.pcsoft.app.jimix.commons.exception.JimixPluginException;
 import org.pcsoft.app.jimix.plugin.manipulation.manager.ManipulationPluginManager;
 import org.pcsoft.app.jimix.plugin.manipulation.manager.type.Jimix2DEffectInstance;
 import org.pcsoft.app.jimix.plugin.manipulation.manager.type.Jimix2DEffectPlugin;
-import org.pcsoft.framework.jfex.data.ListViewEx;
+import org.pcsoft.framework.jfex.ui.component.data.ListViewEx;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

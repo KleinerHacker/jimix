@@ -10,7 +10,7 @@ import javafx.stage.StageStyle;
 import javafx.stage.Window;
 import org.pcsoft.app.jimix.app.language.LanguageResources;
 import org.pcsoft.app.jimix.plugin.manipulation.manager.type.Jimix2DEffectInstance;
-import org.pcsoft.framework.jfex.component.HeaderPane;
+import org.pcsoft.framework.jfex.ui.component.HeaderPane;
 
 public class EffectManagerDialog extends Dialog<EffectManagerDialog.Result> {
     public static final class Result {

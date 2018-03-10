@@ -8,7 +8,7 @@ import org.pcsoft.app.jimix.app.ui.window.MainWindow;
 import org.pcsoft.app.jimix.commons.JimixConstants;
 import org.pcsoft.app.jimix.plugin.manipulation.manager.ManipulationPluginManager;
 import org.pcsoft.app.jimix.plugin.system.manager.SystemPluginManager;
-import org.pcsoft.framework.jfex.splash.FXSplash;
+import org.pcsoft.framework.jfex.ui.splash.FXSplash;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

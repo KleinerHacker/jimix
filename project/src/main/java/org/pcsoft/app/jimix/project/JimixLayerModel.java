@@ -142,7 +142,6 @@ public final class JimixLayerModel implements JimixModel {
             list.add(param.opacityProperty());
             list.add(param.xProperty());
             list.add(param.yProperty());
-            list.add(param.dimensionProperty());
             list.add(param.visibilityProperty());
             list.add(param.mirrorHorizontalProperty());
             list.add(param.mirrorVerticalProperty());

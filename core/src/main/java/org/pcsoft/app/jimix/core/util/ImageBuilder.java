@@ -109,12 +109,11 @@ public final class ImageBuilder {
             final Node elementNode;
             if (elementBuilder instanceof Jimix2DElementBuilderPlugin) {
                 final Node tmpNode = ((Jimix2DElementBuilderPlugin) elementBuilder).buildNode((JimixPlugin2DElement) model.getPluginElement(),
-                        model.getX(), model.getY(), model.getWidth(), model.getHeight());
+                        model.getX(), model.getY());
                 applyViewSettings(element, tmpNode);
                 elementNode = applyEffects(element, tmpNode);
             } else if (elementBuilder instanceof Jimix3DElementBuilderPlugin) {
-                Node tmpNode = ((Jimix3DElementBuilderPlugin) elementBuilder).buildNode((JimixPlugin3DElement) model.getPluginElement(),
-                        model.getWidth(), model.getHeight());
+                Node tmpNode = ((Jimix3DElementBuilderPlugin) elementBuilder).buildNode((JimixPlugin3DElement) model.getPluginElement());
                 tmpNode = apply3DEffects(element, tmpNode); //Run 3D effects first on original 3D object
                 final Image tmpImage = tmpNode.snapshot(new TransparentSnapshotParams(), null); //Create temporary image from 3D object
                 final ImageView tmpImageNode = new ImageView(tmpImage); //Temporary node
@@ -137,10 +136,10 @@ public final class ImageBuilder {
         for (final JimixEffectInstance instance : element.getModel().getEffectList()) {
             if (instance instanceof Jimix2DEffectInstance) {
                 elementNode = ((Jimix2DEffectInstance) instance).apply(elementNode,
-                        element.getModel().getX(), element.getModel().getY(), element.getModel().getWidth(), element.getModel().getHeight());
+                        element.getModel().getX(), element.getModel().getY());
             } else if (instance instanceof Jimix3DEffectInstance) {
                 elementNode = ((Jimix3DEffectInstance) instance).apply(elementNode,
-                        element.getModel().getX(), element.getModel().getY(), element.getModel().getWidth(), element.getModel().getHeight());
+                        element.getModel().getX(), element.getModel().getY());
             } else
                 throw new RuntimeException();
         }
@@ -152,7 +151,7 @@ public final class ImageBuilder {
         for (final JimixEffectInstance instance : element.getModel().getEffectList()) {
             if (instance instanceof Jimix2DEffectInstance) {
                 elementNode = ((Jimix2DEffectInstance) instance).apply(elementNode,
-                        element.getModel().getX(), element.getModel().getY(), element.getModel().getWidth(), element.getModel().getHeight());
+                        element.getModel().getX(), element.getModel().getY());
             }
         }
         return elementNode;
@@ -163,7 +162,7 @@ public final class ImageBuilder {
         for (final JimixEffectInstance instance : element.getModel().getEffectList()) {
             if (instance instanceof Jimix3DEffectInstance) {
                 elementNode = ((Jimix3DEffectInstance) instance).apply(elementNode,
-                        element.getModel().getX(), element.getModel().getY(), element.getModel().getWidth(), element.getModel().getHeight());
+                        element.getModel().getX(), element.getModel().getY());
             }
         }
         return elementNode;

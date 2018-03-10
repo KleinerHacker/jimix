@@ -6,8 +6,8 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.VBox?>
 <?import org.controlsfx.control.StatusBar?>
-<?import org.pcsoft.framework.jfex.component.StatusProgressIndicatorPane?>
 <?import org.pcsoft.app.jimix.app.ui.component.ProjectInfoPane?>
+<?import org.pcsoft.framework.jfex.ui.component.StatusProgressIndicatorPane?>
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml" fx:id="pnlRoot"
             fx:controller="org.pcsoft.app.jimix.app.ui.window.MainWindowView"

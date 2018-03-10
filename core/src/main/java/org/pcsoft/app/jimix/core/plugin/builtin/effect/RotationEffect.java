@@ -11,7 +11,7 @@ import org.pcsoft.app.jimix.plugin.manipulation.api.type.JimixEffectVariant;
         configurationClass = RotationEffectConfiguration.class)
 public class RotationEffect implements Jimix3DEffect<RotationEffectConfiguration> {
     @Override
-    public Node apply(Node node, int x, int y, int width, int height, RotationEffectConfiguration configuration) throws Exception {
+    public Node apply(Node node, int x, int y, RotationEffectConfiguration configuration) throws Exception {
         node.getTransforms().add(new Rotate(configuration.getRotateX(), new Point3D(1, 0, 0)));
         node.getTransforms().add(new Rotate(configuration.getRotateY(), new Point3D(0, 1, 0)));
         node.getTransforms().add(new Rotate(configuration.getRotateZ(), new Point3D(0, 0, 1)));

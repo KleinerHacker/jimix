@@ -13,8 +13,9 @@ import org.pcsoft.app.jimix.plugin.manipulation.api.config.JimixEffectConfigurat
  */
 public abstract class JimixNativeEffectBase<T extends JimixEffectConfiguration<T>> implements Jimix2DEffect<T> {
     @Override
-    public Node apply(Node node, int x, int y, int width, int height, T configuration) throws Exception {
-        final Effect effect = getNativeEffect(configuration, x, y, width, height);
+    public Node apply(Node node, int x, int y, T configuration) throws Exception {
+        final Effect effect = getNativeEffect(configuration, x, y, (int) node.getBoundsInLocal().getWidth(),
+                (int) node.getBoundsInLocal().getHeight());
         final Effect currentEffect = node.getEffect();
 
         if (currentEffect == null) {

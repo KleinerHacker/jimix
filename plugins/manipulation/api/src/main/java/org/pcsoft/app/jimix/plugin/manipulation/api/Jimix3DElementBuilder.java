@@ -16,7 +16,7 @@ public interface Jimix3DElementBuilder<T extends JimixPlugin3DElement> extends J
      * @param pluginElement element to build
      * @return
      */
-    Node buildNode(final T pluginElement, int width, int height);
+    Node buildNode(final T pluginElement);
 
     @Override
     default JimixElementType getType() {

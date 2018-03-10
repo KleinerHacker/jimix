@@ -14,7 +14,7 @@ import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
 import org.pcsoft.app.jimix.plugin.manipulation.manager.type.Jimix2DElementBuilderPlugin;
 import org.pcsoft.app.jimix.plugin.manipulation.manager.type.JimixElementBuilderPlugin;
-import org.pcsoft.framework.jfex.component.DetailTooltip;
+import org.pcsoft.framework.jfex.ui.component.DetailTooltip;
 
 import java.net.URL;
 import java.util.ResourceBundle;

@@ -4,7 +4,7 @@ import javafx.geometry.Insets;
 import javafx.scene.control.ListCell;
 import org.pcsoft.app.jimix.app.language.LanguageResources;
 import org.pcsoft.app.jimix.plugin.manipulation.api.type.JimixVariant;
-import org.pcsoft.framework.jfex.data.ComboBoxEx;
+import org.pcsoft.framework.jfex.ui.component.data.ComboBoxEx;
 
 import java.util.Comparator;
 

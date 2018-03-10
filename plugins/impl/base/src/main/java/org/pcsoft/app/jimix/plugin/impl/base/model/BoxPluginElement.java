@@ -1,9 +1,9 @@
 package org.pcsoft.app.jimix.plugin.impl.base.model;
 
 import javafx.beans.Observable;
+import javafx.beans.binding.Bindings;
+import javafx.beans.binding.ObjectBinding;
 import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.ReadOnlyObjectProperty;
-import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.scene.image.Image;
 import org.pcsoft.app.jimix.plugin.common.api.annotation.JimixProperty;
@@ -65,7 +65,7 @@ public class BoxPluginElement extends Plugin3DElement {
     }
 
     @Override
-    public ReadOnlyObjectProperty<Image> previewProperty() {
-        return new ReadOnlyObjectWrapper<>(new Image(getClass().getResourceAsStream("/base/icons/ic_builder_box16.png"))).getReadOnlyProperty();
+    public ObjectBinding<Image> previewProperty() {
+        return Bindings.createObjectBinding(() -> new Image(getClass().getResourceAsStream("/base/icons/ic_builder_box16.png")));
     }
 }

@@ -24,8 +24,6 @@ public final class JimixElementModel implements JimixModel {
     private final IntegerProperty x = new SimpleIntegerProperty(0);
     @JimixProperty(fieldType = Integer.class, name = "Y", description = "Top position of element", category = "Alignment")
     private final IntegerProperty y = new SimpleIntegerProperty(0);
-    @JimixProperty(fieldType = Dimension.class, name = "Size", description = "Size of element", category = "Alignment")
-    private final ObjectProperty<Dimension> dimension = new SimpleObjectProperty<>(new Dimension());
     @JimixProperty(fieldType = Boolean.class, name = "Mirror Horizontal", description = "Mirror Horizontal", category = "View")
     private final BooleanProperty mirrorHorizontal = new SimpleBooleanProperty(false);
     @JimixProperty(fieldType = Boolean.class, name = "Mirror Vertical", description = "Mirror Vertical", category = "View")
@@ -42,9 +40,6 @@ public final class JimixElementModel implements JimixModel {
 
     public JimixElementModel(final JimixPluginElement pluginElement) {
         this.pluginElement = new ReadOnlyObjectWrapper<>(pluginElement).getReadOnlyProperty();
-        if (this.pluginElement.get() instanceof JimixPlugin2DElement) {
-            setDimension(((JimixPlugin2DElement) this.pluginElement.get()).getPreferedSize());
-        }
     }
 
     public JimixPluginElement getPluginElement() {
@@ -53,22 +48,6 @@ public final class JimixElementModel implements JimixModel {
 
     public ReadOnlyObjectProperty<JimixPluginElement> pluginElementProperty() {
         return pluginElement;
-    }
-
-    public Dimension getDimension() {
-        return dimension.get();
-    }
-
-    /**
-     * Dimension of element
-     * @return
-     */
-    public ObjectProperty<Dimension> dimensionProperty() {
-        return dimension;
-    }
-
-    public void setDimension(Dimension dimension) {
-        this.dimension.set(dimension);
     }
 
     public int getX() {
@@ -135,22 +114,6 @@ public final class JimixElementModel implements JimixModel {
         this.visibility.set(visibility);
     }
 
-    /**
-     * Extract width from {@link #dimensionProperty()}
-     * @return
-     */
-    public int getWidth() {
-        return dimension.get().width;
-    }
-
-    /**
-     * Extract height from {@link #dimensionProperty()}
-     * @return
-     */
-    public int getHeight() {
-        return dimension.get().height;
-    }
-
     public boolean isMirrorHorizontal() {
         return mirrorHorizontal.get();
     }
@@ -214,7 +177,7 @@ public final class JimixElementModel implements JimixModel {
     @Override
     public final Observable[] getObservableValues() {
         return (Observable[]) ArrayUtils.addAll(new Observable[] {
-                opacity, x, y, dimension, visibility, mirrorHorizontal, mirrorVertical, rotation, effectList
+                opacity, x, y, visibility, mirrorHorizontal, mirrorVertical, rotation, effectList
         }, pluginElement.get().getObservables());
     }
 }

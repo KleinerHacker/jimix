@@ -62,7 +62,7 @@ public class DimensionEditorPaneViewModel implements ViewModel {
                 return;
             if (ignoreDimensionUpdate.get())
                 return;
-            if (o == null)
+            if (o == null || o == 0)
                 return;
 
             ignoreDimensionUpdate.set(true);

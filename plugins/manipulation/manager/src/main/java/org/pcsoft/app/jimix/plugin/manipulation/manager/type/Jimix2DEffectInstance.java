@@ -9,7 +9,7 @@ public final class Jimix2DEffectInstance extends JimixEffectInstance<Jimix2DEffe
         super(plugin, configuration);
     }
 
-    public Node apply(Node node, int x, int y, int width, int height) throws JimixPluginExecutionException {
-        return plugin.apply(node, x, y, width, height, configuration);
+    public Node apply(Node node, int x, int y) throws JimixPluginExecutionException {
+        return plugin.apply(node, x, y, configuration);
     }
 }
