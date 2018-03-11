@@ -4,16 +4,13 @@ import javafx.beans.Observable;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.ObjectBinding;
 import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.geometry.Point3D;
 import javafx.scene.image.Image;
 import javafx.scene.shape.Box;
 import javafx.scene.transform.Rotate;
-import org.pcsoft.app.jimix.commons.type.TransparentSnapshotParams;
+import org.pcsoft.app.jimix.commons.type.JimixSnapshotParams;
 import org.pcsoft.app.jimix.plugin.common.api.annotation.JimixProperty;
-
-import javax.swing.*;
 
 public class BoxPluginElement extends Plugin3DElement {
     @JimixProperty(fieldType = Double.class, name = "Width", description = "Box width", category = "Box")
@@ -33,7 +30,7 @@ public class BoxPluginElement extends Plugin3DElement {
                     box.getTransforms().add(new Rotate(-30, new Point3D(0, 1, 0)));
                     box.getTransforms().add(new Rotate(5, new Point3D(0, 0, 1)));
 
-                    return box.snapshot(new TransparentSnapshotParams(), null);
+                    return box.snapshot(new JimixSnapshotParams(), null);
                 }, width, height, depth
         );
     }

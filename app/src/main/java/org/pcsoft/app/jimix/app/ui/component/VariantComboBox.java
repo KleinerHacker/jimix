@@ -22,12 +22,12 @@ public class VariantComboBox<T extends JimixVariant> extends ComboBoxEx<T, Strin
         setValueButtonCellRendererCallback(this::drawValue);
     }
 
-    private void drawValue(ListCell listCell, JimixVariant variant, boolean empty) {
-        listCell.setText(null);
-        listCell.setStyle("");
+    private void drawValue(ListCell cell, JimixVariant variant, boolean empty) {
+        cell.setText(null);
+        cell.setStyle("");
         if (variant != null && !empty) {
-            listCell.setPadding(new Insets(listCell.getPadding().getTop(), listCell.getPadding().getRight(), listCell.getPadding().getBottom(), 20));
-            listCell.setText(variant.getName());
+            cell.setPadding(new Insets(cell.getPadding().getTop(), cell.getPadding().getRight(), cell.getPadding().getBottom(), 20));
+            cell.setText(variant.getName());
         }
     }
 

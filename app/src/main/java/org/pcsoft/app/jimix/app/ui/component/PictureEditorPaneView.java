@@ -147,7 +147,7 @@ public class PictureEditorPaneView implements FxmlView<PictureEditorPaneViewMode
         if (lstLayer.getSelectedTopLayer() == null)
             return;
         if (elementSelector.getSelectedElementBuilder() == null)
-            return;
+            return; 
 
         try {
             final JimixPluginElement pluginElement = (JimixPluginElement) elementSelector.getSelectedElementBuilder().getElementModelClass().newInstance();

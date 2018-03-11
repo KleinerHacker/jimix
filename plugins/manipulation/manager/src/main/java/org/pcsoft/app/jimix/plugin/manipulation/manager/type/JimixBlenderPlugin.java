@@ -105,17 +105,25 @@ public final class JimixBlenderPlugin implements JimixPlugin<JimixBlenderInstanc
         return icon;
     }
 
+    public String getGroup() {
+        if (StringUtils.isEmpty(descriptor.group()))
+            return null;
+        if (resourceBundle != null)
+            return resourceBundle.getString(descriptor.group());
+
+        return descriptor.group();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Jimix2DElementBuilderPlugin that = (Jimix2DElementBuilderPlugin) o;
+        JimixBlenderPlugin that = (JimixBlenderPlugin) o;
         return Objects.equals(getIdentifier(), that.getIdentifier());
     }
 
     @Override
     public int hashCode() {
-
         return Objects.hash(getIdentifier());
     }
 }

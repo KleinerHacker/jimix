@@ -26,10 +26,11 @@ public class EffectList extends ListViewEx<Jimix2DEffectInstance, String> {
         setHeaderCellRendererCallback(this::drawHeader);
         setValueComparator(Comparator.comparing(o -> o.getPlugin().getName()));
         setValueCellRendererCallback(this::drawValue);
+
         getItems().setAll(extractEffects());
     }
 
-    private List<Jimix2DEffectInstance> extractEffects() {
+    private static List<Jimix2DEffectInstance> extractEffects() {
         final List<Jimix2DEffectInstance> instanceList = new ArrayList<>();
         for (final Jimix2DEffectPlugin plugin : ManipulationPluginManager.getInstance().getAll2DEffects()) {
             try {

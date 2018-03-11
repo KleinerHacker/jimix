@@ -26,10 +26,11 @@ public class FilterList extends ListViewEx<JimixFilterInstance, String> {
         setHeaderCellRendererCallback(this::drawHeader);
         setValueComparator(Comparator.comparing(o -> o.getPlugin().getName()));
         setValueCellRendererCallback(this::drawValue);
+
         getItems().setAll(extractFilters());
     }
 
-    private List<JimixFilterInstance> extractFilters() {
+    private static List<JimixFilterInstance> extractFilters() {
         final List<JimixFilterInstance> instanceList = new ArrayList<>();
         for (final JimixFilterPlugin plugin : ManipulationPluginManager.getInstance().getAllFilters()) {
             try {

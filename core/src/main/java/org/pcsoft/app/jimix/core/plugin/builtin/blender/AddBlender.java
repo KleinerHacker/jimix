@@ -4,11 +4,12 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.effect.BlendMode;
 import javafx.scene.image.Image;
-import org.pcsoft.app.jimix.commons.type.TransparentSnapshotParams;
+import org.pcsoft.app.jimix.commons.type.JimixSnapshotParams;
 import org.pcsoft.app.jimix.plugin.manipulation.api.JimixBlender;
 import org.pcsoft.app.jimix.plugin.manipulation.api.annotation.JimixBlenderDescriptor;
 
-@JimixBlenderDescriptor(name = "Add", description = "Add pictures", iconPath = "/builtin/icons/ic_blender_add16.png")
+@JimixBlenderDescriptor(name = "Add", description = "Add pictures", group = "Math",
+        iconPath = "/builtin/icons/ic_blender_add16.png")
 public class AddBlender implements JimixBlender {
     @Override
     public Image apply(Image groundImage, Image layerImage, double opacity) throws Exception {
@@ -20,6 +21,6 @@ public class AddBlender implements JimixBlender {
         gc.setGlobalAlpha(opacity);
         gc.drawImage(layerImage, 0, 0);
 
-        return canvas.snapshot(new TransparentSnapshotParams(), null);
+        return canvas.snapshot(new JimixSnapshotParams(), null);
     }
 }

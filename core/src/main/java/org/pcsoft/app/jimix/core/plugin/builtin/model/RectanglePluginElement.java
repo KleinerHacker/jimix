@@ -10,7 +10,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 import org.pcsoft.app.jimix.commons.exception.JimixPluginException;
-import org.pcsoft.app.jimix.commons.type.TransparentSnapshotParams;
+import org.pcsoft.app.jimix.commons.type.JimixSnapshotParams;
 import org.pcsoft.app.jimix.core.plugin.builtin.scaler.DefaultScaler;
 import org.pcsoft.app.jimix.plugin.common.api.annotation.JimixProperty;
 import org.pcsoft.app.jimix.plugin.common.api.type.JimixPlugin2DElement;
@@ -52,7 +52,7 @@ public final class RectanglePluginElement implements JimixPlugin2DElement {
                         height = MAX_HEIGHT;
                         width = MAX_HEIGHT * size.get().width / size.get().height;
                     }
-                    return new Rectangle(width, height, value.get()).snapshot(new TransparentSnapshotParams(), null);
+                    return new Rectangle(width, height, value.get()).snapshot(new JimixSnapshotParams(), null);
                 }, value, size
         );
     }

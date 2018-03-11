@@ -3,7 +3,7 @@ package org.pcsoft.app.jimix.core.plugin.builtin.scaler;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
-import org.pcsoft.app.jimix.commons.type.TransparentSnapshotParams;
+import org.pcsoft.app.jimix.commons.type.JimixSnapshotParams;
 import org.pcsoft.app.jimix.plugin.manipulation.api.JimixScaler;
 import org.pcsoft.app.jimix.plugin.manipulation.api.annotation.JimixScalerDescriptor;
 import org.pcsoft.app.jimix.plugin.manipulation.api.type.JimixSource;
@@ -17,6 +17,6 @@ public class DefaultScaler implements JimixScaler {
 
         gc.drawImage(image, 0, 0, targetWidth, targetHeight);
 
-        return canvas.snapshot(new TransparentSnapshotParams(), null);
+        return canvas.snapshot(new JimixSnapshotParams(), null);
     }
 }

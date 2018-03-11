@@ -3,7 +3,7 @@ package org.pcsoft.app.jimix.plugin.impl.base.manipulation.filter;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.effect.MotionBlur;
 import javafx.scene.image.Image;
-import org.pcsoft.app.jimix.commons.type.TransparentSnapshotParams;
+import org.pcsoft.app.jimix.commons.type.JimixSnapshotParams;
 import org.pcsoft.app.jimix.plugin.manipulation.api.JimixFilter;
 import org.pcsoft.app.jimix.plugin.manipulation.api.annotation.JimixFilterDescriptor;
 import org.pcsoft.app.jimix.plugin.manipulation.api.type.JimixFilterVariant;
@@ -20,7 +20,7 @@ public class MotionBlurFilter implements JimixFilter<MotionBlurFilterConfigurati
         canvas.setEffect(new MotionBlur(configuration.getAngle(), configuration.getRadius()));
         canvas.getGraphicsContext2D().drawImage(image, 0, 0);
 
-        return canvas.snapshot(new TransparentSnapshotParams(), null);
+        return canvas.snapshot(new JimixSnapshotParams(), null);
     }
 
     @SuppressWarnings("unchecked")

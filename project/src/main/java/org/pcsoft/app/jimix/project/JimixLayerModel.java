@@ -26,6 +26,7 @@ public final class JimixLayerModel implements JimixModel {
     private final DoubleProperty opacity = new SimpleDoubleProperty(1d);
     private final BooleanProperty visibility = new SimpleBooleanProperty(true);
     private final ObjectProperty<Image> mask = new SimpleObjectProperty<>();
+    @JimixProperty(fieldType = JimixBlenderInstance.class, name = "Blender", description = "Blending between layers", category = "View")
     private final ObjectProperty<JimixBlenderInstance> blender;
 
     private final ReadOnlyListProperty<JimixElementModel> elementList =

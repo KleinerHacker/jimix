@@ -8,6 +8,7 @@ import java.lang.annotation.*;
 public @interface JimixBlenderDescriptor {
     String name();
     String description();
+    String group() default "";
     String resourceBundle() default "";
     String iconPath() default "";
 }

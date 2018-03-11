@@ -6,25 +6,21 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
 import javafx.scene.layout.Pane;
-import org.apache.commons.lang.ArrayUtils;
 import org.pcsoft.app.jimix.commons.exception.JimixPluginException;
 import org.pcsoft.app.jimix.commons.exception.JimixPluginExecutionException;
-import org.pcsoft.app.jimix.commons.type.TransparentSnapshotParams;
+import org.pcsoft.app.jimix.commons.type.JimixSnapshotParams;
 import org.pcsoft.app.jimix.core.plugin.builtin.blender.OverlayBlender;
 import org.pcsoft.app.jimix.core.project.JimixElement;
 import org.pcsoft.app.jimix.core.project.JimixLayer;
 import org.pcsoft.app.jimix.core.project.JimixProject;
 import org.pcsoft.app.jimix.plugin.common.api.type.JimixPlugin2DElement;
 import org.pcsoft.app.jimix.plugin.common.api.type.JimixPlugin3DElement;
-import org.pcsoft.app.jimix.plugin.manipulation.api.type.JimixEffectType;
 import org.pcsoft.app.jimix.plugin.manipulation.api.type.JimixSource;
 import org.pcsoft.app.jimix.plugin.manipulation.manager.ManipulationPluginManager;
 import org.pcsoft.app.jimix.plugin.manipulation.manager.type.*;
 import org.pcsoft.app.jimix.project.JimixElementModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.Arrays;
 
 public final class ImageBuilder {
     private static final Logger LOGGER = LoggerFactory.getLogger(ImageBuilder.class);
@@ -76,7 +72,7 @@ public final class ImageBuilder {
 
             buildElementNode(element, pane);
         }
-        pane.snapshot(new TransparentSnapshotParams(), image);
+        pane.snapshot(new JimixSnapshotParams(), image);
 
         Image resultImage = image;
         for (final JimixFilterInstance filterInstance : layer.getModel().getFilterList()) {
@@ -94,7 +90,7 @@ public final class ImageBuilder {
         final Pane pane = new Pane();
         buildElementNode(element, pane);
 
-        return pane.snapshot(new TransparentSnapshotParams(), null);
+        return pane.snapshot(new JimixSnapshotParams(), null);
     }
 
     private void buildElementNode(JimixElement element, Pane pane) {
@@ -115,7 +111,7 @@ public final class ImageBuilder {
             } else if (elementBuilder instanceof Jimix3DElementBuilderPlugin) {
                 Node tmpNode = ((Jimix3DElementBuilderPlugin) elementBuilder).buildNode((JimixPlugin3DElement) model.getPluginElement());
                 tmpNode = apply3DEffects(element, tmpNode); //Run 3D effects first on original 3D object
-                final Image tmpImage = tmpNode.snapshot(new TransparentSnapshotParams(), null); //Create temporary image from 3D object
+                final Image tmpImage = tmpNode.snapshot(new JimixSnapshotParams(), null); //Create temporary image from 3D object
                 final ImageView tmpImageNode = new ImageView(tmpImage); //Temporary node
                 tmpImageNode.setTranslateX(model.getX());
                 tmpImageNode.setTranslateY(model.getY());

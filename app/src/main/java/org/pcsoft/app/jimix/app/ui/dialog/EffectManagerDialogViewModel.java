@@ -9,7 +9,7 @@ import javafx.scene.image.Image;
 import javafx.scene.paint.ImagePattern;
 import javafx.scene.shape.Rectangle;
 import org.pcsoft.app.jimix.commons.exception.JimixPluginExecutionException;
-import org.pcsoft.app.jimix.commons.type.TransparentSnapshotParams;
+import org.pcsoft.app.jimix.commons.type.JimixSnapshotParams;
 import org.pcsoft.app.jimix.plugin.manipulation.manager.type.Jimix2DEffectInstance;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,7 +59,7 @@ public class EffectManagerDialogViewModel implements ViewModel {
                 final Rectangle rectangle = new Rectangle(0, 0, sourceImage.get().getWidth(), sourceImage.get().getHeight());
                 rectangle.setFill(new ImagePattern(sourceImage.get()));
                 final Node node = selectedEffect.get().apply(rectangle, 0, 0);
-                resultImageWrapper.set(node.snapshot(new TransparentSnapshotParams(), null));
+                resultImageWrapper.set(node.snapshot(new JimixSnapshotParams(), null));
             } catch (JimixPluginExecutionException e) {
                 LOGGER.error("Unable to run filter " + selectedEffect.get().getPlugin().getIdentifier(), e);
             }

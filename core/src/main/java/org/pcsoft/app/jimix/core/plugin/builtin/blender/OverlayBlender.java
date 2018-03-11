@@ -3,11 +3,12 @@ package org.pcsoft.app.jimix.core.plugin.builtin.blender;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
-import org.pcsoft.app.jimix.commons.type.TransparentSnapshotParams;
+import org.pcsoft.app.jimix.commons.type.JimixSnapshotParams;
 import org.pcsoft.app.jimix.plugin.manipulation.api.JimixBlender;
 import org.pcsoft.app.jimix.plugin.manipulation.api.annotation.JimixBlenderDescriptor;
 
-@JimixBlenderDescriptor(name = "Overlay", description = "Overlay layers (default)", iconPath = "/builtin/icons/ic_blender_overlay16.png")
+@JimixBlenderDescriptor(name = "Overlay", description = "Overlay layers (default)",
+        iconPath = "/builtin/icons/ic_blender_overlay16.png")
 public class OverlayBlender implements JimixBlender {
     @Override
     public Image apply(Image groundImage, Image layerImage, double opacity) throws Exception {
@@ -18,6 +19,6 @@ public class OverlayBlender implements JimixBlender {
         gc.setGlobalAlpha(opacity);
         gc.drawImage(layerImage, 0, 0);
 
-        return canvas.snapshot(new TransparentSnapshotParams(), null);
+        return canvas.snapshot(new JimixSnapshotParams(), null);
     }
 }
