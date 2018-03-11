@@ -1,1 +1,2 @@
 org.pcsoft.app.jimix.plugin.impl.base.manipulation.builder.BoxElementBuilder
+org.pcsoft.app.jimix.plugin.impl.base.manipulation.builder.CylinderElementBuilder

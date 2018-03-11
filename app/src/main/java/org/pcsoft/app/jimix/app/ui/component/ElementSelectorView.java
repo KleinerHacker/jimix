@@ -2,8 +2,6 @@ package org.pcsoft.app.jimix.app.ui.component;
 
 import de.saxsys.mvvmfx.FxmlView;
 import de.saxsys.mvvmfx.InjectViewModel;
-import javafx.beans.binding.Bindings;
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.Orientation;
@@ -14,7 +12,6 @@ import javafx.scene.control.ToggleGroup;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.VBox;
-import org.pcsoft.app.jimix.plugin.manipulation.manager.type.Jimix2DElementBuilderPlugin;
 import org.pcsoft.app.jimix.plugin.manipulation.manager.type.JimixElementBuilderPlugin;
 import org.pcsoft.framework.jfex.property.ExtendedWrapperProperty;
 import org.pcsoft.framework.jfex.ui.component.DetailTooltip;
@@ -43,7 +40,7 @@ public class ElementSelectorView implements FxmlView<ElementSelectorViewModel>, 
             label.setStyle("-fx-font-weight: bold");
             pnlRoot.getChildren().add(label);
 
-            final FlowPane pane = new FlowPane(Orientation.HORIZONTAL);
+            final FlowPane pane = new FlowPane(Orientation.HORIZONTAL, 2d, 2d);
             for (final JimixElementBuilderPlugin elementBuilderPlugin : viewModel.getBuilderMap().get(groupName)) {
                 final ToggleButton button = new ToggleButton("", new ImageView(elementBuilderPlugin.getIcon()));
                 button.setTooltip(new DetailTooltip(elementBuilderPlugin.getName(), elementBuilderPlugin.getDescription()));
