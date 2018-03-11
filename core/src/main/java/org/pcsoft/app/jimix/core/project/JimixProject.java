@@ -191,11 +191,7 @@ public final class JimixProject {
         @Override
         public Observable[] call(JimixLayer param) {
             final List<Observable> list = new ArrayList<>();
-            list.add(param.getModel().nameProperty());
-            list.add(param.getModel().opacityProperty());
-            list.add(param.getModel().visibilityProperty());
-            list.add(param.getModel().filterListProperty());
-            list.add(param.elementListProperty());
+            list.add(param.resultImageProperty());
 
             return list.toArray(new Observable[list.size()]);
         }

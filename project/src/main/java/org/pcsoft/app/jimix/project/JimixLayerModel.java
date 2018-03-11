@@ -5,6 +5,8 @@ import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.image.Image;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.util.Callback;
 import org.pcsoft.app.jimix.commons.exception.JimixPluginException;
 import org.pcsoft.app.jimix.plugin.common.api.annotation.JimixProperty;
@@ -21,6 +23,8 @@ import java.util.List;
 public final class JimixLayerModel implements JimixModel {
     @JimixProperty(fieldType = String.class, name = "Name", description = "Name of layer", category = "Default")
     private final StringProperty name = new SimpleStringProperty("Layer");
+    @JimixProperty(fieldType = Paint.class, name = "Background", description = "Paint for layer background", category = "View")
+    private final ObjectProperty<Paint> background = new SimpleObjectProperty<>(Color.TRANSPARENT);
     @JimixProperty(fieldType = Double.class, name = "Opacity", description = "Opacity of layer", category = "View")
     @JimixPropertyDoubleRestriction(minValue = 0d, maxValue = 1d)
     private final DoubleProperty opacity = new SimpleDoubleProperty(1d);
@@ -122,10 +126,22 @@ public final class JimixLayerModel implements JimixModel {
         return filterList;
     }
 
+    public Paint getBackground() {
+        return background.get();
+    }
+
+    public ObjectProperty<Paint> backgroundProperty() {
+        return background;
+    }
+
+    public void setBackground(Paint background) {
+        this.background.set(background);
+    }
+
     @Override
     public Observable[] getObservableValues() {
         return new Observable[] {
-                name, opacity, visibility, mask, blender, elementList, filterList
+                name, background, opacity, visibility, mask, blender, elementList, filterList
         };
     }
 

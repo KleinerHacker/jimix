@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.VBox?>
+<?import org.pcsoft.app.jimix.app.ui.component.BlenderComboBox?>
+<?import org.pcsoft.framework.jfex.ui.component.paint.PaintPane?>
+
+<VBox prefHeight="500.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.121" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.pcsoft.app.jimix.app.ui.dialog.LayerCreateSimpleDialogView">
+    <Label text="Name:" />
+    <TextField fx:id="txtName" />
+    <Label text="Blender:">
+        <VBox.margin>
+            <Insets top="5.0" />
+        </VBox.margin>
+    </Label>
+    <BlenderComboBox fx:id="cmbBelnder" />
+    <PaintPane fx:id="paintPane" maxWidth="1.7976931348623157E308">
+        <VBox.margin>
+            <Insets top="5.0" />
+        </VBox.margin>
+    </PaintPane>
+</VBox>

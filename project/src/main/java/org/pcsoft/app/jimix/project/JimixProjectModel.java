@@ -63,7 +63,8 @@ public final class JimixProjectModel implements JimixModel {
         @Override
         public Observable[] call(JimixLayerModel param) {
             return new Observable[]{
-                    param.nameProperty(), param.blenderProperty(), param.maskProperty(), param.elementListProperty(),
+                    param.nameProperty(), param.backgroundProperty(), param.opacityProperty(),
+                    param.blenderProperty(), param.maskProperty(), param.elementListProperty(),
                     param.filterListProperty()
             };
         }

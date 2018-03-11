@@ -7,13 +7,10 @@ import org.pcsoft.app.jimix.app.ui.component.cell.pane.ElementTreeCellPane;
 import org.pcsoft.app.jimix.app.ui.component.cell.pane.LayerTreeCellPane;
 import org.pcsoft.app.jimix.core.project.JimixElement;
 import org.pcsoft.app.jimix.core.project.JimixLayer;
-import org.pcsoft.app.jimix.plugin.manipulation.manager.type.Jimix2DEffectInstance;
 import org.pcsoft.app.jimix.plugin.manipulation.manager.type.JimixEffectInstance;
 import org.pcsoft.app.jimix.plugin.manipulation.manager.type.JimixFilterInstance;
 
 public class ProjectTreeCell extends TreeCell<Object> {
-    private final LayerTreeCellPane layerPane = new LayerTreeCellPane();
-    private final ElementTreeCellPane elementPane = new ElementTreeCellPane();
 
     @Override
     protected void updateItem(Object item, boolean empty) {
@@ -23,11 +20,9 @@ public class ProjectTreeCell extends TreeCell<Object> {
         setGraphic(null);
         if (!empty) {
             if (getTreeItem() instanceof LayerTreeItem && item instanceof JimixLayer) {
-                layerPane.setValue((JimixLayer) item);
-                setGraphic(layerPane);
+                setGraphic(new LayerTreeCellPane((JimixLayer) item));
             } else if (getTreeItem() instanceof ElementTreeItem && item instanceof JimixElement) {
-                elementPane.setValue((JimixElement) item);
-                setGraphic(elementPane);
+                setGraphic(new ElementTreeCellPane((JimixElement) item));
             } else if (getTreeItem() instanceof ElementRootTreeItem) {
                 setText("Elements");
             } else if (getTreeItem() instanceof FilterTreeItem && item instanceof JimixFilterInstance) {

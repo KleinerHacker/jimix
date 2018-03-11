@@ -64,6 +64,7 @@ public final class ImageBuilder {
         final WritableImage image = new WritableImage(layer.getProject().getModel().getWidth(), layer.getProject().getModel().getHeight());
 
         final Pane pane = new Pane();
+        //Elements
         for (final JimixElement element : layer.getElementList()) {
             if (!element.getModel().isVisibility()) {
                 LOGGER.trace("element " + element.getUuid() + " invisible");
@@ -72,7 +73,7 @@ public final class ImageBuilder {
 
             buildElementNode(element, pane);
         }
-        pane.snapshot(new JimixSnapshotParams(), image);
+        pane.snapshot(new JimixSnapshotParams(layer.getModel().getBackground()), image);
 
         Image resultImage = image;
         for (final JimixFilterInstance filterInstance : layer.getModel().getFilterList()) {

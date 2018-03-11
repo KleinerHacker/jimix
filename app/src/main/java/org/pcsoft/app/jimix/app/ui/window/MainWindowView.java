@@ -24,6 +24,7 @@ import org.pcsoft.app.jimix.app.ui.component.PictureEditorPane;
 import org.pcsoft.app.jimix.app.ui.component.ProjectInfoPane;
 import org.pcsoft.app.jimix.app.ui.dialog.EffectManagerDialog;
 import org.pcsoft.app.jimix.app.ui.dialog.FilterManagerDialog;
+import org.pcsoft.app.jimix.app.ui.dialog.LayerCreateSimpleDialog;
 import org.pcsoft.app.jimix.app.ui.splash.JimixSplash;
 import org.pcsoft.app.jimix.app.util.FileChooserUtils;
 import org.pcsoft.app.jimix.commons.exception.JimixPluginException;
@@ -621,7 +622,17 @@ public class MainWindowView implements FxmlView<MainWindowViewModel>, Initializa
 
     @FXML
     private void onActionLayerNewSimple(ActionEvent actionEvent) {
+        final Tab tab = tabPicture.getSelectionModel().getSelectedItem();
+        if (tab == null)
+            return;
+        final JimixProject project = ((PictureEditorPane) tab.getContent()).getProject();
 
+        final Optional<LayerCreateSimpleDialog.Result> result = new LayerCreateSimpleDialog(pnlRoot.getScene().getWindow()).showAndWait();
+        if (result.isPresent()) {
+            final JimixLayer layer = ProjectManager.getInstance().createLayerForProject(project);
+            layer.getModel().setName(result.get().getName());
+            layer.getModel().setBackground(result.get().getPaint());
+        }
     }
 
     @FXML
@@ -737,9 +748,11 @@ public class MainWindowView implements FxmlView<MainWindowViewModel>, Initializa
                         }
 
                         final Image image = imageFileTypeProvider.load(file);
-                        final JimixProject jimixProject = ProjectManager.getInstance().createProjectFromImage(image);
-                        jimixProject.setFile(file);
-                        Platform.runLater(() -> viewModel.getProjectList().add(jimixProject));
+                        Platform.runLater(() -> {
+                            final JimixProject jimixProject = ProjectManager.getInstance().createProjectFromImage(image);
+                            jimixProject.setFile(file);
+                            viewModel.getProjectList().add(jimixProject);
+                        });
                     } catch (IOException e) {
                         LOGGER.error("Unable to open file " + file.getAbsolutePath(), e);
                         Platform.runLater(() -> new Alert(Alert.AlertType.ERROR, "Unable to load file " + file.getAbsolutePath(), ButtonType.OK).showAndWait());

@@ -58,7 +58,7 @@ public final class JimixLayer {
         resultImage = Bindings.createObjectBinding(
                 () -> ImageBuilder.getInstance().buildLayerImage(this),
                 //TODO: Optimize
-                (Observable[]) ArrayUtils.addAll(model.getObservableValues(), new Observable[]{elementList, model.filterListProperty()})
+                (Observable[]) ArrayUtils.addAll(model.getObservableValues(), new Observable[]{elementList})
         );
     }
 
