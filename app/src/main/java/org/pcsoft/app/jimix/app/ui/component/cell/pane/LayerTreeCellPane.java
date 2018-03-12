@@ -22,12 +22,12 @@ public class LayerTreeCellPane extends HBox {
 
         value.addListener((v, o, n) -> {
             if (o != null) {
-                viewModel.visibilityProperty().unbindBidirectional(o.getModel().visibilityProperty());
+                viewModel.visibilityProperty().unbindBidirectional(o.visibileProperty());
             }
 
             if (n != null) {
                 viewModel.setName(n.getModel().getName());
-                viewModel.visibilityProperty().bindBidirectional(n.getModel().visibilityProperty());
+                viewModel.visibilityProperty().bindBidirectional(n.visibileProperty());
                 viewModel.previewProperty().bind(n.resultImageProperty());
             }
         });

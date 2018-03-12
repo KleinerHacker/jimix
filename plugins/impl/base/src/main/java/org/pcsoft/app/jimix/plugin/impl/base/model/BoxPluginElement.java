@@ -12,8 +12,9 @@ import javafx.scene.shape.Shape3D;
 import javafx.scene.transform.Rotate;
 import org.pcsoft.app.jimix.commons.type.JimixSnapshotParams;
 import org.pcsoft.app.jimix.plugin.common.api.annotation.JimixProperty;
+import org.pcsoft.app.jimix.plugin.common.api.type.JimixPlugin3DElement;
 
-public class BoxPluginElement extends Plugin3DElement {
+public class BoxPluginElement extends JimixPlugin3DElement<BoxPluginElement> {
     @JimixProperty(fieldType = Double.class, name = "Width", description = "Box width", category = "Box")
     private final DoubleProperty width = new SimpleDoubleProperty(100d);
     @JimixProperty(fieldType = Double.class, name = "Height", description = "Box height", category = "Box")
@@ -87,5 +88,15 @@ public class BoxPluginElement extends Plugin3DElement {
     @Override
     public ObjectBinding<Image> previewProperty() {
         return preview;
+    }
+
+    @Override
+    public BoxPluginElement copy() {
+        final BoxPluginElement pluginElement = new BoxPluginElement();
+        pluginElement.setWidth(this.width.get());
+        pluginElement.setHeight(this.height.get());
+        pluginElement.setDepth(this.depth.get());
+
+        return pluginElement;
     }
 }

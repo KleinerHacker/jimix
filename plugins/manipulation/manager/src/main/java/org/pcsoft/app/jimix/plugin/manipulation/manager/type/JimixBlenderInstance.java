@@ -7,7 +7,7 @@ import org.pcsoft.app.jimix.plugin.common.manager.type.JimixInstance;
 import java.util.Objects;
 import java.util.UUID;
 
-public final class JimixBlenderInstance implements JimixInstance<JimixBlenderPlugin> {
+public final class JimixBlenderInstance implements JimixInstance<JimixBlenderPlugin, JimixBlenderInstance> {
     private final UUID uuid = UUID.randomUUID();
     private final JimixBlenderPlugin plugin;
 
@@ -22,6 +22,11 @@ public final class JimixBlenderInstance implements JimixInstance<JimixBlenderPlu
     @Override
     public JimixBlenderPlugin getPlugin() {
         return plugin;
+    }
+
+    @Override
+    public JimixBlenderInstance copy() {
+        return new JimixBlenderInstance(plugin);
     }
 
     @Override

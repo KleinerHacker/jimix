@@ -5,6 +5,7 @@ import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.scene.image.Image;
+import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.util.Callback;
@@ -20,7 +21,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public final class JimixLayerModel implements JimixModel {
+public final class JimixLayerModel implements JimixModel<JimixLayerModel> {
     @JimixProperty(fieldType = String.class, name = "Name", description = "Name of layer", category = "Default")
     private final StringProperty name = new SimpleStringProperty("Layer");
     @JimixProperty(fieldType = Paint.class, name = "Background", description = "Paint for layer background", category = "View")
@@ -28,7 +29,6 @@ public final class JimixLayerModel implements JimixModel {
     @JimixProperty(fieldType = Double.class, name = "Opacity", description = "Opacity of layer", category = "View")
     @JimixPropertyDoubleRestriction(minValue = 0d, maxValue = 1d)
     private final DoubleProperty opacity = new SimpleDoubleProperty(1d);
-    private final BooleanProperty visibility = new SimpleBooleanProperty(true);
     private final ObjectProperty<Image> mask = new SimpleObjectProperty<>();
     @JimixProperty(fieldType = JimixBlenderInstance.class, name = "Blender", description = "Blending between layers", category = "View")
     private final ObjectProperty<JimixBlenderInstance> blender;
@@ -72,18 +72,6 @@ public final class JimixLayerModel implements JimixModel {
 
     public void setOpacity(double opacity) {
         this.opacity.set(opacity);
-    }
-
-    public boolean isVisibility() {
-        return visibility.get();
-    }
-
-    public BooleanProperty visibilityProperty() {
-        return visibility;
-    }
-
-    public void setVisibility(boolean visibility) {
-        this.visibility.set(visibility);
     }
 
     public Image getMask() {
@@ -139,9 +127,20 @@ public final class JimixLayerModel implements JimixModel {
     }
 
     @Override
+    public JimixLayerModel copy() {
+        final JimixLayerModel layerModel = new JimixLayerModel(this.blender.get().copy());
+        layerModel.setName(this.name.getName());
+        layerModel.setOpacity(this.opacity.get());
+        layerModel.setBackground(this.background.get());
+        layerModel.setMask(new WritableImage(this.mask.get().getPixelReader(), (int) this.mask.get().getWidth(), (int) this.mask.get().getHeight()));
+
+        return layerModel;
+    }
+
+    @Override
     public Observable[] getObservableValues() {
-        return new Observable[] {
-                name, background, opacity, visibility, mask, blender, elementList, filterList
+        return new Observable[]{
+                name, background, opacity, mask, blender, elementList, filterList
         };
     }
 
@@ -159,7 +158,6 @@ public final class JimixLayerModel implements JimixModel {
             list.add(param.opacityProperty());
             list.add(param.xProperty());
             list.add(param.yProperty());
-            list.add(param.visibilityProperty());
             list.add(param.mirrorHorizontalProperty());
             list.add(param.mirrorVerticalProperty());
             list.add(param.rotationProperty());

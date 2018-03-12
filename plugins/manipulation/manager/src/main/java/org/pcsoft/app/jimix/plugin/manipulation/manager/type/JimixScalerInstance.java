@@ -5,7 +5,7 @@ import org.pcsoft.app.jimix.commons.exception.JimixPluginExecutionException;
 import org.pcsoft.app.jimix.plugin.common.manager.type.JimixInstance;
 import org.pcsoft.app.jimix.plugin.manipulation.api.type.JimixSource;
 
-public final class JimixScalerInstance implements JimixInstance<JimixScalerPlugin> {
+public final class JimixScalerInstance implements JimixInstance<JimixScalerPlugin, JimixScalerInstance> {
     private final JimixScalerPlugin plugin;
 
     JimixScalerInstance(JimixScalerPlugin plugin) {
@@ -19,5 +19,10 @@ public final class JimixScalerInstance implements JimixInstance<JimixScalerPlugi
     @Override
     public JimixScalerPlugin getPlugin() {
         return plugin;
+    }
+
+    @Override
+    public JimixScalerInstance copy() {
+        return new JimixScalerInstance(plugin);
     }
 }

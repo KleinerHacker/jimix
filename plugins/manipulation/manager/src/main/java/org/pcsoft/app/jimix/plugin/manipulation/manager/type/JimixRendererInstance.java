@@ -6,7 +6,7 @@ import org.pcsoft.app.jimix.plugin.common.manager.type.JimixInstance;
 import org.pcsoft.app.jimix.plugin.manipulation.api.config.JimixRendererConfiguration;
 import org.pcsoft.app.jimix.plugin.manipulation.api.type.JimixSource;
 
-public final class JimixRendererInstance implements JimixInstance<JimixRendererPlugin> {
+public final class JimixRendererInstance implements JimixInstance<JimixRendererPlugin, JimixRendererInstance> {
     private final JimixRendererPlugin plugin;
     private final JimixRendererConfiguration configuration;
 
@@ -26,5 +26,10 @@ public final class JimixRendererInstance implements JimixInstance<JimixRendererP
 
     public JimixRendererConfiguration getConfiguration() {
         return configuration;
+    }
+
+    @Override
+    public JimixRendererInstance copy() {
+        return new JimixRendererInstance(plugin, (JimixRendererConfiguration) configuration.copy());
     }
 }

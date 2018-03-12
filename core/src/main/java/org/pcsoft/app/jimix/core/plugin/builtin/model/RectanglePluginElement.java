@@ -6,7 +6,6 @@ import javafx.beans.binding.ObjectBinding;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.image.Image;
-import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 import org.pcsoft.app.jimix.commons.exception.JimixPluginException;
@@ -19,12 +18,10 @@ import org.pcsoft.app.jimix.plugin.manipulation.manager.type.JimixScalerPlugin;
 
 import java.awt.*;
 
-public final class RectanglePluginElement implements JimixPlugin2DElement {
+public final class RectanglePluginElement extends JimixPlugin2DElement<RectanglePluginElement> {
     private static final int MAX_WIDTH = 100;
     private static final int MAX_HEIGHT = 50;
 
-    @JimixProperty(fieldType = Paint.class, name = "Fill", description = "Fill of rectangle")
-    private final ObjectProperty<Paint> value = new SimpleObjectProperty<>(Color.PURPLE);
     @JimixProperty(fieldType = Dimension.class, name = "Size", description = "Dimension")
     private final ObjectProperty<Dimension> size = new SimpleObjectProperty<>(new Dimension(100, 100));
     @JimixProperty(fieldType = Dimension.class, name = "Arc Size", description = "Arc size of rectangle corners")
@@ -41,7 +38,7 @@ public final class RectanglePluginElement implements JimixPlugin2DElement {
 
         preview = Bindings.createObjectBinding(
                 () -> {
-                    if (value == null)
+                    if (getFill() == null)
                         return null;
 
                     final int width, height;
@@ -52,26 +49,14 @@ public final class RectanglePluginElement implements JimixPlugin2DElement {
                         height = MAX_HEIGHT;
                         width = MAX_HEIGHT * size.get().width / size.get().height;
                     }
-                    return new Rectangle(width, height, value.get()).snapshot(new JimixSnapshotParams(), null);
-                }, value, size
+                    return new Rectangle(width, height, getFill()).snapshot(new JimixSnapshotParams(), null);
+                }, fillProperty(), size
         );
     }
 
     public RectanglePluginElement(final Paint paint) {
         this();
-        this.value.set(paint);
-    }
-
-    public Paint getValue() {
-        return value.get();
-    }
-
-    public ObjectProperty<Paint> valueProperty() {
-        return value;
-    }
-
-    public void setValue(Paint value) {
-        this.value.set(value);
+        this.setFill(paint);
     }
 
     public JimixScalerInstance getScaler() {
@@ -121,9 +106,19 @@ public final class RectanglePluginElement implements JimixPlugin2DElement {
     }
 
     @Override
-    public Observable[] getObservables() {
+    protected Observable[] _getObservables() {
         return new Observable[]{
-                value, scaler, size, arcSize
+                scaler, size, arcSize
         };
+    }
+
+    @Override
+    public RectanglePluginElement copy() {
+        final RectanglePluginElement pluginElement = new RectanglePluginElement(this.getFill());
+        pluginElement.setSize(this.size.get());
+        pluginElement.setArcSize(this.arcSize.get());
+        pluginElement.setScaler(this.scaler.get().copy());
+
+        return pluginElement;
     }
 }

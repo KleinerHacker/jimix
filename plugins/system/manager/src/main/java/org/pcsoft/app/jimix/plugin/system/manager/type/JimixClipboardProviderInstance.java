@@ -4,7 +4,7 @@ import javafx.scene.input.Clipboard;
 import org.pcsoft.app.jimix.plugin.common.manager.type.JimixInstance;
 import org.pcsoft.app.jimix.plugin.common.api.type.JimixPlugin2DElement;
 
-public final class JimixClipboardProviderInstance implements JimixInstance<JimixClipboardProviderPlugin> {
+public final class JimixClipboardProviderInstance implements JimixInstance<JimixClipboardProviderPlugin, JimixClipboardProviderInstance> {
     private final JimixClipboardProviderPlugin plugin;
 
     JimixClipboardProviderInstance(JimixClipboardProviderPlugin plugin) {
@@ -22,5 +22,10 @@ public final class JimixClipboardProviderInstance implements JimixInstance<Jimix
     @Override
     public JimixClipboardProviderPlugin getPlugin() {
         return plugin;
+    }
+
+    @Override
+    public JimixClipboardProviderInstance copy() {
+        return new JimixClipboardProviderInstance(plugin);
     }
 }

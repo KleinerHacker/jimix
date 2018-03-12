@@ -34,7 +34,7 @@ public class RectangleElementBuilder implements Jimix2DElementBuilder<RectangleP
         } */
 
         final Rectangle rectangle = new Rectangle(x, y, elementModel.getSize().width, elementModel.getSize().height);
-        rectangle.setFill(elementModel.getValue());
+        rectangle.setFill(elementModel.getFill());
         rectangle.setArcWidth(elementModel.getArcSize().width);
         rectangle.setArcHeight(elementModel.getArcSize().height);
 

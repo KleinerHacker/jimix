@@ -6,7 +6,7 @@ import org.pcsoft.app.jimix.plugin.common.manager.type.JimixInstance;
 import java.io.File;
 import java.io.IOException;
 
-public final class JimixImageFileTypeProviderInstance implements JimixInstance<JimixImageFileTypeProviderPlugin> {
+public final class JimixImageFileTypeProviderInstance implements JimixInstance<JimixImageFileTypeProviderPlugin, JimixImageFileTypeProviderInstance> {
     private final JimixImageFileTypeProviderPlugin plugin;
 
     JimixImageFileTypeProviderInstance(JimixImageFileTypeProviderPlugin plugin) {
@@ -28,5 +28,10 @@ public final class JimixImageFileTypeProviderInstance implements JimixInstance<J
     @Override
     public JimixImageFileTypeProviderPlugin getPlugin() {
         return plugin;
+    }
+
+    @Override
+    public JimixImageFileTypeProviderInstance copy() {
+        return new JimixImageFileTypeProviderInstance(plugin);
     }
 }

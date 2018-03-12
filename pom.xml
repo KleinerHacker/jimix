@@ -15,6 +15,7 @@
         <module>plugins</module>
         <module>core</module>
         <module>project</module>
+        <module>bundle</module>
     </modules>
 
     <build>

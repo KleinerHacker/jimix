@@ -5,7 +5,7 @@ import org.pcsoft.app.jimix.plugin.common.manager.type.JimixInstance;
 import java.util.Objects;
 import java.util.UUID;
 
-public abstract class JimixElementBuilderInstance<T extends JimixElementBuilderPlugin> implements JimixInstance<T> {
+public abstract class JimixElementBuilderInstance<T extends JimixElementBuilderPlugin, I extends JimixElementBuilderInstance<T, I>> implements JimixInstance<T, I> {
     private final transient UUID uuid = UUID.randomUUID(); //Temporary identifier only
     protected final T plugin;
 
@@ -22,7 +22,7 @@ public abstract class JimixElementBuilderInstance<T extends JimixElementBuilderP
     public final boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        JimixElementBuilderInstance<?> that = (JimixElementBuilderInstance<?>) o;
+        JimixElementBuilderInstance<?,?> that = (JimixElementBuilderInstance<?,?>) o;
         return Objects.equals(uuid, that.uuid);
     }
 

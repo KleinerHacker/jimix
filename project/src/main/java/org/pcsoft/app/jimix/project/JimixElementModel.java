@@ -7,16 +7,13 @@ import javafx.collections.ObservableList;
 import org.apache.commons.lang.ArrayUtils;
 import org.pcsoft.app.jimix.plugin.common.api.annotation.JimixProperty;
 import org.pcsoft.app.jimix.plugin.common.api.annotation.JimixPropertyDoubleRestriction;
-import org.pcsoft.app.jimix.plugin.common.api.type.JimixPlugin2DElement;
 import org.pcsoft.app.jimix.plugin.common.api.type.JimixPluginElement;
 import org.pcsoft.app.jimix.plugin.manipulation.manager.type.JimixEffectInstance;
-
-import java.awt.*;
 
 /**
  * Represent a element model. This is the abstract base for all custom elements to show in image.
  */
-public final class JimixElementModel implements JimixModel {
+public final class JimixElementModel implements JimixModel<JimixElementModel> {
     @JimixProperty(fieldType = Double.class, name = "Opacity", description = "Opacity of element", category = "View")
     @JimixPropertyDoubleRestriction(minValue = 0d, maxValue = 1d)
     private final DoubleProperty opacity = new SimpleDoubleProperty(1d);
@@ -34,7 +31,6 @@ public final class JimixElementModel implements JimixModel {
 
     private final ReadOnlyListProperty<JimixEffectInstance> effectList =
             new ReadOnlyListWrapper<JimixEffectInstance>(FXCollections.observableArrayList(param -> param.getConfiguration().getObservables())).getReadOnlyProperty();
-    private final BooleanProperty visibility = new SimpleBooleanProperty(true);
 
     private final ReadOnlyObjectProperty<JimixPluginElement> pluginElement;
 
@@ -98,22 +94,6 @@ public final class JimixElementModel implements JimixModel {
         this.opacity.set(opacity);
     }
 
-    public boolean isVisibility() {
-        return visibility.get();
-    }
-
-    /**
-     * Visibility of element (show or hide)
-     * @return
-     */
-    public BooleanProperty visibilityProperty() {
-        return visibility;
-    }
-
-    public void setVisibility(boolean visibility) {
-        this.visibility.set(visibility);
-    }
-
     public boolean isMirrorHorizontal() {
         return mirrorHorizontal.get();
     }
@@ -175,9 +155,22 @@ public final class JimixElementModel implements JimixModel {
     }
 
     @Override
+    public JimixElementModel copy() {
+        final JimixElementModel elementModel = new JimixElementModel(this.pluginElement.get().copy());
+        elementModel.setX(this.x.get());
+        elementModel.setY(this.y.get());
+        elementModel.setRotation(this.rotation.get());
+        elementModel.setMirrorHorizontal(this.mirrorHorizontal.get());
+        elementModel.setMirrorVertical(this.mirrorVertical.get());
+        elementModel.setOpacity(this.opacity.get());
+
+        return elementModel;
+    }
+
+    @Override
     public final Observable[] getObservableValues() {
         return (Observable[]) ArrayUtils.addAll(new Observable[] {
-                opacity, x, y, visibility, mirrorHorizontal, mirrorVertical, rotation, effectList
+                opacity, x, y, mirrorHorizontal, mirrorVertical, rotation, effectList
         }, pluginElement.get().getObservables());
     }
 }

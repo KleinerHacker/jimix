@@ -48,7 +48,6 @@ public class JxpProjectFileTypeProvider implements JimixProjectFileTypeProvider 
         for (final JimixLayerModel layerModel : projectModel.getLayerList()) {
             oout.writeUTF(layerModel.getName());
             oout.writeDouble(layerModel.getOpacity());
-            oout.writeBoolean(layerModel.isVisibility());
             ImageIO.write(SwingFXUtils.fromFXImage(layerModel.getMask(), null), "png", oout);
             //Blender
             oout.writeUTF(layerModel.getBlender().getPlugin().getIdentifier());
@@ -98,7 +97,6 @@ public class JxpProjectFileTypeProvider implements JimixProjectFileTypeProvider 
                 final JimixLayerModel layerModel = new JimixLayerModel(blenderInstance);
                 layerModel.setName(name);
                 layerModel.setOpacity(opacity);
-                layerModel.setVisibility(visibile);
                 layerModel.setMask(mask);
 
                 projectModel.getLayerList().add(layerModel);

@@ -9,7 +9,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.util.Callback;
 
-public final class JimixProjectModel implements JimixModel {
+public final class JimixProjectModel implements JimixModel<JimixProjectModel> {
     private final IntegerProperty width = new SimpleIntegerProperty(), height = new SimpleIntegerProperty();
 
     private final ReadOnlyListProperty<JimixLayerModel> layerList =
@@ -50,6 +50,12 @@ public final class JimixProjectModel implements JimixModel {
 
     public void setHeight(int height) {
         this.height.set(height);
+    }
+
+    @Override
+    public JimixProjectModel copy() {
+        final JimixProjectModel projectModel = new JimixProjectModel(this.width.get(), this.height.get());
+        return projectModel;
     }
 
     @Override

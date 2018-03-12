@@ -1,7 +1,9 @@
 package org.pcsoft.app.jimix.core.project;
 
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
+import javafx.beans.property.SimpleBooleanProperty;
 import org.pcsoft.app.jimix.project.JimixElementModel;
 
 import java.util.Objects;
@@ -14,6 +16,7 @@ public final class JimixElement {
     //Temporary identifier only
     private final ReadOnlyObjectProperty<UUID> uuid = new ReadOnlyObjectWrapper<>(UUID.randomUUID()).getReadOnlyProperty();
     private final ReadOnlyObjectProperty<JimixElementModel> model;
+    private final BooleanProperty visibile = new SimpleBooleanProperty(true);
 
     private final ReadOnlyObjectProperty<JimixProject> project;
     private final ReadOnlyObjectProperty<JimixLayer> layer;
@@ -54,6 +57,18 @@ public final class JimixElement {
 
     public ReadOnlyObjectProperty<JimixLayer> layerProperty() {
         return layer;
+    }
+
+    public boolean isVisibile() {
+        return visibile.get();
+    }
+
+    public BooleanProperty visibileProperty() {
+        return visibile;
+    }
+
+    public void setVisibile(boolean visibile) {
+        this.visibile.set(visibile);
     }
 
     @Override

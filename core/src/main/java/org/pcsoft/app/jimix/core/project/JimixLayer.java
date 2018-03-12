@@ -26,6 +26,7 @@ public final class JimixLayer {
     //Temporary identifier only
     private final ReadOnlyObjectProperty<UUID> uuid = new ReadOnlyObjectWrapper<>(UUID.randomUUID()).getReadOnlyProperty();
     private final ReadOnlyObjectProperty<JimixLayerModel> model;
+    private final BooleanProperty visibile = new SimpleBooleanProperty(true);
     private final ReadOnlyMapProperty<UUID, JimixElement> elementMap =
             new ReadOnlyMapWrapper<UUID, JimixElement>(FXCollections.observableHashMap()).getReadOnlyProperty();
     private final ReadOnlyListProperty<JimixElement> elementList =
@@ -58,7 +59,7 @@ public final class JimixLayer {
         resultImage = Bindings.createObjectBinding(
                 () -> ImageBuilder.getInstance().buildLayerImage(this),
                 //TODO: Optimize
-                (Observable[]) ArrayUtils.addAll(model.getObservableValues(), new Observable[]{elementList})
+                (Observable[]) ArrayUtils.addAll(model.getObservableValues(), new Observable[]{elementList, visibile})
         );
     }
 
@@ -112,6 +113,18 @@ public final class JimixLayer {
 
     public ObjectBinding<Image> resultImageProperty() {
         return resultImage;
+    }
+
+    public boolean isVisibile() {
+        return visibile.get();
+    }
+
+    public BooleanProperty visibileProperty() {
+        return visibile;
+    }
+
+    public void setVisibile(boolean visibile) {
+        this.visibile.set(visibile);
     }
 
     /**
@@ -191,6 +204,7 @@ public final class JimixLayer {
         public Observable[] call(JimixElement param) {
             final List<Observable> list = new ArrayList<>();
             list.addAll(Arrays.asList(param.getModel().getObservableValues()));
+            list.add(param.visibileProperty());
 
             return list.toArray(new Observable[list.size()]);
         }

@@ -36,7 +36,7 @@ public final class ImageBuilder {
     public Image buildProjectImage(final JimixProject project) {
         Image image = new WritableImage(project.getModel().getWidth(), project.getModel().getHeight());
         for (final JimixLayer layer : project.getLayerList()) {
-            if (!layer.getModel().isVisibility())
+            if (!layer.isVisibile())
                 continue;
 
             JimixBlenderInstance blender = layer.getModel().getBlender();
@@ -66,7 +66,7 @@ public final class ImageBuilder {
         final Pane pane = new Pane();
         //Elements
         for (final JimixElement element : layer.getElementList()) {
-            if (!element.getModel().isVisibility()) {
+            if (!element.isVisibile()) {
                 LOGGER.trace("element " + element.getUuid() + " invisible");
                 continue;
             }

@@ -6,7 +6,7 @@ import org.pcsoft.app.jimix.project.JimixProjectModel;
 import java.io.File;
 import java.io.IOException;
 
-public final class JimixProjectFileTypeProviderInstance implements JimixInstance<JimixProjectFileTypeProviderPlugin> {
+public final class JimixProjectFileTypeProviderInstance implements JimixInstance<JimixProjectFileTypeProviderPlugin, JimixProjectFileTypeProviderInstance> {
     private final JimixProjectFileTypeProviderPlugin plugin;
 
     JimixProjectFileTypeProviderInstance(JimixProjectFileTypeProviderPlugin plugin) {
@@ -28,5 +28,10 @@ public final class JimixProjectFileTypeProviderInstance implements JimixInstance
     @Override
     public JimixProjectFileTypeProviderPlugin getPlugin() {
         return plugin;
+    }
+
+    @Override
+    public JimixProjectFileTypeProviderInstance copy() {
+        return new JimixProjectFileTypeProviderInstance(plugin);
     }
 }

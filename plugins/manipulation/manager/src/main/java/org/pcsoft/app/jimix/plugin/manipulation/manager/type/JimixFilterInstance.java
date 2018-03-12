@@ -9,7 +9,7 @@ import org.pcsoft.app.jimix.plugin.manipulation.api.type.JimixSource;
 import java.util.Objects;
 import java.util.UUID;
 
-public final class JimixFilterInstance implements JimixInstance<JimixFilterPlugin> {
+public final class JimixFilterInstance implements JimixInstance<JimixFilterPlugin, JimixFilterInstance> {
     private final transient UUID uuid = UUID.randomUUID(); //Temporary identifier only
     private final JimixFilterPlugin plugin;
     private final JimixFilterConfiguration configuration;
@@ -30,6 +30,11 @@ public final class JimixFilterInstance implements JimixInstance<JimixFilterPlugi
 
     public JimixFilterConfiguration getConfiguration() {
         return configuration;
+    }
+
+    @Override
+    public JimixFilterInstance copy() {
+        return new JimixFilterInstance(plugin, (JimixFilterConfiguration) configuration.copy());
     }
 
     @Override
