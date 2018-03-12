@@ -5,15 +5,15 @@ import org.pcsoft.app.jimix.plugin.manipulation.api.config.JimixFilterConfigurat
 
 import java.io.*;
 
-public class NegateEffectConfiguration implements JimixFilterConfiguration<NegateEffectConfiguration> {
+public class NegateFilterConfiguration implements JimixFilterConfiguration<NegateFilterConfiguration> {
     @Override
-    public void update(NegateEffectConfiguration newConfiguration) {
+    public void update(NegateFilterConfiguration newConfiguration) {
         //Empty
     }
 
     @Override
-    public NegateEffectConfiguration copy() {
-        return new NegateEffectConfiguration();
+    public NegateFilterConfiguration copy() {
+        return new NegateFilterConfiguration();
     }
 
     @Override

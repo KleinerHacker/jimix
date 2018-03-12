@@ -11,10 +11,10 @@ import org.pcsoft.app.jimix.plugin.manipulation.api.type.JimixSource;
 import java.awt.*;
 
 @JimixFilterDescriptor(name = "Negative", description = "Negate", iconPath = "/builtin/icons/ic_filter_negative16.png",
-        usableForMasks = true, configurationClass = NegateEffectConfiguration.class)
-public class NegateEffect extends JimixFilterBase<NegateEffectConfiguration> {
+        usableForMasks = true, configurationClass = NegateFilterConfiguration.class)
+public class NegateFilter extends JimixFilterBase<NegateFilterConfiguration> {
     @Override
-    protected void apply(JimixPixelReader pixelReader, JimixPixelWriter pixelWriter, NegateEffectConfiguration configuration, JimixSource applySource) {
+    protected void apply(JimixPixelReader pixelReader, JimixPixelWriter pixelWriter, NegateFilterConfiguration configuration, JimixSource applySource) {
         for (int i = 0; i < pixelReader.getLength(); i++) {
             final Color readColor = new Color(pixelReader.getPixel(i));
 
@@ -29,9 +29,9 @@ public class NegateEffect extends JimixFilterBase<NegateEffectConfiguration> {
 
     @SuppressWarnings("unchecked")
     @Override
-    public JimixFilterVariant<NegateEffectConfiguration>[] getVariants() {
+    public JimixFilterVariant<NegateFilterConfiguration>[] getVariants() {
         return new JimixFilterVariant[] {
-                JimixFilterVariant.createBuiltin("Default", new NegateEffectConfiguration())
+                JimixFilterVariant.createBuiltin("Default", new NegateFilterConfiguration())
         };
     }
 }
