@@ -9,6 +9,8 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.util.Callback;
 
+import java.util.stream.Collectors;
+
 public final class JimixProjectModel implements JimixModel<JimixProjectModel> {
     private final IntegerProperty width = new SimpleIntegerProperty(), height = new SimpleIntegerProperty();
 
@@ -55,12 +57,18 @@ public final class JimixProjectModel implements JimixModel<JimixProjectModel> {
     @Override
     public JimixProjectModel copy() {
         final JimixProjectModel projectModel = new JimixProjectModel(this.width.get(), this.height.get());
+        projectModel.layerList.addAll(
+                this.layerList.stream()
+                        .map(JimixLayerModel::copy)
+                        .collect(Collectors.toList())
+        );
+
         return projectModel;
     }
 
     @Override
     public Observable[] getObservableValues() {
-        return new Observable[] {
+        return new Observable[]{
                 layerList, width, height
         };
     }

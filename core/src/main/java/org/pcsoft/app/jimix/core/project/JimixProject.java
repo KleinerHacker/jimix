@@ -4,10 +4,7 @@ import javafx.beans.Observable;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.ObjectBinding;
 import javafx.beans.property.*;
-import javafx.collections.FXCollections;
-import javafx.collections.MapChangeListener;
-import javafx.collections.ObservableList;
-import javafx.collections.ObservableMap;
+import javafx.collections.*;
 import javafx.scene.image.Image;
 import javafx.util.Callback;
 import org.apache.commons.lang.ArrayUtils;
@@ -20,6 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 /**
  * Project host for the {@link JimixProjectModel} self, with additional app internal information
@@ -40,11 +38,6 @@ public final class JimixProject {
     JimixProject(final JimixProjectModel model) {
         this.model = new ReadOnlyObjectWrapper<>(model).getReadOnlyProperty();
 
-        for (final JimixLayerModel layerModel : model.getLayerList()) {
-            final JimixLayer layer = new JimixLayer(this, layerModel);
-            layerMap.put(layer.getUuid(), layer);
-        }
-
         //List Updater
         layerMap.addListener((MapChangeListener<UUID, JimixLayer>) c -> {
             if (c.wasAdded()) {
@@ -52,6 +45,30 @@ public final class JimixProject {
             }
             if (c.wasRemoved()) {
                 layerList.remove(c.getValueRemoved());
+            }
+        });
+        //Sync layer list from model
+        for (final JimixLayerModel layerModel : model.getLayerList()) {
+            final JimixLayer layer = new JimixLayer(this, layerModel);
+            layerMap.put(layer.getUuid(), layer);
+        }
+        //Sync with model
+        layerList.addListener((ListChangeListener<JimixLayer>) c -> {
+            while (c.next()) {
+                if (c.wasAdded()) {
+                    model.getLayerList().addAll(
+                            c.getAddedSubList().stream()
+                                    .map(JimixLayer::getModel)
+                                    .collect(Collectors.toList())
+                    );
+                }
+                if (c.wasRemoved()) {
+                    model.getLayerList().removeAll(
+                            c.getRemoved().stream()
+                                    .map(JimixLayer::getModel)
+                                    .collect(Collectors.toList())
+                    );
+                }
             }
         });
 

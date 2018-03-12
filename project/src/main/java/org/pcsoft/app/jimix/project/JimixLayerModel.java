@@ -20,6 +20,7 @@ import org.pcsoft.app.jimix.plugin.manipulation.manager.type.JimixFilterInstance
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public final class JimixLayerModel implements JimixModel<JimixLayerModel> {
     @JimixProperty(fieldType = String.class, name = "Name", description = "Name of layer", category = "Default")
@@ -29,7 +30,7 @@ public final class JimixLayerModel implements JimixModel<JimixLayerModel> {
     @JimixProperty(fieldType = Double.class, name = "Opacity", description = "Opacity of layer", category = "View")
     @JimixPropertyDoubleRestriction(minValue = 0d, maxValue = 1d)
     private final DoubleProperty opacity = new SimpleDoubleProperty(1d);
-    private final ObjectProperty<Image> mask = new SimpleObjectProperty<>();
+    private final ObjectProperty<Image> mask = new SimpleObjectProperty<>(new WritableImage(100, 100)); //TODO: Size
     @JimixProperty(fieldType = JimixBlenderInstance.class, name = "Blender", description = "Blending between layers", category = "View")
     private final ObjectProperty<JimixBlenderInstance> blender;
 
@@ -129,10 +130,20 @@ public final class JimixLayerModel implements JimixModel<JimixLayerModel> {
     @Override
     public JimixLayerModel copy() {
         final JimixLayerModel layerModel = new JimixLayerModel(this.blender.get().copy());
-        layerModel.setName(this.name.getName());
+        layerModel.setName(this.name.get());
         layerModel.setOpacity(this.opacity.get());
         layerModel.setBackground(this.background.get());
         layerModel.setMask(new WritableImage(this.mask.get().getPixelReader(), (int) this.mask.get().getWidth(), (int) this.mask.get().getHeight()));
+        layerModel.elementList.addAll(
+                this.elementList.stream()
+                        .map(JimixElementModel::copy)
+                        .collect(Collectors.toList())
+        );
+        layerModel.filterList.addAll(
+                this.filterList.stream()
+                        .map(JimixFilterInstance::copy)
+                        .collect(Collectors.toList())
+        );
 
         return layerModel;
     }

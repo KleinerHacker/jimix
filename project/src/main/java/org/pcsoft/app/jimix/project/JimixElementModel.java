@@ -10,6 +10,8 @@ import org.pcsoft.app.jimix.plugin.common.api.annotation.JimixPropertyDoubleRest
 import org.pcsoft.app.jimix.plugin.common.api.type.JimixPluginElement;
 import org.pcsoft.app.jimix.plugin.manipulation.manager.type.JimixEffectInstance;
 
+import java.util.stream.Collectors;
+
 /**
  * Represent a element model. This is the abstract base for all custom elements to show in image.
  */
@@ -52,6 +54,7 @@ public final class JimixElementModel implements JimixModel<JimixElementModel> {
 
     /**
      * Left position of element
+     *
      * @return
      */
     public IntegerProperty xProperty() {
@@ -68,6 +71,7 @@ public final class JimixElementModel implements JimixModel<JimixElementModel> {
 
     /**
      * Top position of element
+     *
      * @return
      */
     public IntegerProperty yProperty() {
@@ -84,6 +88,7 @@ public final class JimixElementModel implements JimixModel<JimixElementModel> {
 
     /**
      * Alpha value for element
+     *
      * @return
      */
     public DoubleProperty opacityProperty() {
@@ -100,6 +105,7 @@ public final class JimixElementModel implements JimixModel<JimixElementModel> {
 
     /**
      * Defines state of mirroring on horizontal axe
+     *
      * @return
      */
     public BooleanProperty mirrorHorizontalProperty() {
@@ -116,6 +122,7 @@ public final class JimixElementModel implements JimixModel<JimixElementModel> {
 
     /**
      * Defines state of mirroring on vertical axe
+     *
      * @return
      */
     public BooleanProperty mirrorVerticalProperty() {
@@ -132,6 +139,7 @@ public final class JimixElementModel implements JimixModel<JimixElementModel> {
 
     /**
      * Defines rotation of element
+     *
      * @return
      */
     public DoubleProperty rotationProperty() {
@@ -148,6 +156,7 @@ public final class JimixElementModel implements JimixModel<JimixElementModel> {
 
     /**
      * List of effects to apply for this element
+     *
      * @return
      */
     public ReadOnlyListProperty<JimixEffectInstance> effectListProperty() {
@@ -163,13 +172,18 @@ public final class JimixElementModel implements JimixModel<JimixElementModel> {
         elementModel.setMirrorHorizontal(this.mirrorHorizontal.get());
         elementModel.setMirrorVertical(this.mirrorVertical.get());
         elementModel.setOpacity(this.opacity.get());
+        elementModel.effectList.addAll(
+                this.effectList.stream()
+                        .map(item -> (JimixEffectInstance<?, ?>) item.copy())
+                        .collect(Collectors.toList())
+        );
 
         return elementModel;
     }
 
     @Override
     public final Observable[] getObservableValues() {
-        return (Observable[]) ArrayUtils.addAll(new Observable[] {
+        return (Observable[]) ArrayUtils.addAll(new Observable[]{
                 opacity, x, y, mirrorHorizontal, mirrorVertical, rotation, effectList
         }, pluginElement.get().getObservables());
     }

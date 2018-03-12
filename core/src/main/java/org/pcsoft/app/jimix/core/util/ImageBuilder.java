@@ -66,7 +66,7 @@ public final class ImageBuilder {
         final Pane pane = new Pane();
         //Elements
         for (final JimixElement element : layer.getElementList()) {
-            if (!element.isVisibile()) {
+            if (!element.getVisible()) {
                 LOGGER.trace("element " + element.getUuid() + " invisible");
                 continue;
             }

@@ -4,10 +4,7 @@ import javafx.beans.Observable;
 import javafx.beans.binding.Bindings;
 import javafx.beans.binding.ObjectBinding;
 import javafx.beans.property.*;
-import javafx.collections.FXCollections;
-import javafx.collections.MapChangeListener;
-import javafx.collections.ObservableList;
-import javafx.collections.ObservableMap;
+import javafx.collections.*;
 import javafx.geometry.Point2D;
 import javafx.scene.image.Image;
 import javafx.scene.transform.Transform;
@@ -18,6 +15,7 @@ import org.pcsoft.app.jimix.project.JimixElementModel;
 import org.pcsoft.app.jimix.project.JimixLayerModel;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Layer holder for {@link JimixLayerModel}, with additional app internal information
@@ -40,11 +38,6 @@ public final class JimixLayer {
         this.project = new ReadOnlyObjectWrapper<>(project).getReadOnlyProperty();
         this.model = new ReadOnlyObjectWrapper<>(model).getReadOnlyProperty();
 
-        for (final JimixElementModel elementModel : model.getElementList()) {
-            final JimixElement element = new JimixElement(project, this, elementModel);
-            elementMap.put(element.getUuid(), element);
-        }
-
         //List Updater
         elementMap.addListener((MapChangeListener<UUID, JimixElement>) c -> {
             if (c.wasAdded()) {
@@ -52,6 +45,30 @@ public final class JimixLayer {
             }
             if (c.wasRemoved()) {
                 elementList.remove(c.getValueRemoved());
+            }
+        });
+        //Sync element list from model
+        for (final JimixElementModel elementModel : model.getElementList()) {
+            final JimixElement element = new JimixElement(project, this, elementModel);
+            elementMap.put(element.getUuid(), element);
+        }
+        // Sync with model
+        elementList.addListener((ListChangeListener<JimixElement>) c -> {
+            while (c.next()) {
+                if (c.wasAdded()) {
+                    model.getElementList().addAll(
+                            c.getAddedSubList().stream()
+                                    .map(JimixElement::getModel)
+                                    .collect(Collectors.toList())
+                    );
+                }
+                if (c.wasRemoved()) {
+                    model.getElementList().removeAll(
+                            c.getRemoved().stream()
+                                    .map(JimixElement::getModel)
+                                    .collect(Collectors.toList())
+                    );
+                }
             }
         });
 
@@ -204,7 +221,7 @@ public final class JimixLayer {
         public Observable[] call(JimixElement param) {
             final List<Observable> list = new ArrayList<>();
             list.addAll(Arrays.asList(param.getModel().getObservableValues()));
-            list.add(param.visibileProperty());
+            list.add(param.visibleProperty());
 
             return list.toArray(new Observable[list.size()]);
         }

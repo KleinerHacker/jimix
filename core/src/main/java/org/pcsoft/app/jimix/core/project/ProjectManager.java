@@ -34,8 +34,14 @@ public final class ProjectManager {
 
     //<editor-fold desc="Project">
     public JimixProject createProjectNative(final JimixProjectModel model) {
+        return createProjectNative(model, true);
+    }
+
+    public JimixProject createProjectNative(final JimixProjectModel model, boolean addToMap) {
         final JimixProject jimixProject = new JimixProject(model);
-        projectMap.put(jimixProject.getUuid(), jimixProject);
+        if (addToMap) {
+            projectMap.put(jimixProject.getUuid(), jimixProject);
+        }
         LOGGER.info("Create native project " + jimixProject.getUuid());
 
         return jimixProject;

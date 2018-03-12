@@ -24,13 +24,13 @@ public class ElementTreeCellPane extends HBox {
 
         value.addListener((v, o, n) -> {
             if (o != null) {
-                viewModel.visibilityProperty().unbindBidirectional(o.visibileProperty());
+                viewModel.visibilityProperty().unbindBidirectional(o.visibleProperty());
             }
 
             if (n != null) {
                 final JimixElementBuilderPlugin elementBuilder = ManipulationPluginManager.getInstance().getElementBuilder(n.getModel().getPluginElement().getClass());
                 viewModel.setTitle(elementBuilder == null ? "<unknown>" : elementBuilder.getName());
-                viewModel.visibilityProperty().bindBidirectional(n.visibileProperty());
+                viewModel.visibilityProperty().bindBidirectional(n.visibleProperty());
                 viewModel.previewProperty().bind(n.getModel().getPluginElement().previewProperty());
             }
         });

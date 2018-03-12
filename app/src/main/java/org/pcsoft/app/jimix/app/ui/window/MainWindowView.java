@@ -36,7 +36,10 @@ import org.pcsoft.app.jimix.core.tooling.RecentFileManager;
 import org.pcsoft.app.jimix.core.util.FileTypeUtils;
 import org.pcsoft.app.jimix.core.util.ImageBuilder;
 import org.pcsoft.app.jimix.plugin.manipulation.manager.ManipulationPluginManager;
-import org.pcsoft.app.jimix.plugin.manipulation.manager.type.*;
+import org.pcsoft.app.jimix.plugin.manipulation.manager.type.JimixEffectInstance;
+import org.pcsoft.app.jimix.plugin.manipulation.manager.type.JimixEffectPlugin;
+import org.pcsoft.app.jimix.plugin.manipulation.manager.type.JimixFilterInstance;
+import org.pcsoft.app.jimix.plugin.manipulation.manager.type.JimixFilterPlugin;
 import org.pcsoft.app.jimix.plugin.system.manager.SystemPluginManager;
 import org.pcsoft.app.jimix.plugin.system.manager.type.JimixClipboardProviderInstance;
 import org.pcsoft.app.jimix.plugin.system.manager.type.JimixClipboardProviderPlugin;
@@ -193,6 +196,8 @@ public class MainWindowView implements FxmlView<MainWindowViewModel>, Initializa
         final TopLayerSelectedBooleanProperty topLayerSelectedBooleanProperty = new TopLayerSelectedBooleanProperty();
         final ElementSelectedBooleanProperty elementSelectedBooleanProperty = new ElementSelectedBooleanProperty();
         final MenuEmptyBooleanProperty menuEmptyBooleanProperty = new MenuEmptyBooleanProperty();
+        final CanUndoBooleanProperty canUndoBooleanProperty = new CanUndoBooleanProperty();
+        final CanRedoBooleanProperty canRedoBooleanProperty = new CanRedoBooleanProperty();
 
         mnuPicture.disableProperty().bind(tabPicture.getSelectionModel().selectedItemProperty().isNull());
         mnuLayer.disableProperty().bind(tabPicture.getSelectionModel().selectedItemProperty().isNull());
@@ -207,6 +212,8 @@ public class MainWindowView implements FxmlView<MainWindowViewModel>, Initializa
         miLayerTurnRight.disableProperty().bind(BindingsEx.not(topLayerSelectedBooleanProperty));
         miLayerMirrorHorizontal.disableProperty().bind(BindingsEx.not(topLayerSelectedBooleanProperty));
         miLayerMirrorVertical.disableProperty().bind(BindingsEx.not(topLayerSelectedBooleanProperty));
+        miUndo.disableProperty().bind(BindingsEx.not(canUndoBooleanProperty));
+        miRedo.disableProperty().bind(BindingsEx.not(canRedoBooleanProperty));
 
         btnNewEmpty.disableProperty().bind(miProjectNewEmpty.disableProperty().or(mnuFile.disableProperty()));
         btnOpen.disableProperty().bind(miOpen.disableProperty().or(mnuFile.disableProperty()));
@@ -536,12 +543,22 @@ public class MainWindowView implements FxmlView<MainWindowViewModel>, Initializa
 
     @FXML
     private void onActionUndo(ActionEvent actionEvent) {
+        final Tab tab = tabPicture.getSelectionModel().getSelectedItem();
+        if (tab == null)
+            return;
+        final PictureEditorPane pictureEditorPane = (PictureEditorPane) tab.getContent();
 
+        pictureEditorPane.undo();
     }
 
     @FXML
     private void onActionRedo(ActionEvent actionEvent) {
+        final Tab tab = tabPicture.getSelectionModel().getSelectedItem();
+        if (tab == null)
+            return;
+        final PictureEditorPane pictureEditorPane = (PictureEditorPane) tab.getContent();
 
+        pictureEditorPane.redo();
     }
 
     @FXML
@@ -852,6 +869,70 @@ public class MainWindowView implements FxmlView<MainWindowViewModel>, Initializa
         @Override
         protected Boolean getPseudoValue() {
             return mnuPaste.getItems().isEmpty() || mnuPaste.getItems().stream().noneMatch(MenuItem::isVisible);
+        }
+
+        @Override
+        protected void setPseudoValue(Boolean value) {
+            throw new RuntimeException("Not Supported");
+        }
+
+        private void invalidated(Observable obs) {
+            fireValueChangedEvent();
+        }
+
+    }
+
+    private final class CanUndoBooleanProperty extends ExtendedWrapperProperty<Boolean> {
+
+        private CanUndoBooleanProperty() {
+            super(tabPicture.getSelectionModel().selectedItemProperty());
+
+            tabPicture.getSelectionModel().selectedItemProperty().addListener((v, o, n) -> {
+                if (o != null) {
+                    ((PictureEditorPane) o.getContent()).canUndoProperty().removeListener(this::invalidated);
+                }
+                if (n != null) {
+                    ((PictureEditorPane) n.getContent()).canUndoProperty().addListener(this::invalidated);
+                }
+            });
+        }
+
+        @Override
+        protected Boolean getPseudoValue() {
+            return tabPicture.getSelectionModel().getSelectedItem() != null &&
+                    ((PictureEditorPane) tabPicture.getSelectionModel().getSelectedItem().getContent()).canUndo();
+        }
+
+        @Override
+        protected void setPseudoValue(Boolean value) {
+            throw new RuntimeException("Not Supported");
+        }
+
+        private void invalidated(Observable obs) {
+            fireValueChangedEvent();
+        }
+
+    }
+
+    private final class CanRedoBooleanProperty extends ExtendedWrapperProperty<Boolean> {
+
+        private CanRedoBooleanProperty() {
+            super(tabPicture.getSelectionModel().selectedItemProperty());
+
+            tabPicture.getSelectionModel().selectedItemProperty().addListener((v, o, n) -> {
+                if (o != null) {
+                    ((PictureEditorPane) o.getContent()).canRedoProperty().removeListener(this::invalidated);
+                }
+                if (n != null) {
+                    ((PictureEditorPane) n.getContent()).canRedoProperty().addListener(this::invalidated);
+                }
+            });
+        }
+
+        @Override
+        protected Boolean getPseudoValue() {
+            return tabPicture.getSelectionModel().getSelectedItem() != null &&
+                    ((PictureEditorPane) tabPicture.getSelectionModel().getSelectedItem().getContent()).canRedo();
         }
 
         @Override
