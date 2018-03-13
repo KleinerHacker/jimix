@@ -1,20 +1,21 @@
-package org.pcsoft.app.jimix.core.plugin.builtin.builder;
+package org.pcsoft.app.jimix.plugin.impl.base.manipulation.builder;
 
 import javafx.scene.Node;
-import javafx.scene.shape.Rectangle;
-import org.pcsoft.app.jimix.core.plugin.builtin.model.RectanglePluginElement;
+import javafx.scene.shape.Shape;
+import org.pcsoft.app.jimix.plugin.impl.base.model.TrianglePluginElement;
+import org.pcsoft.app.jimix.plugin.impl.base.util.TriangleUtils;
 import org.pcsoft.app.jimix.plugin.manipulation.api.Jimix2DElementBuilder;
 import org.pcsoft.app.jimix.plugin.manipulation.api.annotation.JimixElementBuilderDescriptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@JimixElementBuilderDescriptor(name = "Rectangle", description = "Add a rectangle element", group = "2D", iconPath = "/builtin/icons/ic_element_rect16.png",
-        elementModelClass = RectanglePluginElement.class, manualAddable = true)
-public class RectangleElementBuilder implements Jimix2DElementBuilder<RectanglePluginElement> {
-    private static final Logger LOGGER = LoggerFactory.getLogger(RectangleElementBuilder.class);
+@JimixElementBuilderDescriptor(name = "Triangle", description = "Add a triangle element", group = "2D", iconPath = "/base/icons/ic_element_triangle16.png",
+        elementModelClass = TrianglePluginElement.class, manualAddable = true)
+public class TriangleElementBuilder implements Jimix2DElementBuilder<TrianglePluginElement> {
+    private static final Logger LOGGER = LoggerFactory.getLogger(TrianglePluginElement.class);
 
     @Override
-    public Node buildNode(RectanglePluginElement elementModel, final int x, final int y) {
+    public Node buildNode(TrianglePluginElement elementModel, final int x, final int y) {
         /*JimixScalerInstance scaler = elementModel.getScaler();
         if (scaler == null) {
             LOGGER.warn("No scaler set for image element, use default");
@@ -33,11 +34,11 @@ public class RectangleElementBuilder implements Jimix2DElementBuilder<RectangleP
             scaledImage = elementModel.getValue(); //Ignore scaling, use builtin JavaFX Scaling
         } */
 
-        final Rectangle rectangle = new Rectangle(x, y, elementModel.getSize().width, elementModel.getSize().height);
-        rectangle.setFill(elementModel.getFill());
-        rectangle.setArcWidth(elementModel.getArcSize().width);
-        rectangle.setArcHeight(elementModel.getArcSize().height);
+        final Shape shape = TriangleUtils.buildShape(elementModel.getPoint1(), elementModel.getPoint2(), elementModel.getPoint3());
+        shape.setTranslateX(x);
+        shape.setTranslateY(y);
+        shape.setFill(elementModel.getFill());
 
-        return rectangle;
+        return shape;
     }
 }

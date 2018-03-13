@@ -1,20 +1,21 @@
-package org.pcsoft.app.jimix.core.plugin.builtin.builder;
+package org.pcsoft.app.jimix.plugin.impl.base.manipulation.builder;
 
 import javafx.scene.Node;
-import javafx.scene.shape.Rectangle;
-import org.pcsoft.app.jimix.core.plugin.builtin.model.RectanglePluginElement;
+import javafx.scene.shape.Shape;
+import org.pcsoft.app.jimix.plugin.impl.base.model.EllipsePluginElement;
+import org.pcsoft.app.jimix.plugin.impl.base.util.EllipseUtils;
 import org.pcsoft.app.jimix.plugin.manipulation.api.Jimix2DElementBuilder;
 import org.pcsoft.app.jimix.plugin.manipulation.api.annotation.JimixElementBuilderDescriptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-@JimixElementBuilderDescriptor(name = "Rectangle", description = "Add a rectangle element", group = "2D", iconPath = "/builtin/icons/ic_element_rect16.png",
-        elementModelClass = RectanglePluginElement.class, manualAddable = true)
-public class RectangleElementBuilder implements Jimix2DElementBuilder<RectanglePluginElement> {
-    private static final Logger LOGGER = LoggerFactory.getLogger(RectangleElementBuilder.class);
+@JimixElementBuilderDescriptor(name = "Ellipse", description = "Add an ellipse element", group = "2D", iconPath = "/base/icons/ic_element_circle16.png",
+        elementModelClass = EllipsePluginElement.class, manualAddable = true)
+public class EllipseElementBuilder implements Jimix2DElementBuilder<EllipsePluginElement> {
+    private static final Logger LOGGER = LoggerFactory.getLogger(EllipsePluginElement.class);
 
     @Override
-    public Node buildNode(RectanglePluginElement elementModel, final int x, final int y) {
+    public Node buildNode(EllipsePluginElement elementModel, final int x, final int y) {
         /*JimixScalerInstance scaler = elementModel.getScaler();
         if (scaler == null) {
             LOGGER.warn("No scaler set for image element, use default");
@@ -33,11 +34,9 @@ public class RectangleElementBuilder implements Jimix2DElementBuilder<RectangleP
             scaledImage = elementModel.getValue(); //Ignore scaling, use builtin JavaFX Scaling
         } */
 
-        final Rectangle rectangle = new Rectangle(x, y, elementModel.getSize().width, elementModel.getSize().height);
-        rectangle.setFill(elementModel.getFill());
-        rectangle.setArcWidth(elementModel.getArcSize().width);
-        rectangle.setArcHeight(elementModel.getArcSize().height);
+        final Shape shape = EllipseUtils.buildShape(x, y, elementModel.getSize());
+        shape.setFill(elementModel.getFill());
 
-        return rectangle;
+        return shape;
     }
 }
