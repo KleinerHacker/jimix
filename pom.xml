@@ -12,9 +12,9 @@
     <modules>
         <module>commons</module>
         <module>app</module>
-        <module>plugins</module>
         <module>core</module>
         <module>project</module>
+        <module>plugins</module>
         <module>bundle</module>
     </modules>
 

@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 /**
  * Layer holder for {@link JimixLayerModel}, with additional app internal information
  */
-public final class JimixLayer {
+public final class JimixLayer implements JimixWrapper {
     //Temporary identifier only
     private final ReadOnlyObjectProperty<UUID> uuid = new ReadOnlyObjectWrapper<>(UUID.randomUUID()).getReadOnlyProperty();
     private final ReadOnlyObjectProperty<JimixLayerModel> model;
@@ -195,6 +195,13 @@ public final class JimixLayer {
         }
     }
 
+    @Override
+    public Observable[] getObservables() {
+        return new Observable[] {
+                visibile, resultImage
+        };
+    }
+
     //<editor-fold desc="Equals / Hashcode / String">
     @Override
     public boolean equals(Object o) {
@@ -220,8 +227,9 @@ public final class JimixLayer {
         @Override
         public Observable[] call(JimixElement param) {
             final List<Observable> list = new ArrayList<>();
+            //TODO: Optimize
             list.addAll(Arrays.asList(param.getModel().getObservableValues()));
-            list.add(param.visibleProperty());
+            list.addAll(Arrays.asList(param.getObservables()));
 
             return list.toArray(new Observable[list.size()]);
         }

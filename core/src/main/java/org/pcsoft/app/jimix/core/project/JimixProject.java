@@ -13,16 +13,13 @@ import org.pcsoft.app.jimix.project.JimixLayerModel;
 import org.pcsoft.app.jimix.project.JimixProjectModel;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.UUID;
+import java.util.*;
 import java.util.stream.Collectors;
 
 /**
  * Project host for the {@link JimixProjectModel} self, with additional app internal information
  */
-public final class JimixProject {
+public final class JimixProject implements JimixWrapper {
     //Temporary identifier only
     private final ReadOnlyObjectProperty<UUID> uuid = new ReadOnlyObjectWrapper<>(UUID.randomUUID()).getReadOnlyProperty();
     private final ReadOnlyObjectProperty<JimixProjectModel> model;
@@ -183,6 +180,13 @@ public final class JimixProject {
         }
     }
 
+    @Override
+    public Observable[] getObservables() {
+        return new Observable[] {
+                file, resultImage
+        };
+    }
+
     //<editor-fold desc="Equals / Hashcode / ToString">
     @Override
     public boolean equals(Object o) {
@@ -208,7 +212,7 @@ public final class JimixProject {
         @Override
         public Observable[] call(JimixLayer param) {
             final List<Observable> list = new ArrayList<>();
-            list.add(param.resultImageProperty());
+            list.addAll(Arrays.asList(param.getObservables()));
 
             return list.toArray(new Observable[list.size()]);
         }

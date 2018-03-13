@@ -1,0 +1,12 @@
+2018-03-13 17:56:45.085 [main] INFO  org.pcsoft.app.jimix.app.App - Startup Jimix
+2018-03-13 17:56:45.091 [main] INFO  org.pcsoft.app.jimix.app.App - >>> Java Version: 1.8.0_162
+2018-03-13 17:56:45.091 [main] INFO  org.pcsoft.app.jimix.app.App - >>> Java Home   : C:\Program Files\Java\jdk1.8.0_162\jre
+2018-03-13 17:56:45.091 [main] INFO  org.pcsoft.app.jimix.app.App - >>> Java Opts   : [-javaagent:F:\Toolbox\apps\IDEA-U\ch-0\173.4301.25\lib\idea_rt.jar=50780:F:\Toolbox\apps\IDEA-U\ch-0\173.4301.25\bin, -Dfile.encoding=UTF-8]
+2018-03-13 17:56:45.091 [main] INFO  org.pcsoft.app.jimix.app.App - >>> Detected OS : Windows 10 (Version: 10.0)
+2018-03-13 17:56:45.899 [main] INFO  org.pcsoft.app.jimix.app.App - Load plugins...
+2018-03-13 17:56:54.207 [JavaFX Application Thread] INFO  org.pcsoft.framework.jfex.threading.JfxUiThreadPool - Create new cached thread pool
+2018-03-13 17:56:54.359 [JavaFX Application Thread] INFO  org.pcsoft.app.jimix.core.project.ProjectManager - Create project from image
+2018-03-13 17:56:54.360 [JavaFX Application Thread] INFO  org.pcsoft.app.jimix.core.project.ProjectManager - Create empty project
+2018-03-13 17:56:54.377 [JavaFX Application Thread] INFO  org.pcsoft.app.jimix.core.project.ProjectManager - Create native project ea632355-8622-41cf-99cb-67fa1656ac26
+2018-03-13 17:56:54.384 [JavaFX Application Thread] INFO  org.pcsoft.app.jimix.core.project.ProjectManager - Create layer f7228d1b-071e-47da-89b9-254585cdc143 for project ea632355-8622-41cf-99cb-67fa1656ac26
+2018-03-13 17:56:54.402 [JavaFX Application Thread] INFO  org.pcsoft.app.jimix.core.project.ProjectManager - Create element 47d88789-33af-4b03-b34c-5d0de7cbb05c (org.pcsoft.app.jimix.core.plugin.builtin.model.RectanglePluginElement) for layer f7228d1b-071e-47da-89b9-254585cdc143

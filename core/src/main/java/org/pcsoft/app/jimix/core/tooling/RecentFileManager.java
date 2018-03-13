@@ -75,8 +75,8 @@ public final class RecentFileManager {
         if (fileList.get().contains(file)) {
             fileList.get().remove(file);
         }
-        if (fileList.get().size() > MAX_SIZE) {
-            fileList.get().remove(fileList.get().size() - MAX_SIZE, fileList.get().size());
+        if (fileList.get().size() >= MAX_SIZE) {
+            fileList.get().remove(MAX_SIZE - 1, fileList.get().size());
         }
 
         fileList.add(0, file);
@@ -90,6 +90,10 @@ public final class RecentFileManager {
 
     public void removeFile(final File file) {
         fileList.get().remove(file);
+    }
+
+    public void clearFiles() {
+        fileList.get().clear();
     }
 
     public void addListener(ListChangeListener<? super File> listener) {

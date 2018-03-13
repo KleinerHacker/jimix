@@ -1,5 +1,6 @@
 package org.pcsoft.app.jimix.core.project;
 
+import javafx.beans.Observable;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
@@ -12,7 +13,7 @@ import java.util.UUID;
 /**
  * Element holder for {@link JimixElementModel}, with additional app internal information
  */
-public final class JimixElement {
+public final class JimixElement implements JimixWrapper {
     //Temporary identifier only
     private final ReadOnlyObjectProperty<UUID> uuid = new ReadOnlyObjectWrapper<>(UUID.randomUUID()).getReadOnlyProperty();
     private final ReadOnlyObjectProperty<JimixElementModel> model;
@@ -72,6 +73,14 @@ public final class JimixElement {
     }
 
     @Override
+    public Observable[] getObservables() {
+        return new Observable[] {
+                visible
+        };
+    }
+
+    //<editor-fold desc="Equals / Hashcode / ToString">
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
@@ -88,4 +97,5 @@ public final class JimixElement {
     public String toString() {
         return model.get().toString();
     }
+    //</editor-fold>
 }
