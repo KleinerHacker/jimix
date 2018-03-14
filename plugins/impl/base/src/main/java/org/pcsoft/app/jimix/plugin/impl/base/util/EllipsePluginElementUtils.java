@@ -5,11 +5,11 @@ import javafx.scene.shape.Shape;
 
 import java.awt.*;
 
-public final class EllipseUtils {
+public final class EllipsePluginElementUtils {
     public static Shape buildShape(int x, int y, Dimension size) {
         return new Ellipse(x, y, size.width, size.height);
     }
 
-    private EllipseUtils() {
+    private EllipsePluginElementUtils() {
     }
 }

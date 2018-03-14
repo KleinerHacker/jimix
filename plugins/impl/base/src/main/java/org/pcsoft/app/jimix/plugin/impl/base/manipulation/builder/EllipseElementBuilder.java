@@ -3,7 +3,7 @@ package org.pcsoft.app.jimix.plugin.impl.base.manipulation.builder;
 import javafx.scene.Node;
 import javafx.scene.shape.Shape;
 import org.pcsoft.app.jimix.plugin.impl.base.model.EllipsePluginElement;
-import org.pcsoft.app.jimix.plugin.impl.base.util.EllipseUtils;
+import org.pcsoft.app.jimix.plugin.impl.base.util.EllipsePluginElementUtils;
 import org.pcsoft.app.jimix.plugin.manipulation.api.Jimix2DElementBuilder;
 import org.pcsoft.app.jimix.plugin.manipulation.api.annotation.JimixElementBuilderDescriptor;
 import org.slf4j.Logger;
@@ -16,25 +16,7 @@ public class EllipseElementBuilder implements Jimix2DElementBuilder<EllipsePlugi
 
     @Override
     public Node buildNode(EllipsePluginElement elementModel, final int x, final int y) {
-        /*JimixScalerInstance scaler = elementModel.getScaler();
-        if (scaler == null) {
-            LOGGER.warn("No scaler set for image element, use default");
-            try {
-                scaler = new JimixScalerPlugin(new DefaultScaler()).createInstance(); //Default as fallback
-            } catch (JimixPluginException e) {
-                throw new RuntimeException(e);
-            }
-        }
-
-        Image scaledImage;
-        try {
-            scaledImage = scaler.apply(elementModel.getValue(), width, height, JimixSource.Picture);
-        } catch (JimixPluginExecutionException e) {
-            LOGGER.error("unable to scale image", e);
-            scaledImage = elementModel.getValue(); //Ignore scaling, use builtin JavaFX Scaling
-        } */
-
-        final Shape shape = EllipseUtils.buildShape(x, y, elementModel.getSize());
+        final Shape shape = EllipsePluginElementUtils.buildShape(x, y, elementModel.getSize());
         shape.setFill(elementModel.getFill());
 
         return shape;

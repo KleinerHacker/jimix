@@ -26,6 +26,7 @@ public final class RectanglePluginElement extends JimixPlugin2DElement<Rectangle
     private final ObjectProperty<Dimension> size = new SimpleObjectProperty<>(new Dimension(100, 100));
     @JimixProperty(fieldType = Dimension.class, name = "Arc Size", description = "Arc size of rectangle corners")
     private final ObjectProperty<Dimension> arcSize = new SimpleObjectProperty<>(new Dimension(0, 0));
+
     private final ObjectBinding<Image> preview;
     private final ObjectProperty<JimixScalerInstance> scaler;
 
@@ -113,7 +114,7 @@ public final class RectanglePluginElement extends JimixPlugin2DElement<Rectangle
     }
 
     @Override
-    public RectanglePluginElement copy() {
+    protected RectanglePluginElement _copy() {
         final RectanglePluginElement pluginElement = new RectanglePluginElement(this.getFill());
         pluginElement.setSize(this.size.get());
         pluginElement.setArcSize(this.arcSize.get());

@@ -91,7 +91,7 @@ public class BoxPluginElement extends JimixPlugin3DElement<BoxPluginElement> {
     }
 
     @Override
-    public BoxPluginElement copy() {
+    protected BoxPluginElement _copy() {
         final BoxPluginElement pluginElement = new BoxPluginElement();
         pluginElement.setWidth(this.width.get());
         pluginElement.setHeight(this.height.get());

@@ -15,9 +15,8 @@ import javafx.scene.transform.Rotate;
 import org.pcsoft.app.jimix.commons.type.JimixSnapshotParams;
 import org.pcsoft.app.jimix.plugin.common.api.annotation.JimixProperty;
 import org.pcsoft.app.jimix.plugin.common.api.type.JimixPlugin3DElement;
-import org.pcsoft.app.jimix.plugin.common.api.type.JimixPluginElement;
 
-public class SpherePluginElement extends JimixPlugin3DElement {
+public class SpherePluginElement extends JimixPlugin3DElement<SpherePluginElement> {
     @JimixProperty(fieldType = Double.class, name = "Radius", description = "Sphere radius", category = "Sphere")
     private final DoubleProperty radius = new SimpleDoubleProperty(100d);
     @JimixProperty(fieldType = Integer.class, name = "Divisions", description = "Sphere's count of parts", category = "Sphere")
@@ -80,7 +79,7 @@ public class SpherePluginElement extends JimixPlugin3DElement {
     }
 
     @Override
-    public JimixPluginElement copy() {
+    protected SpherePluginElement _copy() {
         final SpherePluginElement pluginElement = new SpherePluginElement();
         pluginElement.setRadius(this.radius.get());
         pluginElement.setDivisions(this.divisions.get());

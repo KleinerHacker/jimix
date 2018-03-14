@@ -36,6 +36,16 @@ public abstract class JimixPlugin3DElement<T extends JimixPlugin3DElement<T>> im
     protected abstract Observable[] _getObservables();
 
     @Override
+    public final T copy() {
+        final T copy = _copy();
+        copy.setDrawMode(this.drawMode.get());
+
+        return copy;
+    }
+
+    protected abstract T _copy();
+
+    @Override
     public final JimixElementType getType() {
         return JimixElementType.Element3D;
     }

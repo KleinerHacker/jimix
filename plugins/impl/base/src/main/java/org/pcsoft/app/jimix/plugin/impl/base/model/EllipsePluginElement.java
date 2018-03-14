@@ -11,7 +11,7 @@ import javafx.scene.shape.Shape;
 import org.pcsoft.app.jimix.commons.type.JimixSnapshotParams;
 import org.pcsoft.app.jimix.plugin.common.api.annotation.JimixProperty;
 import org.pcsoft.app.jimix.plugin.common.api.type.JimixPlugin2DElement;
-import org.pcsoft.app.jimix.plugin.impl.base.util.EllipseUtils;
+import org.pcsoft.app.jimix.plugin.impl.base.util.EllipsePluginElementUtils;
 
 import java.awt.*;
 
@@ -27,7 +27,7 @@ public final class EllipsePluginElement extends JimixPlugin2DElement<EllipsePlug
                     if (getFill() == null)
                         return null;
 
-                    final Shape shape = EllipseUtils.buildShape(0, 0, size.get());
+                    final Shape shape = EllipsePluginElementUtils.buildShape(0, 0, size.get());
                     shape.setFill(getFill());
 
                     return shape.snapshot(new JimixSnapshotParams(), null);
@@ -70,7 +70,7 @@ public final class EllipsePluginElement extends JimixPlugin2DElement<EllipsePlug
     }
 
     @Override
-    public EllipsePluginElement copy() {
+    protected EllipsePluginElement _copy() {
         final EllipsePluginElement pluginElement = new EllipsePluginElement(this.getFill());
         pluginElement.setSize(this.size.get());
 

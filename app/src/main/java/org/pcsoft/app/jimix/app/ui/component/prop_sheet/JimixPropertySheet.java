@@ -1,7 +1,6 @@
 package org.pcsoft.app.jimix.app.ui.component.prop_sheet;
 
 import javafx.scene.paint.Paint;
-import org.pcsoft.app.jimix.app.ui.component.BlenderComboBox;
 import org.pcsoft.app.jimix.app.ui.component.prop_sheet.editor.BlenderPropertyEditor;
 import org.pcsoft.app.jimix.app.ui.component.prop_sheet.editor.DimensionPropertyEditor;
 import org.pcsoft.app.jimix.app.ui.component.prop_sheet.editor.PaintPropertyEditor;

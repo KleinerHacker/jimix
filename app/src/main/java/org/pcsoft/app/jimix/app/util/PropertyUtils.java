@@ -7,9 +7,11 @@ import org.controlsfx.control.PropertySheet;
 import org.controlsfx.property.editor.AbstractPropertyEditor;
 import org.pcsoft.app.jimix.app.language.LanguageResources;
 import org.pcsoft.app.jimix.app.ui.component.prop_sheet.JimixPropertySheet;
+import org.pcsoft.app.jimix.app.ui.component.prop_sheet.editor.FontPropertyEditor;
 import org.pcsoft.app.jimix.commons.exception.JimixPropertyException;
 import org.pcsoft.app.jimix.plugin.common.api.annotation.JimixProperty;
 import org.pcsoft.app.jimix.plugin.common.api.annotation.JimixPropertyDoubleRestriction;
+import org.pcsoft.app.jimix.plugin.common.api.annotation.JimixPropertyFontRestriction;
 import org.pcsoft.app.jimix.plugin.common.api.annotation.JimixPropertyIntegerRestriction;
 import org.pcsoft.framework.jfex.property.SimpleWrapperProperty;
 import org.pcsoft.framework.jfex.type.SimpleProperty;
@@ -26,6 +28,7 @@ public final class PropertyUtils {
                 final JimixProperty property = field.getAnnotation(JimixProperty.class);
                 final JimixPropertyIntegerRestriction integerRestriction = field.getAnnotation(JimixPropertyIntegerRestriction.class);
                 final JimixPropertyDoubleRestriction doubleRestriction = field.getAnnotation(JimixPropertyDoubleRestriction.class);
+                final JimixPropertyFontRestriction fontRestriction = field.getAnnotation(JimixPropertyFontRestriction.class);
 
                 if (property != null) {
                     final ResourceBundle resourceBundle;
@@ -58,6 +61,8 @@ public final class PropertyUtils {
                         buildIntegerRestriction(propertySheet, sheetItem, integerRestriction);
                     } else if (doubleRestriction != null) {
                         buildDoubleRestriction(propertySheet, sheetItem, doubleRestriction);
+                    } else if (fontRestriction != null) {
+                        buildFontRestriction(propertySheet, sheetItem, fontRestriction);
                     }
 
                     propertySheet.getItems().add(sheetItem);
@@ -119,6 +124,10 @@ public final class PropertyUtils {
                     }
                 }
         );
+    }
+
+    private static void buildFontRestriction(final JimixPropertySheet propertySheet, final PropertySheet.Item sheetItem, final JimixPropertyFontRestriction restriction) {
+        propertySheet.addItemSupport(sheetItem, FontPropertyEditor::new);
     }
     //</editor-fold>
 

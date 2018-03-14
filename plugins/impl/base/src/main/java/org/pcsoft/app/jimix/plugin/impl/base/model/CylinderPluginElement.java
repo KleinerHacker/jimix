@@ -15,9 +15,8 @@ import javafx.scene.transform.Rotate;
 import org.pcsoft.app.jimix.commons.type.JimixSnapshotParams;
 import org.pcsoft.app.jimix.plugin.common.api.annotation.JimixProperty;
 import org.pcsoft.app.jimix.plugin.common.api.type.JimixPlugin3DElement;
-import org.pcsoft.app.jimix.plugin.common.api.type.JimixPluginElement;
 
-public class CylinderPluginElement extends JimixPlugin3DElement {
+public class CylinderPluginElement extends JimixPlugin3DElement<CylinderPluginElement> {
     @JimixProperty(fieldType = Double.class, name = "Radius", description = "Cylinder radius", category = "Cylinder")
     private final DoubleProperty radius = new SimpleDoubleProperty(100d);
     @JimixProperty(fieldType = Double.class, name = "Height", description = "Cylinder height", category = "Cylinder")
@@ -94,7 +93,7 @@ public class CylinderPluginElement extends JimixPlugin3DElement {
     }
 
     @Override
-    public JimixPluginElement copy() {
+    protected CylinderPluginElement _copy() {
         final CylinderPluginElement pluginElement = new CylinderPluginElement();
         pluginElement.setRadius(this.radius.get());
         pluginElement.setHeight(this.height.get());
