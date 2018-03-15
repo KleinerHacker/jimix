@@ -1,7 +1,6 @@
 package org.pcsoft.app.jimix.plugin.impl.base.manipulation.builder;
 
 import javafx.scene.Node;
-import javafx.scene.shape.Shape;
 import org.pcsoft.app.jimix.plugin.impl.base.model.EllipsePluginElement;
 import org.pcsoft.app.jimix.plugin.impl.base.util.EllipsePluginElementUtils;
 import org.pcsoft.app.jimix.plugin.manipulation.api.Jimix2DElementBuilder;
@@ -16,9 +15,6 @@ public class EllipseElementBuilder implements Jimix2DElementBuilder<EllipsePlugi
 
     @Override
     public Node buildNode(EllipsePluginElement elementModel, final int x, final int y) {
-        final Shape shape = EllipsePluginElementUtils.buildShape(x, y, elementModel.getSize());
-        shape.setFill(elementModel.getFill());
-
-        return shape;
+        return EllipsePluginElementUtils.buildShape(x, y, elementModel);
     }
 }

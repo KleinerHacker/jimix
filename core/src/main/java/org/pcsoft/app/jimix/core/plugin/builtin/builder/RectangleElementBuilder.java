@@ -1,8 +1,8 @@
 package org.pcsoft.app.jimix.core.plugin.builtin.builder;
 
 import javafx.scene.Node;
-import javafx.scene.shape.Rectangle;
 import org.pcsoft.app.jimix.core.plugin.builtin.model.RectanglePluginElement;
+import org.pcsoft.app.jimix.core.util.RectanglePluginElementUtils;
 import org.pcsoft.app.jimix.plugin.manipulation.api.Jimix2DElementBuilder;
 import org.pcsoft.app.jimix.plugin.manipulation.api.annotation.JimixElementBuilderDescriptor;
 import org.slf4j.Logger;
@@ -33,11 +33,6 @@ public class RectangleElementBuilder implements Jimix2DElementBuilder<RectangleP
             scaledImage = elementModel.getValue(); //Ignore scaling, use builtin JavaFX Scaling
         } */
 
-        final Rectangle rectangle = new Rectangle(x, y, elementModel.getSize().width, elementModel.getSize().height);
-        rectangle.setFill(elementModel.getFill());
-        rectangle.setArcWidth(elementModel.getArcSize().width);
-        rectangle.setArcHeight(elementModel.getArcSize().height);
-
-        return rectangle;
+        return RectanglePluginElementUtils.buildShape(x, y, elementModel);
     }
 }

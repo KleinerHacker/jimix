@@ -9,12 +9,12 @@ import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.geometry.Point3D;
 import javafx.scene.image.Image;
-import javafx.scene.shape.Cylinder;
 import javafx.scene.shape.Shape3D;
 import javafx.scene.transform.Rotate;
 import org.pcsoft.app.jimix.commons.type.JimixSnapshotParams;
 import org.pcsoft.app.jimix.plugin.common.api.annotation.JimixProperty;
 import org.pcsoft.app.jimix.plugin.common.api.type.JimixPlugin3DElement;
+import org.pcsoft.app.jimix.plugin.impl.base.util.CylinderPluginElementUtils;
 
 public class CylinderPluginElement extends JimixPlugin3DElement<CylinderPluginElement> {
     @JimixProperty(fieldType = Double.class, name = "Radius", description = "Cylinder radius", category = "Cylinder")
@@ -29,13 +29,13 @@ public class CylinderPluginElement extends JimixPlugin3DElement<CylinderPluginEl
     public CylinderPluginElement() {
         preview = Bindings.createObjectBinding(
                 () -> {
-                    final Shape3D shape3D = new Cylinder(radius.get(), height.get(), divisions.get());
+                    final Shape3D shape3D = CylinderPluginElementUtils.buildShape(this);
                     shape3D.getTransforms().add(new Rotate(30, new Point3D(1, 0, 0)));
                     shape3D.getTransforms().add(new Rotate(-30, new Point3D(0, 1, 0)));
                     shape3D.getTransforms().add(new Rotate(5, new Point3D(0, 0, 1)));
 
                     return shape3D.snapshot(new JimixSnapshotParams(), null);
-                }, radius, height, divisions
+                }, getObservables()
         );
     }
 

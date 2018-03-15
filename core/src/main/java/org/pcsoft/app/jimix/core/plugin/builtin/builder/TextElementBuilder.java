@@ -1,7 +1,6 @@
 package org.pcsoft.app.jimix.core.plugin.builtin.builder;
 
 import javafx.scene.Node;
-import javafx.scene.text.Font;
 import org.pcsoft.app.jimix.core.plugin.builtin.model.TextPluginElement;
 import org.pcsoft.app.jimix.core.util.TextPluginElementUtils;
 import org.pcsoft.app.jimix.plugin.manipulation.api.Jimix2DElementBuilder;
@@ -16,8 +15,6 @@ public class TextElementBuilder implements Jimix2DElementBuilder<TextPluginEleme
 
     @Override
     public Node buildNode(TextPluginElement elementModel, final int x, final int y) {
-        return TextPluginElementUtils.buildShape(x, y, elementModel.getText(),
-                Font.font(elementModel.getFontFamilyName(), elementModel.getFontWeight(), elementModel.getFontPosture(), elementModel.getFontSize()),
-                elementModel.isUnderline(), elementModel.isStrikeout(), elementModel.getFill(), elementModel.getStroke());
+        return TextPluginElementUtils.buildShape(x, y, elementModel);
     }
 }

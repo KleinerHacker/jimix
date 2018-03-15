@@ -7,10 +7,10 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Paint;
-import javafx.scene.shape.Rectangle;
 import org.pcsoft.app.jimix.commons.exception.JimixPluginException;
 import org.pcsoft.app.jimix.commons.type.JimixSnapshotParams;
 import org.pcsoft.app.jimix.core.plugin.builtin.scaler.DefaultScaler;
+import org.pcsoft.app.jimix.core.util.RectanglePluginElementUtils;
 import org.pcsoft.app.jimix.plugin.common.api.annotation.JimixProperty;
 import org.pcsoft.app.jimix.plugin.common.api.type.JimixPlugin2DElement;
 import org.pcsoft.app.jimix.plugin.manipulation.manager.type.JimixScalerInstance;
@@ -22,9 +22,9 @@ public final class RectanglePluginElement extends JimixPlugin2DElement<Rectangle
     private static final int MAX_WIDTH = 100;
     private static final int MAX_HEIGHT = 50;
 
-    @JimixProperty(fieldType = Dimension.class, name = "Size", description = "Dimension")
+    @JimixProperty(fieldType = Dimension.class, name = "Size", description = "Dimension", category = "Alignment")
     private final ObjectProperty<Dimension> size = new SimpleObjectProperty<>(new Dimension(100, 100));
-    @JimixProperty(fieldType = Dimension.class, name = "Arc Size", description = "Arc size of rectangle corners")
+    @JimixProperty(fieldType = Dimension.class, name = "Arc Size", description = "Arc size of rectangle corners", category = "Design")
     private final ObjectProperty<Dimension> arcSize = new SimpleObjectProperty<>(new Dimension(0, 0));
 
     private final ObjectBinding<Image> preview;
@@ -50,8 +50,9 @@ public final class RectanglePluginElement extends JimixPlugin2DElement<Rectangle
                         height = MAX_HEIGHT;
                         width = MAX_HEIGHT * size.get().width / size.get().height;
                     }
-                    return new Rectangle(width, height, getFill()).snapshot(new JimixSnapshotParams(), null);
-                }, fillProperty(), size
+                    return RectanglePluginElementUtils.buildShape(0, 0, this, width, height)
+                            .snapshot(new JimixSnapshotParams(), null);
+                }, getObservables()
         );
     }
 

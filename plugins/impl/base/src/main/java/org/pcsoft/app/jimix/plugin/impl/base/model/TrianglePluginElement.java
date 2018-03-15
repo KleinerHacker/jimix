@@ -9,7 +9,6 @@ import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Paint;
-import javafx.scene.shape.Shape;
 import org.pcsoft.app.jimix.commons.type.JimixSnapshotParams;
 import org.pcsoft.app.jimix.plugin.common.api.annotation.JimixProperty;
 import org.pcsoft.app.jimix.plugin.common.api.annotation.JimixPropertyDoubleRestriction;
@@ -19,9 +18,9 @@ import org.pcsoft.app.jimix.plugin.impl.base.util.TrianglePluginElementUtils;
 import java.awt.*;
 
 public final class TrianglePluginElement extends JimixPlugin2DElement<TrianglePluginElement> {
-    @JimixProperty(fieldType = Dimension.class, name = "Size", description = "Size")
+    @JimixProperty(fieldType = Dimension.class, name = "Size", description = "Size", category = "Alignment")
     private final ObjectProperty<Dimension> size = new SimpleObjectProperty<>(new Dimension(100, 100));
-    @JimixProperty(fieldType = Double.class, name = "Top Position (%)", description = "Position of top on X axis in percentage")
+    @JimixProperty(fieldType = Double.class, name = "Top Position (%)", description = "Position of top on X axis in percentage", category = "Alignment")
     @JimixPropertyDoubleRestriction(minValue = 0d, maxValue = 1d)
     private final DoubleProperty top = new SimpleDoubleProperty(0.5d);
 
@@ -33,11 +32,9 @@ public final class TrianglePluginElement extends JimixPlugin2DElement<TrianglePl
                     if (getFill() == null)
                         return null;
 
-                    final Shape shape = TrianglePluginElementUtils.buildShape(size.get(), top.get());
-                    shape.setFill(getFill());
-
-                    return shape.snapshot(new JimixSnapshotParams(), null);
-                }, fillProperty(), size, top
+                    return TrianglePluginElementUtils.buildShape(this)
+                            .snapshot(new JimixSnapshotParams(), null);
+                }, getObservables()
         );
     }
 

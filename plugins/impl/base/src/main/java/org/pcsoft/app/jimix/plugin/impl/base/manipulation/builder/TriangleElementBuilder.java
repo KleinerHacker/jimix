@@ -16,10 +16,9 @@ public class TriangleElementBuilder implements Jimix2DElementBuilder<TrianglePlu
 
     @Override
     public Node buildNode(TrianglePluginElement elementModel, final int x, final int y) {
-        final Shape shape = TrianglePluginElementUtils.buildShape(elementModel.getSize(), elementModel.getTop());
+        final Shape shape = TrianglePluginElementUtils.buildShape(elementModel);
         shape.setTranslateX(x);
         shape.setTranslateY(y);
-        shape.setFill(elementModel.getFill());
 
         return shape;
     }

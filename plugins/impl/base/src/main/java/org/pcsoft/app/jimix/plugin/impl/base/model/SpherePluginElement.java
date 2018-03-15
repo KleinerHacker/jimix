@@ -10,11 +10,11 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.geometry.Point3D;
 import javafx.scene.image.Image;
 import javafx.scene.shape.Shape3D;
-import javafx.scene.shape.Sphere;
 import javafx.scene.transform.Rotate;
 import org.pcsoft.app.jimix.commons.type.JimixSnapshotParams;
 import org.pcsoft.app.jimix.plugin.common.api.annotation.JimixProperty;
 import org.pcsoft.app.jimix.plugin.common.api.type.JimixPlugin3DElement;
+import org.pcsoft.app.jimix.plugin.impl.base.util.SpherePluginElementUtils;
 
 public class SpherePluginElement extends JimixPlugin3DElement<SpherePluginElement> {
     @JimixProperty(fieldType = Double.class, name = "Radius", description = "Sphere radius", category = "Sphere")
@@ -27,13 +27,13 @@ public class SpherePluginElement extends JimixPlugin3DElement<SpherePluginElemen
     public SpherePluginElement() {
         preview = Bindings.createObjectBinding(
                 () -> {
-                    final Shape3D shape3D = new Sphere(radius.get(), divisions.get());
+                    final Shape3D shape3D = SpherePluginElementUtils.buildShape(this);
                     shape3D.getTransforms().add(new Rotate(30, new Point3D(1, 0, 0)));
                     shape3D.getTransforms().add(new Rotate(-30, new Point3D(0, 1, 0)));
                     shape3D.getTransforms().add(new Rotate(5, new Point3D(0, 0, 1)));
 
                     return shape3D.snapshot(new JimixSnapshotParams(), null);
-                }, radius, divisions
+                }, getObservables()
         );
     }
 

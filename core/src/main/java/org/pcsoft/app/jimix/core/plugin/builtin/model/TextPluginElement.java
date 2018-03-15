@@ -5,7 +5,6 @@ import javafx.beans.binding.Bindings;
 import javafx.beans.binding.ObjectBinding;
 import javafx.beans.property.*;
 import javafx.scene.image.Image;
-import javafx.scene.text.Font;
 import javafx.scene.text.FontPosture;
 import javafx.scene.text.FontWeight;
 import org.pcsoft.app.jimix.commons.type.JimixSnapshotParams;
@@ -33,17 +32,15 @@ public final class TextPluginElement extends JimixPlugin2DElement<TextPluginElem
 
     private final ObjectBinding<Image> preview;
 
-    public TextPluginElement() {
+    {
         preview = Bindings.createObjectBinding(
                 () -> {
                     if (getFill() == null)
                         return null;
 
-                    return TextPluginElementUtils.buildShape(0, 0, "Ab",
-                            Font.font(fontFamilyName.get(), fontWeight.get(), fontPosture.get(), fontSize.get()), underline.get(), strikeout.get(),
-                            getFill(), getStroke())
+                    return TextPluginElementUtils.buildShape(0, 0, this, "Ab", 28d)
                             .snapshot(new JimixSnapshotParams(), null);
-                }, fillProperty(), fontFamilyName, fontSize, fontWeight, fontPosture, underline, strikeout
+                }, getObservables()
         );
     }
 

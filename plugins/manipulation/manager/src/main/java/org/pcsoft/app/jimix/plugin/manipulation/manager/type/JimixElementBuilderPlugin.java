@@ -103,7 +103,7 @@ public abstract class JimixElementBuilderPlugin<T extends JimixElementBuilderIns
     public final boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        Jimix2DElementBuilderPlugin that = (Jimix2DElementBuilderPlugin) o;
+        JimixElementBuilderPlugin that = (JimixElementBuilderPlugin) o;
         return Objects.equals(getIdentifier(), that.getIdentifier());
     }
 

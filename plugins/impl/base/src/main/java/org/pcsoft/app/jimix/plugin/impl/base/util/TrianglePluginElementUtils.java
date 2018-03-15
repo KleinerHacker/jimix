@@ -2,13 +2,16 @@ package org.pcsoft.app.jimix.plugin.impl.base.util;
 
 import javafx.scene.shape.SVGPath;
 import javafx.scene.shape.Shape;
+import org.pcsoft.app.jimix.plugin.common.api.util.Shape2DPluginElementUtils;
+import org.pcsoft.app.jimix.plugin.impl.base.model.TrianglePluginElement;
 
 import java.awt.*;
 
 public final class TrianglePluginElementUtils {
-    public static Shape buildShape(Dimension size, double top) {
+    public static Shape buildShape(TrianglePluginElement element) {
         final SVGPath svgPath = new SVGPath();
-        svgPath.setContent(buildSVGPathContent(size, top));
+        Shape2DPluginElementUtils.buildShape(svgPath, element);
+        svgPath.setContent(buildSVGPathContent(element.getSize(), element.getTop()));
 
         return svgPath;
     }

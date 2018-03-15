@@ -7,7 +7,6 @@ import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Paint;
-import javafx.scene.shape.Shape;
 import org.pcsoft.app.jimix.commons.type.JimixSnapshotParams;
 import org.pcsoft.app.jimix.plugin.common.api.annotation.JimixProperty;
 import org.pcsoft.app.jimix.plugin.common.api.type.JimixPlugin2DElement;
@@ -16,7 +15,7 @@ import org.pcsoft.app.jimix.plugin.impl.base.util.EllipsePluginElementUtils;
 import java.awt.*;
 
 public final class EllipsePluginElement extends JimixPlugin2DElement<EllipsePluginElement> {
-    @JimixProperty(fieldType = Dimension.class, name = "Size", description = "Size")
+    @JimixProperty(fieldType = Dimension.class, name = "Size", description = "Size", category = "Alignment")
     private final ObjectProperty<Dimension> size = new SimpleObjectProperty<>(new Dimension(100, 100));
 
     private final ObjectBinding<Image> preview;
@@ -27,11 +26,9 @@ public final class EllipsePluginElement extends JimixPlugin2DElement<EllipsePlug
                     if (getFill() == null)
                         return null;
 
-                    final Shape shape = EllipsePluginElementUtils.buildShape(0, 0, size.get());
-                    shape.setFill(getFill());
-
-                    return shape.snapshot(new JimixSnapshotParams(), null);
-                }, fillProperty(), size
+                    return EllipsePluginElementUtils.buildShape(0, 0, this)
+                            .snapshot(new JimixSnapshotParams(), null);
+                }, getObservables()
         );
     }
 
