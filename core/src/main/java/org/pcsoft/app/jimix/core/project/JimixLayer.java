@@ -115,12 +115,12 @@ public final class JimixLayer implements JimixWrapper {
 
         //Rebuild cached image if sub elements has changed
         resultPicture = Bindings.createObjectBinding(
-                () -> ImageBuilder.getInstance().buildLayerImage(this),
+                () -> ImageBuilder.getInstance().buildLayerPictureImage(this),
                 //TODO: Optimize
                 (Observable[]) ArrayUtils.addAll(model.getObservables(), new Observable[]{pictureElementList, visible})
         );
         resultMask = Bindings.createObjectBinding(
-                () -> ImageBuilder.getInstance().buildLayerImage(this),
+                () -> ImageBuilder.getInstance().buildLayerMaskImage(this),
                 //TODO: Optimize
                 (Observable[]) ArrayUtils.addAll(model.getObservables(), new Observable[]{maskElementList, visible})
         );

@@ -3,3 +3,4 @@ org.pcsoft.app.jimix.core.plugin.builtin.blender.AddBlender
 org.pcsoft.app.jimix.core.plugin.builtin.blender.MultiplyBlender
 org.pcsoft.app.jimix.core.plugin.builtin.blender.DarkenBlender
 org.pcsoft.app.jimix.core.plugin.builtin.blender.LightenBlender
+org.pcsoft.app.jimix.core.plugin.builtin.blender.AlphaBlender

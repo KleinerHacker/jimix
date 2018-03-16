@@ -9,7 +9,6 @@ import javafx.scene.layout.HBox;
 import org.pcsoft.app.jimix.app.language.LanguageResources;
 import org.pcsoft.app.jimix.core.project.JimixElement;
 import org.pcsoft.app.jimix.core.project.JimixLayer;
-import org.pcsoft.app.jimix.plugin.manipulation.manager.type.Jimix2DEffectInstance;
 import org.pcsoft.app.jimix.plugin.manipulation.manager.type.JimixEffectInstance;
 import org.pcsoft.app.jimix.plugin.manipulation.manager.type.JimixFilterInstance;
 
@@ -48,6 +47,18 @@ public class LayerList extends HBox {
         viewModel.setSelectedTopLayer(selectedTopLayer);
     }
 
+    public LayerSubType getSelectedTopLayerType() {
+        return viewModel.getSelectedTopLayerType();
+    }
+
+    public ObjectProperty<LayerSubType> selectedTopLayerTypeProperty() {
+        return viewModel.selectedTopLayerTypeProperty();
+    }
+
+    public void setSelectedTopLayerType(LayerSubType selectedTopLayerType) {
+        viewModel.setSelectedTopLayerType(selectedTopLayerType);
+    }
+
     public Object getSelectedItem() {
         return viewModel.getSelectedItem();
     }
@@ -74,5 +85,10 @@ public class LayerList extends HBox {
 
     public void selectLayer(JimixLayer layer) {
         controller.selectLayer(layer);
+    }
+
+    public enum LayerSubType {
+        Picture,
+        Mask
     }
 }

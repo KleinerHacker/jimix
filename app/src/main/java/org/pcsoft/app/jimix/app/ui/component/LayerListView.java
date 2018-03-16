@@ -52,6 +52,8 @@ public class LayerListView implements FxmlView<LayerListViewModel>, Initializabl
                 viewModel.setSelectedItem(((LayerTreeItem) n).getLayer());
             } else if (n instanceof PictureElementTreeItem) {
                 viewModel.setSelectedItem(((PictureElementTreeItem) n).getElement());
+            } else if (n instanceof MaskElementTreeItem) {
+                viewModel.setSelectedItem(((MaskElementTreeItem) n).getElement());
             } else if (n instanceof FilterTreeItem) {
                 viewModel.setSelectedItem(((FilterTreeItem) n).getInstance());
             } else if (n instanceof EffectTreeItem) {
@@ -61,6 +63,11 @@ public class LayerListView implements FxmlView<LayerListViewModel>, Initializabl
             //Find top layer
             TreeItem current = n;
             while (current != null && !(current instanceof LayerTreeItem)) {
+                if (current instanceof PictureRootTreeItem) {
+                    viewModel.setSelectedTopLayerType(LayerList.LayerSubType.Picture);
+                } else if (current instanceof MaskRootTreeItem) {
+                    viewModel.setSelectedTopLayerType(LayerList.LayerSubType.Mask);
+                }
                 current = current.getParent();
             }
             viewModel.setSelectedTopLayer(current == null ? null : ((LayerTreeItem) current).getLayer());

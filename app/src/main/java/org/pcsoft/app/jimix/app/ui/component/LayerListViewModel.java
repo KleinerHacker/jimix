@@ -12,6 +12,7 @@ public class LayerListViewModel implements ViewModel {
     private final ListProperty<JimixLayer> layerList = new SimpleListProperty<>();
     //Top Layer of selection
     private final ObjectProperty<JimixLayer> selectedTopLayer = new SimpleObjectProperty<>();
+    private final ObjectProperty<LayerList.LayerSubType> selectedTopLayerType = new SimpleObjectProperty<>();
     private final ObjectProperty<Object> selectedItem = new SimpleObjectProperty<>();
 
 
@@ -37,6 +38,18 @@ public class LayerListViewModel implements ViewModel {
 
     public void setSelectedTopLayer(JimixLayer selectedTopLayer) {
         this.selectedTopLayer.set(selectedTopLayer);
+    }
+
+    public LayerList.LayerSubType getSelectedTopLayerType() {
+        return selectedTopLayerType.get();
+    }
+
+    public ObjectProperty<LayerList.LayerSubType> selectedTopLayerTypeProperty() {
+        return selectedTopLayerType;
+    }
+
+    public void setSelectedTopLayerType(LayerList.LayerSubType selectedTopLayerType) {
+        this.selectedTopLayerType.set(selectedTopLayerType);
     }
 
     public Object getSelectedItem() {

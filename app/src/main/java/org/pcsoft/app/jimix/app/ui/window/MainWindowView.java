@@ -315,7 +315,7 @@ public class MainWindowView implements FxmlView<MainWindowViewModel>, Initializa
                 menuItem.setGraphic(new ImageView(effectPlugin.getIcon()));
             }
             menuItem.setUserData(effectPlugin);
-            menuItem.setOnAction(this::onActionPictureEffect);
+            menuItem.setOnAction(this::onActionEffect);
 
             if (effectPlugin.getGroup() == null) {
                 mnuEffect.getItems().add(menuItem);
@@ -487,7 +487,7 @@ public class MainWindowView implements FxmlView<MainWindowViewModel>, Initializa
         }
     }
 
-    private void onActionPictureEffect(ActionEvent actionEvent) {
+    private void onActionEffect(ActionEvent actionEvent) {
         final Tab tab = tabPicture.getSelectionModel().getSelectedItem();
         if (tab == null)
             return;
@@ -496,7 +496,12 @@ public class MainWindowView implements FxmlView<MainWindowViewModel>, Initializa
 
         try {
             final JimixEffectInstance effectInstance = (JimixEffectInstance) effectPlugin.createInstance();
-            ((JimixPictureElement) pictureEditorPane.getSelectedItem()).getModel().getEffectList().add(effectInstance);
+            if (pictureEditorPane.getSelectedItem() instanceof JimixPictureElement) {
+                ((JimixPictureElement) pictureEditorPane.getSelectedItem()).getModel().getEffectList().add(effectInstance);
+            } else if (pictureEditorPane.getSelectedItem() instanceof JimixMaskElement) {
+                ((JimixMaskElement) pictureEditorPane.getSelectedItem()).getModel().getEffectList().add(effectInstance);
+            } else
+                throw new RuntimeException();
             pictureEditorPane.selectEffect(effectInstance);
         } catch (JimixPluginException e) {
             LOGGER.error("Unable to create effect instance " + effectPlugin.getIdentifier(), e);

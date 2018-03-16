@@ -14,12 +14,12 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.paint.Color;
 import org.pcsoft.app.jimix.app.ui.component.prop_sheet.JimixPropertySheet;
 import org.pcsoft.app.jimix.app.util.PropertyUtils;
 import org.pcsoft.app.jimix.core.project.JimixElement;
 import org.pcsoft.app.jimix.core.project.JimixLayer;
 import org.pcsoft.app.jimix.core.project.ProjectManager;
+import org.pcsoft.app.jimix.core.util.CheckerBoardPatternUtils;
 import org.pcsoft.app.jimix.plugin.common.api.type.JimixPluginElement;
 import org.pcsoft.app.jimix.plugin.manipulation.manager.type.JimixEffectInstance;
 import org.pcsoft.app.jimix.plugin.manipulation.manager.type.JimixFilterInstance;
@@ -90,17 +90,7 @@ public class PictureEditorPaneView implements FxmlView<PictureEditorPaneViewMode
 
     private void refreshTransparentGround() {
         final GraphicsContext gc = canvasGround.getGraphicsContext2D();
-        gc.setFill(Color.DARKGRAY);
-        gc.fillRect(0, 0, canvasGround.getWidth(), canvasGround.getHeight());
-
-        gc.setFill(Color.BLACK);
-        for (int y = 0; y < canvasGround.getHeight() / 10; y++) {
-            for (int x = 0; x < canvasGround.getWidth() / 10; x++) {
-                if ((x % 2 == 0 && y % 2 == 0) || (x % 2 != 0 && y % 2 != 0)) {
-                    gc.fillRect(x * 10, y * 10, 10, 10);
-                }
-            }
-        }
+        CheckerBoardPatternUtils.buildPattern(gc, canvasGround.getWidth(), canvasGround.getHeight());
     }
 
     private void refreshProperties() {
@@ -138,14 +128,23 @@ public class PictureEditorPaneView implements FxmlView<PictureEditorPaneViewMode
     private void onPictureMouseClicked(MouseEvent e) {
         if (e.getButton() != MouseButton.PRIMARY && e.getClickCount() != 1)
             return;
-        if (lstLayer.getSelectedTopLayer() == null)
+        if (lstLayer.getSelectedTopLayer() == null || lstLayer.getSelectedTopLayerType() == null)
             return;
         if (elementSelector.getSelectedElementBuilder() == null)
-            return; 
+            return;
 
         try {
             final JimixPluginElement pluginElement = (JimixPluginElement) elementSelector.getSelectedElementBuilder().getElementModelClass().newInstance();
-            final JimixElement element = ProjectManager.getInstance().createPictureElementForLayer(lstLayer.getSelectedTopLayer(), pluginElement, (int) e.getX(), (int) e.getY());
+            switch (lstLayer.getSelectedTopLayerType()) {
+                case Picture:
+                    ProjectManager.getInstance().createPictureElementForLayer(lstLayer.getSelectedTopLayer(), pluginElement, (int) e.getX(), (int) e.getY());
+                    break;
+                case Mask:
+                    ProjectManager.getInstance().createMaskElementForLayer(lstLayer.getSelectedTopLayer(), pluginElement, (int) e.getX(), (int) e.getY());
+                    break;
+                default:
+                    throw new RuntimeException();
+            }
         } catch (InstantiationException | IllegalAccessException e1) {
             LOGGER.error("Unable to create element " + elementSelector.getSelectedElementBuilder().getElementModelClass().getName(), e1);
             new Alert(Alert.AlertType.ERROR, "Unable to create element: " + e1.getMessage(), ButtonType.OK).showAndWait();
@@ -158,7 +157,7 @@ public class PictureEditorPaneView implements FxmlView<PictureEditorPaneViewMode
 
     @FXML
     private void onMaskMouseClicked(MouseEvent e) {
-
+        onPictureMouseClicked(e);
     }
 
     //<editor-fold desc="Helper Classes">

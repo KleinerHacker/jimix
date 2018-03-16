@@ -1,8 +1,8 @@
 package org.pcsoft.app.jimix.core.plugin.builtin.filter;
 
 import javafx.beans.Observable;
-import javafx.beans.property.DoubleProperty;
-import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.*;
+import javafx.scene.paint.Color;
 import org.pcsoft.app.jimix.plugin.common.api.annotation.JimixProperty;
 import org.pcsoft.app.jimix.plugin.common.api.annotation.JimixPropertyDoubleRestriction;
 import org.pcsoft.app.jimix.plugin.manipulation.api.config.JimixFilterConfiguration;
@@ -21,6 +21,10 @@ public class GrayScaleFilterConfiguration implements JimixFilterConfiguration<Gr
     @JimixProperty(fieldType = Double.class, name = "Blue Channel", description = "Blue Channel", category = "Channels")
     @JimixPropertyDoubleRestriction(minValue = 0d, maxValue = 1d)
     private final DoubleProperty blueChannel = new SimpleDoubleProperty(0.33d);
+    @JimixProperty(fieldType = Color.class, name = "Target Color", description = "Target color value", category = "Design")
+    private final ObjectProperty<Color> targetColor = new SimpleObjectProperty<>(Color.WHITE);
+    @JimixProperty(fieldType = Boolean.class, name = "Use As Opacity", description = "Use as opacity value", category = "Design")
+    private final BooleanProperty useAsOpacity = new SimpleBooleanProperty(false);
 
     public GrayScaleFilterConfiguration() {
     }
@@ -67,10 +71,34 @@ public class GrayScaleFilterConfiguration implements JimixFilterConfiguration<Gr
         this.blueChannel.set(blueChannel);
     }
 
+    public Color getTargetColor() {
+        return targetColor.get();
+    }
+
+    public ObjectProperty<Color> targetColorProperty() {
+        return targetColor;
+    }
+
+    public void setTargetColor(Color targetColor) {
+        this.targetColor.set(targetColor);
+    }
+
+    public boolean isUseAsOpacity() {
+        return useAsOpacity.get();
+    }
+
+    public BooleanProperty useAsOpacityProperty() {
+        return useAsOpacity;
+    }
+
+    public void setUseAsOpacity(boolean useAsOpacity) {
+        this.useAsOpacity.set(useAsOpacity);
+    }
+
     @Override
     public Observable[] getObservables() {
         return new Observable[] {
-                redChannel, greenChannel, blueChannel
+                redChannel, greenChannel, blueChannel, targetColor, useAsOpacity
         };
     }
 
@@ -79,6 +107,8 @@ public class GrayScaleFilterConfiguration implements JimixFilterConfiguration<Gr
         this.redChannel.set(newConfiguration.redChannel.get());
         this.greenChannel.set(newConfiguration.greenChannel.get());
         this.blueChannel.set(newConfiguration.blueChannel.get());
+        this.targetColor.set(newConfiguration.targetColor.get());
+        this.useAsOpacity.set(newConfiguration.useAsOpacity.get());
     }
 
     @Override
@@ -87,6 +117,8 @@ public class GrayScaleFilterConfiguration implements JimixFilterConfiguration<Gr
         configuration.redChannel.set(this.redChannel.get());
         configuration.greenChannel.set(this.greenChannel.get());
         configuration.blueChannel.set(this.blueChannel.get());
+        configuration.targetColor.set(this.targetColor.get());
+        configuration.useAsOpacity.set(this.useAsOpacity.get());
 
         return configuration;
     }
@@ -96,6 +128,11 @@ public class GrayScaleFilterConfiguration implements JimixFilterConfiguration<Gr
         out.writeDouble(this.redChannel.get());
         out.writeDouble(this.greenChannel.get());
         out.writeDouble(this.blueChannel.get());
+        out.writeDouble(this.targetColor.get().getRed());
+        out.writeDouble(this.targetColor.get().getGreen());
+        out.writeDouble(this.targetColor.get().getBlue());
+        out.writeDouble(this.targetColor.get().getOpacity());
+        out.writeBoolean(this.useAsOpacity.get());
     }
 
     @Override
@@ -103,5 +140,7 @@ public class GrayScaleFilterConfiguration implements JimixFilterConfiguration<Gr
         this.redChannel.set(in.readDouble());
         this.greenChannel.set(in.readDouble());
         this.blueChannel.set(in.readDouble());
+        this.targetColor.set(new Color(in.readDouble(), in.readDouble(), in.readDouble(), in.readDouble()));
+        this.useAsOpacity.set(in.readBoolean());
     }
 }

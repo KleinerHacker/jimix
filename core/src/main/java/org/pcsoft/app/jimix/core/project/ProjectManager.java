@@ -8,8 +8,9 @@ import org.pcsoft.app.jimix.core.plugin.builtin.model.RectanglePluginElement;
 import org.pcsoft.app.jimix.plugin.common.api.type.JimixPlugin2DElement;
 import org.pcsoft.app.jimix.plugin.common.api.type.JimixPluginElement;
 import org.pcsoft.app.jimix.plugin.system.manager.type.JimixClipboardProviderInstance;
-import org.pcsoft.app.jimix.project.JimixPictureElementModel;
 import org.pcsoft.app.jimix.project.JimixLayerModel;
+import org.pcsoft.app.jimix.project.JimixMaskElementModel;
+import org.pcsoft.app.jimix.project.JimixPictureElementModel;
 import org.pcsoft.app.jimix.project.JimixProjectModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -152,17 +153,32 @@ public final class ProjectManager {
         return element;
     }
 
-    public JimixElement createPictureElementForLayer(final JimixLayer layer, JimixPluginElement pluginElement) {
+    public JimixPictureElement createPictureElementForLayer(final JimixLayer layer, JimixPluginElement pluginElement) {
         return createPictureElementForLayer(layer, pluginElement, 0, 0);
     }
 
-    public JimixElement createPictureElementForLayer(final JimixLayer layer, JimixPluginElement pluginElement, int x, int y) {
+    public JimixPictureElement createPictureElementForLayer(final JimixLayer layer, JimixPluginElement pluginElement, int x, int y) {
         final JimixPictureElementModel model = new JimixPictureElementModel(pluginElement);
         model.setX(x);
         model.setY(y);
         final JimixPictureElement element = new JimixPictureElement(layer.getProject(), layer, model);
         LOGGER.info("Create picture element " + element.getUuid() + " (" + pluginElement.getClass().getName() + ") for layer " + layer.getUuid());
         layer.getPictureElementMap().put(element.getUuid(), element);
+
+        return element;
+    }
+
+    public JimixMaskElement createMaskElementForLayer(final JimixLayer layer, JimixPluginElement pluginElement) {
+        return createMaskElementForLayer(layer, pluginElement, 0, 0);
+    }
+
+    public JimixMaskElement createMaskElementForLayer(final JimixLayer layer, JimixPluginElement pluginElement, int x, int y) {
+        final JimixMaskElementModel model = new JimixMaskElementModel(pluginElement);
+        model.setX(x);
+        model.setY(y);
+        final JimixMaskElement element = new JimixMaskElement(layer.getProject(), layer, model);
+        LOGGER.info("Create mask element " + element.getUuid() + " (" + pluginElement.getClass().getName() + ") for layer " + layer.getUuid());
+        layer.getMaskElementMap().put(element.getUuid(), element);
 
         return element;
     }

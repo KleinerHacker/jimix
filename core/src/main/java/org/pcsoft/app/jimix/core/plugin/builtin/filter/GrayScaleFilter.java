@@ -16,7 +16,11 @@ public class GrayScaleFilter extends JimixFilterBase<GrayScaleFilterConfiguratio
             final int gray = (int) Math.min(255d, (double) readColor.getRed() * configuration.getRedChannel() +
                     (double) readColor.getGreen() * configuration.getGreenChannel() +
                     (double) readColor.getBlue() * configuration.getBlueChannel());
-            final Color writeColor = new Color(gray, gray, gray, readColor.getAlpha());
+            final Color writeColor = new Color(
+                    (int)(gray * configuration.getTargetColor().getRed()),
+                    (int)(gray * configuration.getTargetColor().getGreen()),
+                    (int)(gray * configuration.getTargetColor().getBlue()),
+                    configuration.isUseAsOpacity() ? gray : readColor.getAlpha());
             pixelWriter.setPixel(i, writeColor.getRGB());
         }
     }
