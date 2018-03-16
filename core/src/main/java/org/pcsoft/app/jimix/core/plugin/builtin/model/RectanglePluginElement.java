@@ -50,7 +50,7 @@ public final class RectanglePluginElement extends JimixPlugin2DElement<Rectangle
                         height = MAX_HEIGHT;
                         width = MAX_HEIGHT * size.get().width / size.get().height;
                     }
-                    return RectanglePluginElementUtils.buildShape(0, 0, this, width, height)
+                    return RectanglePluginElementUtils.buildShape(this, width, height)
                             .snapshot(new JimixSnapshotParams(), null);
                 }, getObservables()
         );

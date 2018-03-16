@@ -11,7 +11,8 @@ import org.pcsoft.app.jimix.app.item.tree.*;
 import org.pcsoft.app.jimix.app.ui.component.cell.tree.ProjectTreeCell;
 import org.pcsoft.app.jimix.core.project.JimixElement;
 import org.pcsoft.app.jimix.core.project.JimixLayer;
-import org.pcsoft.app.jimix.plugin.manipulation.manager.type.Jimix2DEffectInstance;
+import org.pcsoft.app.jimix.core.project.JimixMaskElement;
+import org.pcsoft.app.jimix.core.project.JimixPictureElement;
 import org.pcsoft.app.jimix.plugin.manipulation.manager.type.JimixEffectInstance;
 import org.pcsoft.app.jimix.plugin.manipulation.manager.type.JimixFilterInstance;
 import org.pcsoft.framework.jfex.util.FXTreeUtils;
@@ -49,8 +50,8 @@ public class LayerListView implements FxmlView<LayerListViewModel>, Initializabl
 
             if (n instanceof LayerTreeItem) {
                 viewModel.setSelectedItem(((LayerTreeItem) n).getLayer());
-            } else if (n instanceof ElementTreeItem) {
-                viewModel.setSelectedItem(((ElementTreeItem) n).getElement());
+            } else if (n instanceof PictureElementTreeItem) {
+                viewModel.setSelectedItem(((PictureElementTreeItem) n).getElement());
             } else if (n instanceof FilterTreeItem) {
                 viewModel.setSelectedItem(((FilterTreeItem) n).getInstance());
             } else if (n instanceof EffectTreeItem) {
@@ -86,29 +87,63 @@ public class LayerListView implements FxmlView<LayerListViewModel>, Initializabl
             for (final JimixLayer layer : viewModel.getLayerList()) {
                 final LayerTreeItem layerTreeItem = new LayerTreeItem(layer);
 
-                //1. Elements
-                final ElementRootTreeItem elementRootTreeItem = new ElementRootTreeItem();
-                for (final JimixElement element : layer.getElementList()) {
-                    final ElementTreeItem elementTreeItem = new ElementTreeItem(element);
-                    elementRootTreeItem.getChildren().add(elementTreeItem);
+                //Picture
+                final PictureRootTreeItem pictureRootTreeItem = new PictureRootTreeItem();
+                {
+                    //1. Elements
+                    final PictureElementRootTreeItem pictureElementRootTreeItem = new PictureElementRootTreeItem();
+                    for (final JimixPictureElement pictureElement : layer.getPictureElementList()) {
+                        final PictureElementTreeItem pictureElementTreeItem = new PictureElementTreeItem(pictureElement);
+                        pictureElementRootTreeItem.getChildren().add(pictureElementTreeItem);
 
-                    final EffectRootTreeItem effectRootTreeItem = new EffectRootTreeItem();
-                    //1.1 Effects
-                    for (final JimixEffectInstance effectInstance : element.getModel().getEffectList()) {
-                        final EffectTreeItem effectTreeItem = new EffectTreeItem(effectInstance);
-                        effectRootTreeItem.getChildren().add(effectTreeItem);
+                        final EffectRootTreeItem effectRootTreeItem = new EffectRootTreeItem();
+                        //1.1 Effects
+                        for (final JimixEffectInstance effectInstance : pictureElement.getModel().getEffectList()) {
+                            final EffectTreeItem effectTreeItem = new EffectTreeItem(effectInstance);
+                            effectRootTreeItem.getChildren().add(effectTreeItem);
+                        }
+                        pictureElementTreeItem.getChildren().add(effectRootTreeItem);
                     }
-                    elementTreeItem.getChildren().add(effectRootTreeItem);
-                }
-                layerTreeItem.getChildren().add(elementRootTreeItem);
+                    pictureRootTreeItem.getChildren().add(pictureElementRootTreeItem);
 
-                //2. Processing
-                final FilterRootTreeItem filterRootTreeItem = new FilterRootTreeItem();
-                for (final JimixFilterInstance filterInstance : layer.getModel().getFilterList()) {
-                    final FilterTreeItem filterTreeItem = new FilterTreeItem(filterInstance);
-                    filterRootTreeItem.getChildren().add(filterTreeItem);
+                    //2. Filters
+                    final FilterRootTreeItem filterRootTreeItem = new FilterRootTreeItem();
+                    for (final JimixFilterInstance filterInstance : layer.getModel().getFilterList()) {
+                        final FilterTreeItem filterTreeItem = new FilterTreeItem(filterInstance);
+                        filterRootTreeItem.getChildren().add(filterTreeItem);
+                    }
+                    pictureRootTreeItem.getChildren().add(filterRootTreeItem);
                 }
-                layerTreeItem.getChildren().add(filterRootTreeItem);
+                layerTreeItem.getChildren().add(pictureRootTreeItem);
+
+                //Mask
+                final MaskRootTreeItem maskRootTreeItem = new MaskRootTreeItem();
+                {
+                    //1. Elements
+                    final MaskElementRootTreeItem maskElementRootTreeItem = new MaskElementRootTreeItem();
+                    for (final JimixMaskElement maskElement : layer.getMaskElementList()) {
+                        final MaskElementTreeItem maskElementTreeItem = new MaskElementTreeItem(maskElement);
+                        maskElementRootTreeItem.getChildren().add(maskElementTreeItem);
+
+                        //1.1. Effects
+                        final EffectRootTreeItem effectRootTreeItem = new EffectRootTreeItem();
+                        for (final JimixEffectInstance effectInstance : maskElement.getModel().getEffectList()) {
+                            final EffectTreeItem effectTreeItem = new EffectTreeItem(effectInstance);
+                            effectRootTreeItem.getChildren().add(effectTreeItem);
+                        }
+                        maskElementTreeItem.getChildren().add(effectRootTreeItem);
+
+                        //1.2. Filters
+                        final FilterRootTreeItem filterRootTreeItem = new FilterRootTreeItem();
+                        for (final JimixFilterInstance filterInstance : maskElement.getModel().getFilterList()) {
+                            final FilterTreeItem filterTreeItem = new FilterTreeItem(filterInstance);
+                            filterRootTreeItem.getChildren().add(filterTreeItem);
+                        }
+                        maskElementTreeItem.getChildren().add(filterRootTreeItem);
+                    }
+                    maskRootTreeItem.getChildren().add(maskElementRootTreeItem);
+                }
+                layerTreeItem.getChildren().add(maskRootTreeItem);
 
                 projectTreeItem.getChildren().add(layerTreeItem);
             }

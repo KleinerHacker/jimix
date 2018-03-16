@@ -17,9 +17,9 @@ import org.pcsoft.app.jimix.plugin.common.api.type.JimixPlugin3DElement;
 import org.pcsoft.app.jimix.plugin.impl.base.util.SpherePluginElementUtils;
 
 public class SpherePluginElement extends JimixPlugin3DElement<SpherePluginElement> {
-    @JimixProperty(fieldType = Double.class, name = "Radius", description = "Sphere radius", category = "Sphere")
+    @JimixProperty(fieldType = Double.class, name = "Radius", description = "Sphere radius", category = "Alignment")
     private final DoubleProperty radius = new SimpleDoubleProperty(100d);
-    @JimixProperty(fieldType = Integer.class, name = "Divisions", description = "Sphere's count of parts", category = "Sphere")
+    @JimixProperty(fieldType = Integer.class, name = "Divisions", description = "Sphere's count of parts", category = "Style")
     private final IntegerProperty divisions = new SimpleIntegerProperty(64);
 
     private final ObjectBinding<Image> preview;

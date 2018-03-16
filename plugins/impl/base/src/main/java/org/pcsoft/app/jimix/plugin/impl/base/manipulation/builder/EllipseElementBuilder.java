@@ -14,7 +14,7 @@ public class EllipseElementBuilder implements Jimix2DElementBuilder<EllipsePlugi
     private static final Logger LOGGER = LoggerFactory.getLogger(EllipsePluginElement.class);
 
     @Override
-    public Node buildNode(EllipsePluginElement elementModel, final int x, final int y) {
-        return EllipsePluginElementUtils.buildShape(x, y, elementModel);
+    public Node buildNode(EllipsePluginElement elementModel) {
+        return EllipsePluginElementUtils.buildShape(elementModel);
     }
 }

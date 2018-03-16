@@ -8,7 +8,7 @@ import org.pcsoft.app.jimix.core.plugin.builtin.model.RectanglePluginElement;
 import org.pcsoft.app.jimix.plugin.common.api.type.JimixPlugin2DElement;
 import org.pcsoft.app.jimix.plugin.common.api.type.JimixPluginElement;
 import org.pcsoft.app.jimix.plugin.system.manager.type.JimixClipboardProviderInstance;
-import org.pcsoft.app.jimix.project.JimixElementModel;
+import org.pcsoft.app.jimix.project.JimixPictureElementModel;
 import org.pcsoft.app.jimix.project.JimixLayerModel;
 import org.pcsoft.app.jimix.project.JimixProjectModel;
 import org.slf4j.Logger;
@@ -57,7 +57,7 @@ public final class ProjectManager {
         //Create image element
         final RectanglePluginElement rectanglePluginElement = new RectanglePluginElement(new ImagePattern(image));
         rectanglePluginElement.setSize(new Dimension((int) image.getWidth(), (int) image.getHeight()));
-        final JimixElement element = this.createElementForLayer(layer, rectanglePluginElement);
+        final JimixElement element = this.createPictureElementForLayer(layer, rectanglePluginElement);
 
         return project;
     }
@@ -142,27 +142,27 @@ public final class ProjectManager {
     //</editor-fold>
 
     //<editor-fold desc="Element">
-    public JimixElement createElementFromClipboardForLayer(final JimixLayer layer, final JimixClipboardProviderInstance instance) {
+    public JimixElement createPictureElementFromClipboardForLayer(final JimixLayer layer, final JimixClipboardProviderInstance instance) {
         final JimixPlugin2DElement pluginElement = instance.createElementFromClipboard(Clipboard.getSystemClipboard());
-        final JimixElementModel model = new JimixElementModel(pluginElement);
-        final JimixElement element = new JimixElement(layer.getProject(), layer, model);
-        LOGGER.info("Create element " + element.getUuid() + " from clipboard for layer " + layer.getUuid());
-        layer.getElementMap().put(element.getUuid(), element);
+        final JimixPictureElementModel model = new JimixPictureElementModel(pluginElement);
+        final JimixPictureElement element = new JimixPictureElement(layer.getProject(), layer, model);
+        LOGGER.info("Create picture element " + element.getUuid() + " from clipboard for layer " + layer.getUuid());
+        layer.getPictureElementMap().put(element.getUuid(), element);
 
         return element;
     }
 
-    public JimixElement createElementForLayer(final JimixLayer layer, JimixPluginElement pluginElement) {
-        return createElementForLayer(layer, pluginElement, 0, 0);
+    public JimixElement createPictureElementForLayer(final JimixLayer layer, JimixPluginElement pluginElement) {
+        return createPictureElementForLayer(layer, pluginElement, 0, 0);
     }
 
-    public JimixElement createElementForLayer(final JimixLayer layer, JimixPluginElement pluginElement, int x, int y) {
-        final JimixElementModel model = new JimixElementModel(pluginElement);
+    public JimixElement createPictureElementForLayer(final JimixLayer layer, JimixPluginElement pluginElement, int x, int y) {
+        final JimixPictureElementModel model = new JimixPictureElementModel(pluginElement);
         model.setX(x);
         model.setY(y);
-        final JimixElement element = new JimixElement(layer.getProject(), layer, model);
-        LOGGER.info("Create element " + element.getUuid() + " (" + pluginElement.getClass().getName() + ") for layer " + layer.getUuid());
-        layer.getElementMap().put(element.getUuid(), element);
+        final JimixPictureElement element = new JimixPictureElement(layer.getProject(), layer, model);
+        LOGGER.info("Create picture element " + element.getUuid() + " (" + pluginElement.getClass().getName() + ") for layer " + layer.getUuid());
+        layer.getPictureElementMap().put(element.getUuid(), element);
 
         return element;
     }
@@ -172,11 +172,11 @@ public final class ProjectManager {
     }
 
     public boolean removeElementFromLayer(final JimixLayer layer, final UUID elementUUID) {
-        if (!layer.getElementMap().containsKey(elementUUID))
+        if (!layer.getPictureElementMap().containsKey(elementUUID))
             return false;
 
         LOGGER.info("Remove element " + elementUUID + " from layer " + layer.getUuid());
-        layer.getElementMap().remove(elementUUID);
+        layer.getPictureElementMap().remove(elementUUID);
         return true;
     }
     //</editor-fold>

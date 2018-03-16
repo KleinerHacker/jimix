@@ -14,13 +14,13 @@ import java.io.ObjectOutputStream;
 public class RotationEffectConfiguration implements JimixEffectConfiguration<RotationEffectConfiguration> {
     @JimixProperty(fieldType = Double.class, name = "X Rotation", description = "Rotation on X axis")
     @JimixPropertyDoubleRestriction(minValue = -180, maxValue = 180)
-    private final DoubleProperty rotateX = new SimpleDoubleProperty(-30d);
+    private final DoubleProperty rotateX = new SimpleDoubleProperty(30d);
     @JimixProperty(fieldType = Double.class, name = "Y Rotation", description = "Rotation on Y axis")
     @JimixPropertyDoubleRestriction(minValue = -180, maxValue = 180)
     private final DoubleProperty rotateY = new SimpleDoubleProperty(-30d);
     @JimixProperty(fieldType = Double.class, name = "Z Rotation", description = "Rotation on Z axis")
     @JimixPropertyDoubleRestriction(minValue = -180, maxValue = 180)
-    private final DoubleProperty rotateZ = new SimpleDoubleProperty(30d);
+    private final DoubleProperty rotateZ = new SimpleDoubleProperty(5d);
 
     public double getRotateX() {
         return rotateX.get();

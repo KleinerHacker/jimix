@@ -14,7 +14,7 @@ public class TextElementBuilder implements Jimix2DElementBuilder<TextPluginEleme
     private static final Logger LOGGER = LoggerFactory.getLogger(TextElementBuilder.class);
 
     @Override
-    public Node buildNode(TextPluginElement elementModel, final int x, final int y) {
-        return TextPluginElementUtils.buildShape(x, y, elementModel);
+    public Node buildNode(TextPluginElement elementModel) {
+        return TextPluginElementUtils.buildShape(elementModel);
     }
 }

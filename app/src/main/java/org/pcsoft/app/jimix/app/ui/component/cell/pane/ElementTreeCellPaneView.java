@@ -19,6 +19,8 @@ public class ElementTreeCellPaneView implements FxmlView<ElementTreeCellPaneView
     private ToggleButton btnVisibility;
     @FXML
     private Label lblTitle;
+    @FXML
+    private Label lblGroup;
 
     @InjectViewModel
     private ElementTreeCellPaneViewModel viewModel;

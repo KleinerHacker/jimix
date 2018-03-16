@@ -28,10 +28,7 @@ import org.pcsoft.app.jimix.app.ui.dialog.LayerCreateSimpleDialog;
 import org.pcsoft.app.jimix.app.ui.splash.JimixSplash;
 import org.pcsoft.app.jimix.app.util.FileChooserUtils;
 import org.pcsoft.app.jimix.commons.exception.JimixPluginException;
-import org.pcsoft.app.jimix.core.project.JimixElement;
-import org.pcsoft.app.jimix.core.project.JimixLayer;
-import org.pcsoft.app.jimix.core.project.JimixProject;
-import org.pcsoft.app.jimix.core.project.ProjectManager;
+import org.pcsoft.app.jimix.core.project.*;
 import org.pcsoft.app.jimix.core.tooling.RecentFileManager;
 import org.pcsoft.app.jimix.core.util.FileTypeUtils;
 import org.pcsoft.app.jimix.core.util.ImageBuilder;
@@ -117,6 +114,8 @@ public class MainWindowView implements FxmlView<MainWindowViewModel>, Initializa
     private Menu mnuView;
     @FXML
     private Menu mnuTheme;
+    @FXML
+    private CheckMenuItem miShowMask;
     @FXML
     private CheckMenuItem miThemeDefault;
     @FXML
@@ -350,8 +349,8 @@ public class MainWindowView implements FxmlView<MainWindowViewModel>, Initializa
                 project.fileProperty()
         ));
         final PictureEditorPane pictureEditorPane = new PictureEditorPane(project);
-        if (!project.getLayerList().isEmpty() && !project.getLayerList().get(0).getElementList().isEmpty()) {
-            pictureEditorPane.selectElement(project.getLayerList().get(0).getElementList().get(0));
+        if (!project.getLayerList().isEmpty() && !project.getLayerList().get(0).getPictureElementList().isEmpty()) {
+            pictureEditorPane.selectElement(project.getLayerList().get(0).getPictureElementList().get(0));
         } else if (!project.getLayerList().isEmpty()) {
             pictureEditorPane.selectLayer(project.getLayerList().get(0));
         }
@@ -497,7 +496,7 @@ public class MainWindowView implements FxmlView<MainWindowViewModel>, Initializa
 
         try {
             final JimixEffectInstance effectInstance = (JimixEffectInstance) effectPlugin.createInstance();
-            ((JimixElement) pictureEditorPane.getSelectedItem()).getModel().getEffectList().add(effectInstance);
+            ((JimixPictureElement) pictureEditorPane.getSelectedItem()).getModel().getEffectList().add(effectInstance);
             pictureEditorPane.selectEffect(effectInstance);
         } catch (JimixPluginException e) {
             LOGGER.error("Unable to create effect instance " + effectPlugin.getIdentifier(), e);
@@ -513,7 +512,7 @@ public class MainWindowView implements FxmlView<MainWindowViewModel>, Initializa
             return;
         final PictureEditorPane pictureEditorPane = (PictureEditorPane) tab.getContent();
 
-        ProjectManager.getInstance().createElementFromClipboardForLayer(pictureEditorPane.getSelectedTopLayer(), instance);
+        ProjectManager.getInstance().createPictureElementFromClipboardForLayer(pictureEditorPane.getSelectedTopLayer(), instance);
     }
 
     @FXML
@@ -705,9 +704,9 @@ public class MainWindowView implements FxmlView<MainWindowViewModel>, Initializa
         final PictureEditorPane pictureEditorPane = (PictureEditorPane) tab.getContent();
         if (!(pictureEditorPane.getSelectedItem() instanceof JimixElement))
             return;
-        final JimixElement element = (JimixElement) pictureEditorPane.getSelectedItem();
+        final JimixPictureElement element = (JimixPictureElement) pictureEditorPane.getSelectedItem();
 
-        final Image image = ImageBuilder.getInstance().buildElementImage(element);
+        final Image image = ImageBuilder.getInstance().buildPictureElementImage(element);
         final Optional<EffectManagerDialog.Result> result = new EffectManagerDialog(pnlRoot.getScene().getWindow(), image).showAndWait();
         if (result.isPresent()) {
             element.getModel().getEffectList().add(result.get().getInstance());
@@ -779,6 +778,15 @@ public class MainWindowView implements FxmlView<MainWindowViewModel>, Initializa
                 Platform.runLater(() -> pbState.hide());
             }
         });
+    }
+
+    @FXML
+    private void onActionShowMask(ActionEvent actionEvent) {
+        final Tab tab = tabPicture.getSelectionModel().getSelectedItem();
+        if (tab == null)
+            return;
+        final PictureEditorPane pictureEditorPane = (PictureEditorPane) tab.getContent();
+        pictureEditorPane.setShowMask(miShowMask.isSelected());
     }
     //</editor-fold>
 

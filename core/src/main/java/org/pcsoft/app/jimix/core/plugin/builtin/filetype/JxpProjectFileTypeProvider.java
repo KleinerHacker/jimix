@@ -1,7 +1,5 @@
 package org.pcsoft.app.jimix.core.plugin.builtin.filetype;
 
-import javafx.embed.swing.SwingFXUtils;
-import javafx.scene.image.Image;
 import org.apache.commons.codec.Charsets;
 import org.pcsoft.app.jimix.commons.exception.JimixPluginException;
 import org.pcsoft.app.jimix.core.plugin.builtin.blender.OverlayBlender;
@@ -15,7 +13,6 @@ import org.pcsoft.app.jimix.project.JimixProjectModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.imageio.ImageIO;
 import java.io.*;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
@@ -48,7 +45,6 @@ public class JxpProjectFileTypeProvider implements JimixProjectFileTypeProvider 
         for (final JimixLayerModel layerModel : projectModel.getLayerList()) {
             oout.writeUTF(layerModel.getName());
             oout.writeDouble(layerModel.getOpacity());
-            ImageIO.write(SwingFXUtils.fromFXImage(layerModel.getMask(), null), "png", oout);
             //Blender
             oout.writeUTF(layerModel.getBlender().getPlugin().getIdentifier());
         }
@@ -84,8 +80,6 @@ public class JxpProjectFileTypeProvider implements JimixProjectFileTypeProvider 
             try {
                 final String name = oin.readUTF();
                 final double opacity = oin.readDouble();
-                final boolean visibile = oin.readBoolean();
-                final Image mask = SwingFXUtils.toFXImage(ImageIO.read(oin), null);
                 final String blenderIdentifier = oin.readUTF();
                 JimixBlenderPlugin blender = ManipulationPluginManager.getInstance().getBlender(blenderIdentifier);
                 if (blender == null) {
@@ -97,7 +91,6 @@ public class JxpProjectFileTypeProvider implements JimixProjectFileTypeProvider 
                 final JimixLayerModel layerModel = new JimixLayerModel(blenderInstance);
                 layerModel.setName(name);
                 layerModel.setOpacity(opacity);
-                layerModel.setMask(mask);
 
                 projectModel.getLayerList().add(layerModel);
             } catch (JimixPluginException e) {

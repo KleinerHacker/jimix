@@ -17,6 +17,7 @@
         </graphic>
     </ToggleButton>
     <VBox maxWidth="1.7976931348623157E308" HBox.hgrow="ALWAYS" alignment="CENTER_LEFT">
-        <Label fx:id="lblTitle"/>
+        <Label fx:id="lblTitle" style="-fx-font-weight: bold"/>
+        <Label fx:id="lblGroup"/>
     </VBox>
 </fx:root>

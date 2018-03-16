@@ -5,7 +5,7 @@ import javafx.beans.property.*;
 import javafx.scene.image.Image;
 
 public class ElementTreeCellPaneViewModel implements ViewModel {
-    private final StringProperty title = new SimpleStringProperty();
+    private final StringProperty title = new SimpleStringProperty(), group = new SimpleStringProperty();
     private final BooleanProperty visibility = new SimpleBooleanProperty();
     private final ObjectProperty<Image> preview = new SimpleObjectProperty<>();
 
@@ -19,6 +19,18 @@ public class ElementTreeCellPaneViewModel implements ViewModel {
 
     public void setTitle(String title) {
         this.title.set(title);
+    }
+
+    public String getGroup() {
+        return group.get();
+    }
+
+    public StringProperty groupProperty() {
+        return group;
+    }
+
+    public void setGroup(String group) {
+        this.group.set(group);
     }
 
     public boolean isVisibility() {

@@ -5,7 +5,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.pcsoft.app.jimix.core.plugin.builtin.blender.OverlayBlender;
 import org.pcsoft.app.jimix.core.plugin.builtin.model.RectanglePluginElement;
-import org.pcsoft.app.jimix.project.JimixElementModel;
+import org.pcsoft.app.jimix.project.JimixPictureElementModel;
 import org.pcsoft.app.jimix.project.JimixLayerModel;
 import org.pcsoft.app.jimix.project.JimixProjectModel;
 
@@ -31,7 +31,7 @@ public class ProjectManagerTest {
         final JimixLayer layer = ProjectManager.getInstance().createLayerForProject(project);
         Assert.assertEquals(3, counter.get());
 
-        layer.setVisibile(false);
+        layer.setVisible(false);
         Assert.assertEquals(5, counter.get());
 
         layer.getModel().setOpacity(0.1);
@@ -46,21 +46,21 @@ public class ProjectManagerTest {
             layerModel.setName("Hello");
             layerModel.setOpacity(0.1d);
             layerModel.setBackground(Color.RED);
-            final JimixElementModel elementModel = new JimixElementModel(new RectanglePluginElement());
+            final JimixPictureElementModel elementModel = new JimixPictureElementModel(new RectanglePluginElement());
             {
                 elementModel.setOpacity(0.5d);
                 elementModel.setX(10);
                 elementModel.setY(12);
             }
-            layerModel.getElementList().add(elementModel);
+            layerModel.getPictureElementList().add(elementModel);
         }
         projectModel.getLayerList().add(layerModel);
 
         final JimixProject project = ProjectManager.getInstance().createProjectNative(projectModel, false);
         Assert.assertNotNull(project);
         Assert.assertEquals(1, project.getLayerList().size());
-        Assert.assertEquals(1, project.getLayerList().get(0).getElementList().size());
-        Assert.assertNotNull(project.getLayerList().get(0).getElementList().get(0).getModel());
+        Assert.assertEquals(1, project.getLayerList().get(0).getPictureElementList().size());
+        Assert.assertNotNull(project.getLayerList().get(0).getPictureElementList().get(0).getModel());
     }
 
 }

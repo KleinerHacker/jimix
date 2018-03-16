@@ -17,11 +17,11 @@ import org.pcsoft.app.jimix.plugin.common.api.type.JimixPlugin3DElement;
 import org.pcsoft.app.jimix.plugin.impl.base.util.CylinderPluginElementUtils;
 
 public class CylinderPluginElement extends JimixPlugin3DElement<CylinderPluginElement> {
-    @JimixProperty(fieldType = Double.class, name = "Radius", description = "Cylinder radius", category = "Cylinder")
+    @JimixProperty(fieldType = Double.class, name = "Radius", description = "Cylinder radius", category = "Alignment")
     private final DoubleProperty radius = new SimpleDoubleProperty(100d);
-    @JimixProperty(fieldType = Double.class, name = "Height", description = "Cylinder height", category = "Cylinder")
+    @JimixProperty(fieldType = Double.class, name = "Height", description = "Cylinder height", category = "Alignment")
     private final DoubleProperty height = new SimpleDoubleProperty(100d);
-    @JimixProperty(fieldType = Integer.class, name = "Divisions", description = "Cylinder's count of parts", category = "Cylinder")
+    @JimixProperty(fieldType = Integer.class, name = "Divisions", description = "Cylinder's count of parts", category = "Style")
     private final IntegerProperty divisions = new SimpleIntegerProperty(64);
 
     private final ObjectBinding<Image> preview;

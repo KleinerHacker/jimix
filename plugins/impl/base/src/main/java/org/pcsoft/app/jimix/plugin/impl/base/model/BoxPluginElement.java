@@ -15,11 +15,11 @@ import org.pcsoft.app.jimix.plugin.common.api.type.JimixPlugin3DElement;
 import org.pcsoft.app.jimix.plugin.impl.base.util.BoxPluginElementUtils;
 
 public class BoxPluginElement extends JimixPlugin3DElement<BoxPluginElement> {
-    @JimixProperty(fieldType = Double.class, name = "Width", description = "Box width", category = "Box")
+    @JimixProperty(fieldType = Double.class, name = "Width", description = "Box width", category = "Alignment")
     private final DoubleProperty width = new SimpleDoubleProperty(100d);
-    @JimixProperty(fieldType = Double.class, name = "Height", description = "Box height", category = "Box")
+    @JimixProperty(fieldType = Double.class, name = "Height", description = "Box height", category = "Alignment")
     private final DoubleProperty height = new SimpleDoubleProperty(100d);
-    @JimixProperty(fieldType = Double.class, name = "Depth", description = "Box depth", category = "Box")
+    @JimixProperty(fieldType = Double.class, name = "Depth", description = "Box depth", category = "Alignment")
     private final DoubleProperty depth = new SimpleDoubleProperty(100d);
 
     private final ObjectBinding<Image> preview;

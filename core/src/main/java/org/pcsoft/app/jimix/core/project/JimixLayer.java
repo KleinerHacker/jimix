@@ -11,8 +11,9 @@ import javafx.scene.transform.Transform;
 import javafx.util.Callback;
 import org.apache.commons.lang.ArrayUtils;
 import org.pcsoft.app.jimix.core.util.ImageBuilder;
-import org.pcsoft.app.jimix.project.JimixElementModel;
 import org.pcsoft.app.jimix.project.JimixLayerModel;
+import org.pcsoft.app.jimix.project.JimixMaskElementModel;
+import org.pcsoft.app.jimix.project.JimixPictureElementModel;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -24,46 +25,86 @@ public final class JimixLayer implements JimixWrapper {
     //Temporary identifier only
     private final ReadOnlyObjectProperty<UUID> uuid = new ReadOnlyObjectWrapper<>(UUID.randomUUID()).getReadOnlyProperty();
     private final ReadOnlyObjectProperty<JimixLayerModel> model;
-    private final BooleanProperty visibile = new SimpleBooleanProperty(true);
-    private final ReadOnlyMapProperty<UUID, JimixElement> elementMap =
-            new ReadOnlyMapWrapper<UUID, JimixElement>(FXCollections.observableHashMap()).getReadOnlyProperty();
-    private final ReadOnlyListProperty<JimixElement> elementList =
-            new ReadOnlyListWrapper<>(FXCollections.observableArrayList(new JimixElementObserverCallback())).getReadOnlyProperty();
+    private final BooleanProperty visible = new SimpleBooleanProperty(true);
+
+    private final ReadOnlyMapProperty<UUID, JimixPictureElement> pictureElementMap =
+            new ReadOnlyMapWrapper<UUID, JimixPictureElement>(FXCollections.observableHashMap()).getReadOnlyProperty();
+    private final ReadOnlyListProperty<JimixPictureElement> pictureElementList =
+            new ReadOnlyListWrapper<JimixPictureElement>(FXCollections.observableArrayList(new JimixElementObserverCallback<>())).getReadOnlyProperty();
+
+    private final ReadOnlyMapProperty<UUID, JimixMaskElement> maskElementMap =
+            new ReadOnlyMapWrapper<UUID, JimixMaskElement>(FXCollections.observableHashMap()).getReadOnlyProperty();
+    private final ReadOnlyListProperty<JimixMaskElement> maskElementList =
+            new ReadOnlyListWrapper<JimixMaskElement>(FXCollections.observableArrayList(new JimixElementObserverCallback<>())).getReadOnlyProperty();
 
     private final ReadOnlyObjectProperty<JimixProject> project;
 
-    private final ObjectBinding<Image> resultImage;
+    private final ObjectBinding<Image> resultPicture, resultMask;
 
     public JimixLayer(final JimixProject project, final JimixLayerModel model) {
         this.project = new ReadOnlyObjectWrapper<>(project).getReadOnlyProperty();
         this.model = new ReadOnlyObjectWrapper<>(model).getReadOnlyProperty();
 
         //List Updater
-        elementMap.addListener((MapChangeListener<UUID, JimixElement>) c -> {
+        pictureElementMap.addListener((MapChangeListener<UUID, JimixPictureElement>) c -> {
             if (c.wasAdded()) {
-                elementList.add(c.getValueAdded());
+                pictureElementList.add(c.getValueAdded());
             }
             if (c.wasRemoved()) {
-                elementList.remove(c.getValueRemoved());
+                pictureElementList.remove(c.getValueRemoved());
             }
         });
         //Sync element list from model
-        for (final JimixElementModel elementModel : model.getElementList()) {
-            final JimixElement element = new JimixElement(project, this, elementModel);
-            elementMap.put(element.getUuid(), element);
+        for (final JimixPictureElementModel elementModel : model.getPictureElementList()) {
+            final JimixPictureElement element = new JimixPictureElement(project, this, elementModel);
+            pictureElementMap.put(element.getUuid(), element);
         }
         // Sync with model
-        elementList.addListener((ListChangeListener<JimixElement>) c -> {
+        pictureElementList.addListener((ListChangeListener<JimixPictureElement>) c -> {
             while (c.next()) {
                 if (c.wasAdded()) {
-                    model.getElementList().addAll(
+                    model.getPictureElementList().addAll(
                             c.getAddedSubList().stream()
                                     .map(JimixElement::getModel)
                                     .collect(Collectors.toList())
                     );
                 }
                 if (c.wasRemoved()) {
-                    model.getElementList().removeAll(
+                    model.getPictureElementList().removeAll(
+                            c.getRemoved().stream()
+                                    .map(JimixElement::getModel)
+                                    .collect(Collectors.toList())
+                    );
+                }
+            }
+        });
+
+        //List Updater
+        maskElementMap.addListener((MapChangeListener<UUID, JimixMaskElement>) c -> {
+            if (c.wasAdded()) {
+                maskElementList.add(c.getValueAdded());
+            }
+            if (c.wasRemoved()) {
+                maskElementList.remove(c.getValueRemoved());
+            }
+        });
+        //Sync element list from model
+        for (final JimixMaskElementModel elementModel : model.getMaskElementList()) {
+            final JimixMaskElement element = new JimixMaskElement(project, this, elementModel);
+            maskElementMap.put(element.getUuid(), element);
+        }
+        // Sync with model
+        maskElementList.addListener((ListChangeListener<JimixMaskElement>) c -> {
+            while (c.next()) {
+                if (c.wasAdded()) {
+                    model.getMaskElementList().addAll(
+                            c.getAddedSubList().stream()
+                                    .map(JimixElement::getModel)
+                                    .collect(Collectors.toList())
+                    );
+                }
+                if (c.wasRemoved()) {
+                    model.getMaskElementList().removeAll(
                             c.getRemoved().stream()
                                     .map(JimixElement::getModel)
                                     .collect(Collectors.toList())
@@ -73,10 +114,15 @@ public final class JimixLayer implements JimixWrapper {
         });
 
         //Rebuild cached image if sub elements has changed
-        resultImage = Bindings.createObjectBinding(
+        resultPicture = Bindings.createObjectBinding(
                 () -> ImageBuilder.getInstance().buildLayerImage(this),
                 //TODO: Optimize
-                (Observable[]) ArrayUtils.addAll(model.getObservableValues(), new Observable[]{elementList, visibile})
+                (Observable[]) ArrayUtils.addAll(model.getObservables(), new Observable[]{pictureElementList, visible})
+        );
+        resultMask = Bindings.createObjectBinding(
+                () -> ImageBuilder.getInstance().buildLayerImage(this),
+                //TODO: Optimize
+                (Observable[]) ArrayUtils.addAll(model.getObservables(), new Observable[]{maskElementList, visible})
         );
     }
 
@@ -104,51 +150,75 @@ public final class JimixLayer implements JimixWrapper {
         return model;
     }
 
-    ObservableMap<UUID, JimixElement> getElementMap() {
-        return elementMap.get();
+    ObservableMap<UUID, JimixPictureElement> getPictureElementMap() {
+        return pictureElementMap.get();
     }
 
-    ReadOnlyMapProperty<UUID, JimixElement> elementMapProperty() {
-        return elementMap;
+    ReadOnlyMapProperty<UUID, JimixPictureElement> pictureElementMapProperty() {
+        return pictureElementMap;
     }
 
-    public ObservableList<JimixElement> getElementList() {
-        return elementList.get();
+    public ObservableList<JimixPictureElement> getPictureElementList() {
+        return pictureElementList.get();
     }
 
-    public ReadOnlyListProperty<JimixElement> elementListProperty() {
-        return elementList;
+    public ReadOnlyListProperty<JimixPictureElement> pictureElementListProperty() {
+        return pictureElementList;
     }
 
-    public JimixElement getElement(final UUID elementUUID) {
-        return elementMap.get(elementUUID);
+    ObservableMap<UUID, JimixMaskElement> getMaskElementMap() {
+        return maskElementMap.get();
     }
 
-    public Image getResultImage() {
-        return resultImage.get();
+    ReadOnlyMapProperty<UUID, JimixMaskElement> maskElementMapProperty() {
+        return maskElementMap;
     }
 
-    public ObjectBinding<Image> resultImageProperty() {
-        return resultImage;
+    public ObservableList<JimixMaskElement> getMaskElementList() {
+        return maskElementList.get();
     }
 
-    public boolean isVisibile() {
-        return visibile.get();
+    public ReadOnlyListProperty<JimixMaskElement> maskElementListProperty() {
+        return maskElementList;
     }
 
-    public BooleanProperty visibileProperty() {
-        return visibile;
+    public JimixPictureElement getElement(final UUID elementUUID) {
+        return pictureElementMap.get(elementUUID);
     }
 
-    public void setVisibile(boolean visibile) {
-        this.visibile.set(visibile);
+    public Image getResultPicture() {
+        return resultPicture.get();
+    }
+
+    public ObjectBinding<Image> resultPictureProperty() {
+        return resultPicture;
+    }
+
+    public Image getResultMask() {
+        return resultMask.get();
+    }
+
+    public ObjectBinding<Image> resultMaskProperty() {
+        return resultMask;
+    }
+
+    public boolean getVisible() {
+        return visible.get();
+    }
+
+    public BooleanProperty visibleProperty() {
+        return visible;
+    }
+
+    public void setVisible(boolean visible) {
+        this.visible.set(visible);
     }
 
     /**
      * Turn all elements on layer left and recalculate its position
      */
     public void turnLeft() {
-        for (final JimixElement element : elementList) {
+        for (final JimixElement element : pictureElementList) {
             element.getModel().setRotation(element.getModel().getRotation() - 90);
 
             calculateRotation(element, -90);
@@ -159,7 +229,7 @@ public final class JimixLayer implements JimixWrapper {
      * Turn all elements on layer right and recalculate its position
      */
     public void turnRight() {
-        for (final JimixElement element : elementList) {
+        for (final JimixElement element : pictureElementList) {
             element.getModel().setRotation(element.getModel().getRotation() + 90);
 
             calculateRotation(element, 90);
@@ -177,7 +247,7 @@ public final class JimixLayer implements JimixWrapper {
      * Mirror all elements on layer horizontal and recalculate its position
      */
     public void mirrorHorizontal() {
-        for (final JimixElement element : elementList) {
+        for (final JimixElement element : pictureElementList) {
             element.getModel().setMirrorHorizontal(!element.getModel().isMirrorHorizontal());
             //TODO
             //element.getModel().setX(project.get().getModel().getWidth() - (element.getModel().getX() + element.getModel().getWidth()));
@@ -188,7 +258,7 @@ public final class JimixLayer implements JimixWrapper {
      * Mirror all elements on layer vertical and recalculate its position
      */
     public void mirrorVertical() {
-        for (final JimixElement element : elementList) {
+        for (final JimixElement element : pictureElementList) {
             element.getModel().setMirrorVertical(!element.getModel().isMirrorVertical());
             //TODO
             //element.getModel().setY(project.get().getModel().getHeight() - (element.getModel().getY() + element.getModel().getHeight()));
@@ -198,7 +268,7 @@ public final class JimixLayer implements JimixWrapper {
     @Override
     public Observable[] getObservables() {
         return new Observable[] {
-                visibile, resultImage
+                visible, resultPicture
         };
     }
 
@@ -223,12 +293,12 @@ public final class JimixLayer implements JimixWrapper {
     //</editor-fold>
 
     //<editor-fold desc="Helper Classes">
-    private static final class JimixElementObserverCallback implements Callback<JimixElement, Observable[]> {
+    private static final class JimixElementObserverCallback<T extends JimixElement> implements Callback<T, Observable[]> {
         @Override
-        public Observable[] call(JimixElement param) {
+        public Observable[] call(T param) {
             final List<Observable> list = new ArrayList<>();
             //TODO: Optimize
-            list.addAll(Arrays.asList(param.getModel().getObservableValues()));
+            list.addAll(Arrays.asList(param.getModel().getObservables()));
             list.addAll(Arrays.asList(param.getObservables()));
 
             return list.toArray(new Observable[list.size()]);

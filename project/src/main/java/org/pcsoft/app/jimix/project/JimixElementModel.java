@@ -2,20 +2,12 @@ package org.pcsoft.app.jimix.project;
 
 import javafx.beans.Observable;
 import javafx.beans.property.*;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import org.apache.commons.lang.ArrayUtils;
 import org.pcsoft.app.jimix.plugin.common.api.annotation.JimixProperty;
 import org.pcsoft.app.jimix.plugin.common.api.annotation.JimixPropertyDoubleRestriction;
 import org.pcsoft.app.jimix.plugin.common.api.type.JimixPluginElement;
-import org.pcsoft.app.jimix.plugin.manipulation.manager.type.JimixEffectInstance;
 
-import java.util.stream.Collectors;
-
-/**
- * Represent a element model. This is the abstract base for all custom elements to show in image.
- */
-public final class JimixElementModel implements JimixModel<JimixElementModel> {
+public abstract class JimixElementModel<T extends JimixElementModel<T>> implements JimixModel<T> {
     @JimixProperty(fieldType = Double.class, name = "Opacity", description = "Opacity of element", category = "View")
     @JimixPropertyDoubleRestriction(minValue = 0d, maxValue = 1d)
     private final DoubleProperty opacity = new SimpleDoubleProperty(1d);
@@ -31,12 +23,9 @@ public final class JimixElementModel implements JimixModel<JimixElementModel> {
     @JimixPropertyDoubleRestriction(minValue = -180, maxValue = 180)
     private final DoubleProperty rotation = new SimpleDoubleProperty(0);
 
-    private final ReadOnlyListProperty<JimixEffectInstance> effectList =
-            new ReadOnlyListWrapper<JimixEffectInstance>(FXCollections.observableArrayList(param -> param.getConfiguration().getObservables())).getReadOnlyProperty();
-
     private final ReadOnlyObjectProperty<JimixPluginElement> pluginElement;
 
-    public JimixElementModel(final JimixPluginElement pluginElement) {
+    protected JimixElementModel(final JimixPluginElement pluginElement) {
         this.pluginElement = new ReadOnlyObjectWrapper<>(pluginElement).getReadOnlyProperty();
     }
 
@@ -150,41 +139,31 @@ public final class JimixElementModel implements JimixModel<JimixElementModel> {
         this.rotation.set(rotation);
     }
 
-    public ObservableList<JimixEffectInstance> getEffectList() {
-        return effectList.get();
+    @Override
+    public final T copy() {
+        final T copy = _copy(pluginElement.get());
+        copy.setX(this.x.get());
+        copy.setY(this.y.get());
+        copy.setRotation(this.rotation.get());
+        copy.setMirrorHorizontal(this.mirrorHorizontal.get());
+        copy.setMirrorVertical(this.mirrorVertical.get());
+        copy.setOpacity(this.opacity.get());
+
+        return copy;
     }
 
-    /**
-     * List of effects to apply for this element
-     *
-     * @return
-     */
-    public ReadOnlyListProperty<JimixEffectInstance> effectListProperty() {
-        return effectList;
-    }
+    protected abstract T _copy(final JimixPluginElement pluginElement);
 
     @Override
-    public JimixElementModel copy() {
-        final JimixElementModel elementModel = new JimixElementModel(this.pluginElement.get().copy());
-        elementModel.setX(this.x.get());
-        elementModel.setY(this.y.get());
-        elementModel.setRotation(this.rotation.get());
-        elementModel.setMirrorHorizontal(this.mirrorHorizontal.get());
-        elementModel.setMirrorVertical(this.mirrorVertical.get());
-        elementModel.setOpacity(this.opacity.get());
-        elementModel.effectList.addAll(
-                this.effectList.stream()
-                        .map(item -> (JimixEffectInstance<?, ?>) item.copy())
-                        .collect(Collectors.toList())
+    public final Observable[] getObservables() {
+        return (Observable[]) ArrayUtils.addAll(
+                _getObservables(),
+                ArrayUtils.addAll(
+                        new Observable[]{opacity, x, y, mirrorHorizontal, mirrorVertical, rotation},
+                        pluginElement.get().getObservables()
+                )
         );
-
-        return elementModel;
     }
 
-    @Override
-    public final Observable[] getObservableValues() {
-        return (Observable[]) ArrayUtils.addAll(new Observable[]{
-                opacity, x, y, mirrorHorizontal, mirrorVertical, rotation, effectList
-        }, pluginElement.get().getObservables());
-    }
+    protected abstract Observable[] _getObservables();
 }

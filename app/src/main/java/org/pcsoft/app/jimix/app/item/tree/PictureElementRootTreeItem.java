@@ -4,12 +4,12 @@ import javafx.scene.control.TreeItem;
 
 import java.util.Objects;
 
-public class ElementRootTreeItem extends TreeItem<Object> {
+public class PictureElementRootTreeItem extends TreeItem<Object> {
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        ElementRootTreeItem that = (ElementRootTreeItem) o;
+        PictureElementRootTreeItem that = (PictureElementRootTreeItem) o;
         return Objects.equals(getParent(), that.getParent());
     }
 

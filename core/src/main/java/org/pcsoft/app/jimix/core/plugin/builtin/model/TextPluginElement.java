@@ -38,7 +38,7 @@ public final class TextPluginElement extends JimixPlugin2DElement<TextPluginElem
                     if (getFill() == null)
                         return null;
 
-                    return TextPluginElementUtils.buildShape(0, 0, this, "Ab", 28d)
+                    return TextPluginElementUtils.buildShape(this, "Ab", 28d)
                             .snapshot(new JimixSnapshotParams(), null);
                 }, getObservables()
         );

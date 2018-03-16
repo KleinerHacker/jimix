@@ -26,7 +26,7 @@ public final class EllipsePluginElement extends JimixPlugin2DElement<EllipsePlug
                     if (getFill() == null)
                         return null;
 
-                    return EllipsePluginElementUtils.buildShape(0, 0, this)
+                    return EllipsePluginElementUtils.buildShape(this)
                             .snapshot(new JimixSnapshotParams(), null);
                 }, getObservables()
         );

@@ -72,7 +72,7 @@ public final class JimixProject implements JimixWrapper {
         resultImage = Bindings.createObjectBinding(
                 () -> ImageBuilder.getInstance().buildProjectImage(this),
                 //TODO: Optimize
-                (Observable[]) ArrayUtils.add(model.getObservableValues(), layerList)
+                (Observable[]) ArrayUtils.add(model.getObservables(), layerList)
         );
     }
 

@@ -4,6 +4,7 @@ import de.saxsys.mvvmfx.FluentViewLoader;
 import de.saxsys.mvvmfx.ViewTuple;
 import javafx.beans.Observable;
 import javafx.beans.binding.BooleanBinding;
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.layout.BorderPane;
@@ -100,6 +101,18 @@ public class PictureEditorPane extends BorderPane {
 
     public void selectLayer(JimixLayer layer) {
         controller.selectLayer(layer);
+    }
+
+    public boolean isShowMask() {
+        return viewModel.isShowMask();
+    }
+
+    public BooleanProperty showMaskProperty() {
+        return viewModel.showMaskProperty();
+    }
+
+    public void setShowMask(boolean showMask) {
+        viewModel.setShowMask(showMask);
     }
 
     public boolean canUndo() {

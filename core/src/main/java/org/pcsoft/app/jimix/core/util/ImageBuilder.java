@@ -5,22 +5,25 @@ import javafx.scene.Node;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
-import javafx.scene.layout.Pane;
+import javafx.scene.layout.AnchorPane;
 import org.pcsoft.app.jimix.commons.exception.JimixPluginException;
 import org.pcsoft.app.jimix.commons.exception.JimixPluginExecutionException;
 import org.pcsoft.app.jimix.commons.type.JimixSnapshotParams;
 import org.pcsoft.app.jimix.core.plugin.builtin.blender.OverlayBlender;
 import org.pcsoft.app.jimix.core.project.JimixElement;
 import org.pcsoft.app.jimix.core.project.JimixLayer;
+import org.pcsoft.app.jimix.core.project.JimixPictureElement;
 import org.pcsoft.app.jimix.core.project.JimixProject;
 import org.pcsoft.app.jimix.plugin.common.api.type.JimixPlugin2DElement;
 import org.pcsoft.app.jimix.plugin.common.api.type.JimixPlugin3DElement;
 import org.pcsoft.app.jimix.plugin.manipulation.api.type.JimixSource;
 import org.pcsoft.app.jimix.plugin.manipulation.manager.ManipulationPluginManager;
 import org.pcsoft.app.jimix.plugin.manipulation.manager.type.*;
-import org.pcsoft.app.jimix.project.JimixElementModel;
+import org.pcsoft.app.jimix.project.JimixPictureElementModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.awt.*;
 
 public final class ImageBuilder {
     private static final Logger LOGGER = LoggerFactory.getLogger(ImageBuilder.class);
@@ -36,7 +39,7 @@ public final class ImageBuilder {
     public Image buildProjectImage(final JimixProject project) {
         Image image = new WritableImage(project.getModel().getWidth(), project.getModel().getHeight());
         for (final JimixLayer layer : project.getLayerList()) {
-            if (!layer.isVisibile())
+            if (!layer.getVisible())
                 continue;
 
             JimixBlenderInstance blender = layer.getModel().getBlender();
@@ -48,7 +51,7 @@ public final class ImageBuilder {
                     throw new RuntimeException(e);
                 }
             }
-            final Image layerImage = layer.getResultImage();
+            final Image layerImage = layer.getResultPicture();
 
             try {
                 image = blender.apply(image, layerImage, layer.getModel().getOpacity());
@@ -63,17 +66,17 @@ public final class ImageBuilder {
     public Image buildLayerImage(final JimixLayer layer) {
         final WritableImage image = new WritableImage(layer.getProject().getModel().getWidth(), layer.getProject().getModel().getHeight());
 
-        final Pane pane = new Pane();
+        final AnchorPane pane = new AnchorPane();
         //Elements
-        for (final JimixElement element : layer.getElementList()) {
+        for (final JimixPictureElement element : layer.getPictureElementList()) {
             if (!element.getVisible()) {
-                LOGGER.trace("element " + element.getUuid() + " invisible");
+                LOGGER.trace("picture element " + element.getUuid() + " invisible");
                 continue;
             }
 
-            buildElementNode(element, pane);
+            buildPictureElementNode(element, pane);
         }
-        pane.snapshot(new JimixSnapshotParams(layer.getModel().getBackground()), image);
+        pane.snapshot(new JimixSnapshotParams(layer.getModel().getBackground(), new Dimension(layer.getProject().getModel().getWidth(), layer.getProject().getModel().getHeight())), image);
 
         Image resultImage = image;
         for (final JimixFilterInstance filterInstance : layer.getModel().getFilterList()) {
@@ -87,26 +90,27 @@ public final class ImageBuilder {
         return resultImage;
     }
 
-    public Image buildElementImage(final JimixElement element) {
-        final Pane pane = new Pane();
-        buildElementNode(element, pane);
+    public Image buildPictureElementImage(final JimixPictureElement element) {
+        final AnchorPane pane = new AnchorPane();
+        buildPictureElementNode(element, pane);
 
         return pane.snapshot(new JimixSnapshotParams(), null);
     }
 
-    private void buildElementNode(JimixElement element, Pane pane) {
-        final JimixElementModel model = element.getModel();
+    private void buildPictureElementNode(JimixPictureElement element, AnchorPane pane) {
+        final JimixPictureElementModel model = element.getModel();
         final JimixElementBuilderPlugin elementBuilder = ManipulationPluginManager.getInstance().getElementBuilder(model.getPluginElement().getClass());
         if (elementBuilder == null) {
-            LOGGER.error("unable to build element " + element.getUuid() + ": no element builder found, skip");
+            LOGGER.error("unable to build picture element " + element.getUuid() + ": no element builder found, skip");
             return;
         }
 
         try {
             final Node elementNode;
             if (elementBuilder instanceof Jimix2DElementBuilderPlugin) {
-                final Node tmpNode = ((Jimix2DElementBuilderPlugin) elementBuilder).buildNode((JimixPlugin2DElement) model.getPluginElement(),
-                        model.getX(), model.getY());
+                final Node tmpNode = ((Jimix2DElementBuilderPlugin) elementBuilder).buildNode((JimixPlugin2DElement) model.getPluginElement());
+                AnchorPane.setLeftAnchor(tmpNode, (double)model.getX());
+                AnchorPane.setTopAnchor(tmpNode, (double)model.getY());
                 applyViewSettings(element, tmpNode);
                 elementNode = applyEffects(element, tmpNode);
             } else if (elementBuilder instanceof Jimix3DElementBuilderPlugin) {
@@ -114,8 +118,10 @@ public final class ImageBuilder {
                 tmpNode = apply3DEffects(element, tmpNode); //Run 3D effects first on original 3D object
                 final Image tmpImage = tmpNode.snapshot(new JimixSnapshotParams(), null); //Create temporary image from 3D object
                 final ImageView tmpImageNode = new ImageView(tmpImage); //Temporary node
-                tmpImageNode.setTranslateX(model.getX());
-                tmpImageNode.setTranslateY(model.getY());
+                //tmpImageNode.setTranslateX(model.getX());
+                //tmpImageNode.setTranslateY(model.getY());
+                AnchorPane.setLeftAnchor(tmpImageNode, (double)model.getX());
+                AnchorPane.setTopAnchor(tmpImageNode, (double)model.getY());
                 applyViewSettings(element, tmpImageNode);
                 elementNode = apply2DEffects(element, tmpImageNode);
             } else
@@ -124,11 +130,11 @@ public final class ImageBuilder {
             //Draw result image (original project size)
             pane.getChildren().add(elementNode);
         } catch (JimixPluginExecutionException e) {
-            LOGGER.error("unable to draw element " + element.getUuid() + ": execution error of plugin, skip", e);
+            LOGGER.error("unable to draw picture element " + element.getUuid() + ": execution error of plugin, skip", e);
         }
     }
 
-    private Node applyEffects(JimixElement element, Node elementNode) throws JimixPluginExecutionException {
+    private Node applyEffects(JimixPictureElement element, Node elementNode) throws JimixPluginExecutionException {
         //Draw effects on / outside image
         for (final JimixEffectInstance instance : element.getModel().getEffectList()) {
             if (instance instanceof Jimix2DEffectInstance) {
@@ -143,7 +149,7 @@ public final class ImageBuilder {
         return elementNode;
     }
 
-    private Node apply2DEffects(JimixElement element, Node elementNode) throws JimixPluginExecutionException {
+    private Node apply2DEffects(JimixPictureElement element, Node elementNode) throws JimixPluginExecutionException {
         //Draw effects on / outside image
         for (final JimixEffectInstance instance : element.getModel().getEffectList()) {
             if (instance instanceof Jimix2DEffectInstance) {
@@ -154,7 +160,7 @@ public final class ImageBuilder {
         return elementNode;
     }
 
-    private Node apply3DEffects(JimixElement element, Node elementNode) throws JimixPluginExecutionException {
+    private Node apply3DEffects(JimixPictureElement element, Node elementNode) throws JimixPluginExecutionException {
         //Draw effects on / outside image
         for (final JimixEffectInstance instance : element.getModel().getEffectList()) {
             if (instance instanceof Jimix3DEffectInstance) {

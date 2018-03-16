@@ -12,5 +12,5 @@ public interface JimixModel<T extends JimixModel<T>> {
      * Returns all own observable values (like properties) for observation to rebuild result image
      * @return
      */
-    Observable[] getObservableValues();
+    Observable[] getObservables();
 }

@@ -4,8 +4,6 @@ import javafx.beans.Observable;
 import javafx.beans.property.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.scene.image.Image;
-import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.util.Callback;
@@ -30,12 +28,13 @@ public final class JimixLayerModel implements JimixModel<JimixLayerModel> {
     @JimixProperty(fieldType = Double.class, name = "Opacity", description = "Opacity of layer", category = "View")
     @JimixPropertyDoubleRestriction(minValue = 0d, maxValue = 1d)
     private final DoubleProperty opacity = new SimpleDoubleProperty(1d);
-    private final ObjectProperty<Image> mask = new SimpleObjectProperty<>(new WritableImage(100, 100)); //TODO: Size
     @JimixProperty(fieldType = JimixBlenderInstance.class, name = "Blender", description = "Blending between layers", category = "View")
     private final ObjectProperty<JimixBlenderInstance> blender;
 
-    private final ReadOnlyListProperty<JimixElementModel> elementList =
-            new ReadOnlyListWrapper<>(FXCollections.observableArrayList(new JimixElementObserverCallback())).getReadOnlyProperty();
+    private final ReadOnlyListProperty<JimixPictureElementModel> pictureElementList =
+            new ReadOnlyListWrapper<JimixPictureElementModel>(FXCollections.observableArrayList(new JimixElementObserverCallback<>())).getReadOnlyProperty();
+    private final ReadOnlyListProperty<JimixMaskElementModel> maskElementList =
+            new ReadOnlyListWrapper<JimixMaskElementModel>(FXCollections.observableArrayList(new JimixElementObserverCallback<>())).getReadOnlyProperty();
     private final ReadOnlyListProperty<JimixFilterInstance> filterList =
             new ReadOnlyListWrapper<JimixFilterInstance>(FXCollections.observableArrayList(param -> param.getConfiguration().getObservables())).getReadOnlyProperty();
 
@@ -75,18 +74,6 @@ public final class JimixLayerModel implements JimixModel<JimixLayerModel> {
         this.opacity.set(opacity);
     }
 
-    public Image getMask() {
-        return mask.get();
-    }
-
-    public ObjectProperty<Image> maskProperty() {
-        return mask;
-    }
-
-    public void setMask(Image mask) {
-        this.mask.set(mask);
-    }
-
     public JimixBlenderInstance getBlender() {
         return blender.get();
     }
@@ -99,12 +86,20 @@ public final class JimixLayerModel implements JimixModel<JimixLayerModel> {
         this.blender.set(blender);
     }
 
-    public ObservableList<JimixElementModel> getElementList() {
-        return elementList.get();
+    public ObservableList<JimixPictureElementModel> getPictureElementList() {
+        return pictureElementList.get();
     }
 
-    public ReadOnlyListProperty<JimixElementModel> elementListProperty() {
-        return elementList;
+    public ReadOnlyListProperty<JimixPictureElementModel> pictureElementListProperty() {
+        return pictureElementList;
+    }
+
+    public ObservableList<JimixMaskElementModel> getMaskElementList() {
+        return maskElementList.get();
+    }
+
+    public ReadOnlyListProperty<JimixMaskElementModel> maskElementListProperty() {
+        return maskElementList;
     }
 
     public ObservableList<JimixFilterInstance> getFilterList() {
@@ -133,12 +128,18 @@ public final class JimixLayerModel implements JimixModel<JimixLayerModel> {
         layerModel.setName(this.name.get());
         layerModel.setOpacity(this.opacity.get());
         layerModel.setBackground(this.background.get());
-        layerModel.setMask(new WritableImage(this.mask.get().getPixelReader(), (int) this.mask.get().getWidth(), (int) this.mask.get().getHeight()));
-        layerModel.elementList.addAll(
-                this.elementList.stream()
-                        .map(JimixElementModel::copy)
+
+        layerModel.pictureElementList.addAll(
+                this.pictureElementList.stream()
+                        .map(JimixPictureElementModel::copy)
                         .collect(Collectors.toList())
         );
+        layerModel.maskElementList.addAll(
+                this.maskElementList.stream()
+                        .map(JimixMaskElementModel::copy)
+                        .collect(Collectors.toList())
+        );
+
         layerModel.filterList.addAll(
                 this.filterList.stream()
                         .map(JimixFilterInstance::copy)
@@ -149,9 +150,9 @@ public final class JimixLayerModel implements JimixModel<JimixLayerModel> {
     }
 
     @Override
-    public Observable[] getObservableValues() {
+    public Observable[] getObservables() {
         return new Observable[]{
-                name, background, opacity, mask, blender, elementList, filterList
+                name, background, opacity, blender, pictureElementList, maskElementList, filterList
         };
     }
 
@@ -162,16 +163,11 @@ public final class JimixLayerModel implements JimixModel<JimixLayerModel> {
                 '}';
     }
 
-    private static final class JimixElementObserverCallback implements Callback<JimixElementModel, Observable[]> {
+    private static final class JimixElementObserverCallback<T extends JimixElementModel> implements Callback<T, Observable[]> {
         @Override
-        public Observable[] call(JimixElementModel param) {
+        public Observable[] call(T param) {
             final List<Observable> list = new ArrayList<>();
-            list.add(param.opacityProperty());
-            list.add(param.xProperty());
-            list.add(param.yProperty());
-            list.add(param.mirrorHorizontalProperty());
-            list.add(param.mirrorVerticalProperty());
-            list.add(param.rotationProperty());
+            list.addAll(Arrays.asList(param.getObservables()));
             list.addAll(Arrays.asList(param.getPluginElement().getObservables()));
 
             return list.toArray(new Observable[list.size()]);

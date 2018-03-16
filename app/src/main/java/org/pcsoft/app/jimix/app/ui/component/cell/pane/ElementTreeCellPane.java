@@ -5,6 +5,7 @@ import de.saxsys.mvvmfx.ViewTuple;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.layout.HBox;
+import org.apache.commons.lang.StringUtils;
 import org.pcsoft.app.jimix.app.language.LanguageResources;
 import org.pcsoft.app.jimix.core.project.JimixElement;
 import org.pcsoft.app.jimix.plugin.manipulation.manager.ManipulationPluginManager;
@@ -30,6 +31,7 @@ public class ElementTreeCellPane extends HBox {
             if (n != null) {
                 final JimixElementBuilderPlugin elementBuilder = ManipulationPluginManager.getInstance().getElementBuilder(n.getModel().getPluginElement().getClass());
                 viewModel.setTitle(elementBuilder == null ? "<unknown>" : elementBuilder.getName());
+                viewModel.setGroup(elementBuilder == null ? "" : StringUtils.isEmpty(elementBuilder.getGroup()) ? LanguageResources.getText("common.plugin.group.default") : elementBuilder.getGroup());
                 viewModel.visibilityProperty().bindBidirectional(n.visibleProperty());
                 viewModel.previewProperty().bind(n.getModel().getPluginElement().previewProperty());
             }

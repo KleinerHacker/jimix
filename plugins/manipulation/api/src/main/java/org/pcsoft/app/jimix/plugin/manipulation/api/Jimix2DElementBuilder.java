@@ -14,11 +14,9 @@ public interface Jimix2DElementBuilder<T extends JimixPlugin2DElement> extends J
      * Build the {@link JimixPlugin2DElement} and return it to add it to a group
      *
      * @param pluginElement element to build
-     * @param x             setup
-     * @param y             setup
      * @return
      */
-    Node buildNode(final T pluginElement, final int x, final int y);
+    Node buildNode(final T pluginElement);
 
     @Override
     default JimixElementType getType() {

@@ -1,7 +1,6 @@
 package org.pcsoft.app.jimix.plugin.impl.base.manipulation.builder;
 
 import javafx.scene.Node;
-import javafx.scene.shape.Shape;
 import org.pcsoft.app.jimix.plugin.impl.base.model.TrianglePluginElement;
 import org.pcsoft.app.jimix.plugin.impl.base.util.TrianglePluginElementUtils;
 import org.pcsoft.app.jimix.plugin.manipulation.api.Jimix2DElementBuilder;
@@ -15,11 +14,7 @@ public class TriangleElementBuilder implements Jimix2DElementBuilder<TrianglePlu
     private static final Logger LOGGER = LoggerFactory.getLogger(TrianglePluginElement.class);
 
     @Override
-    public Node buildNode(TrianglePluginElement elementModel, final int x, final int y) {
-        final Shape shape = TrianglePluginElementUtils.buildShape(elementModel);
-        shape.setTranslateX(x);
-        shape.setTranslateY(y);
-
-        return shape;
+    public Node buildNode(TrianglePluginElement elementModel) {
+        return TrianglePluginElementUtils.buildShape(elementModel);
     }
 }

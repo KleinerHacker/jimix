@@ -2,6 +2,7 @@ package org.pcsoft.app.jimix.app.ui.component;
 
 import de.saxsys.mvvmfx.FxmlView;
 import de.saxsys.mvvmfx.InjectViewModel;
+import javafx.beans.Observable;
 import javafx.beans.binding.Bindings;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -9,6 +10,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -18,16 +20,14 @@ import org.pcsoft.app.jimix.app.util.PropertyUtils;
 import org.pcsoft.app.jimix.core.project.JimixElement;
 import org.pcsoft.app.jimix.core.project.JimixLayer;
 import org.pcsoft.app.jimix.core.project.ProjectManager;
-import org.pcsoft.app.jimix.plugin.common.api.type.JimixPlugin2DElement;
 import org.pcsoft.app.jimix.plugin.common.api.type.JimixPluginElement;
-import org.pcsoft.app.jimix.plugin.manipulation.manager.type.Jimix2DEffectInstance;
 import org.pcsoft.app.jimix.plugin.manipulation.manager.type.JimixEffectInstance;
 import org.pcsoft.app.jimix.plugin.manipulation.manager.type.JimixFilterInstance;
+import org.pcsoft.framework.jfex.property.ExtendedWrapperProperty;
 import org.pcsoft.framework.jfex.ui.component.toolbox.ToolBox;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.awt.*;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -62,10 +62,6 @@ public class PictureEditorPaneView implements FxmlView<PictureEditorPaneViewMode
 
         imgMask.fitWidthProperty().bind(imgPicture.fitWidthProperty());
         imgMask.fitHeightProperty().bind(imgPicture.fitHeightProperty());
-        imgMask.visibleProperty().bind(Bindings.createBooleanBinding(
-                () -> viewModel.getSelectedTopLayer() != null && viewModel.getSelectedTopLayer().getModel().getMask() != null,
-                viewModel.selectedTopLayerProperty()
-        ));
 
         canvasGround.widthProperty().bind(Bindings.createDoubleBinding(
                 () -> viewModel.getResultPicture() == null ? 0 : viewModel.getResultPicture().getWidth(),
@@ -80,10 +76,8 @@ public class PictureEditorPaneView implements FxmlView<PictureEditorPaneViewMode
         refreshTransparentGround();
 
         imgPicture.imageProperty().bind(viewModel.resultPictureProperty());
-        imgMask.imageProperty().bind(Bindings.createObjectBinding(
-                () -> viewModel.getSelectedTopLayer() == null ? null : viewModel.getSelectedTopLayer().getModel().getMask(),
-                viewModel.selectedTopLayerProperty()
-        ));
+        imgMask.visibleProperty().bind(viewModel.showMaskProperty());
+        imgMask.imageProperty().bind(new MaskProperty());
 
         elementSelector.disableProperty().bind(lstLayer.selectedTopLayerProperty().isNull());
 
@@ -151,7 +145,7 @@ public class PictureEditorPaneView implements FxmlView<PictureEditorPaneViewMode
 
         try {
             final JimixPluginElement pluginElement = (JimixPluginElement) elementSelector.getSelectedElementBuilder().getElementModelClass().newInstance();
-            final JimixElement element = ProjectManager.getInstance().createElementForLayer(lstLayer.getSelectedTopLayer(), pluginElement, (int) e.getX(), (int) e.getY());
+            final JimixElement element = ProjectManager.getInstance().createPictureElementForLayer(lstLayer.getSelectedTopLayer(), pluginElement, (int) e.getX(), (int) e.getY());
         } catch (InstantiationException | IllegalAccessException e1) {
             LOGGER.error("Unable to create element " + elementSelector.getSelectedElementBuilder().getElementModelClass().getName(), e1);
             new Alert(Alert.AlertType.ERROR, "Unable to create element: " + e1.getMessage(), ButtonType.OK).showAndWait();
@@ -166,4 +160,40 @@ public class PictureEditorPaneView implements FxmlView<PictureEditorPaneViewMode
     private void onMaskMouseClicked(MouseEvent e) {
 
     }
+
+    //<editor-fold desc="Helper Classes">
+    private final class MaskProperty extends ExtendedWrapperProperty<Image> {
+        public MaskProperty() {
+            super(viewModel.selectedTopLayerProperty());
+
+            viewModel.selectedTopLayerProperty().addListener((v, o, n) -> {
+                if (o != null) {
+                    o.resultMaskProperty().addListener(this::invalidated);
+                }
+                if (n != null) {
+                    n.resultMaskProperty().addListener(this::invalidated);
+                }
+            });
+        }
+
+        @Override
+        protected Image getPseudoValue() {
+            if (viewModel.getSelectedTopLayer() == null)
+                return null;
+            if (viewModel.getSelectedTopLayer().getResultMask() == null)
+                return null;
+
+            return viewModel.getSelectedTopLayer().getResultMask();
+        }
+
+        @Override
+        protected void setPseudoValue(Image image) {
+            throw new IllegalStateException("Not supported");
+        }
+
+        private void invalidated(Observable obs) {
+            fireValueChangedEvent();
+        }
+    }
+    //</editor-fold>
 }

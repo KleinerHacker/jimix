@@ -6,12 +6,12 @@ import org.pcsoft.app.jimix.core.plugin.builtin.model.RectanglePluginElement;
 import org.pcsoft.app.jimix.plugin.common.api.util.Shape2DPluginElementUtils;
 
 public final class RectanglePluginElementUtils {
-    public static Shape buildShape(int x, int y, RectanglePluginElement element) {
-        return buildShape(x, y, element, null, null);
+    public static Shape buildShape(RectanglePluginElement element) {
+        return buildShape(element, null, null);
     }
 
-    public static Shape buildShape(int x, int y, RectanglePluginElement element, Integer width, Integer height) {
-        final Rectangle rectangle = new Rectangle(x, y, width == null ? element.getSize().width : width, height == null ? element.getSize().height : height);
+    public static Shape buildShape(RectanglePluginElement element, Integer width, Integer height) {
+        final Rectangle rectangle = new Rectangle(0, 0, width == null ? element.getSize().width : width, height == null ? element.getSize().height : height);
         Shape2DPluginElementUtils.buildShape(rectangle, element);
         rectangle.setArcWidth(element.getArcSize().width);
         rectangle.setArcHeight(element.getArcSize().height);

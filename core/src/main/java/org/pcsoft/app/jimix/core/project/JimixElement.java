@@ -6,23 +6,24 @@ import javafx.beans.property.ReadOnlyObjectProperty;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.property.SimpleBooleanProperty;
 import org.pcsoft.app.jimix.project.JimixElementModel;
+import org.pcsoft.app.jimix.project.JimixPictureElementModel;
 
 import java.util.Objects;
 import java.util.UUID;
 
 /**
- * Element holder for {@link JimixElementModel}, with additional app internal information
+ * Element holder for {@link JimixPictureElementModel}, with additional app internal information
  */
-public final class JimixElement implements JimixWrapper {
+public abstract class JimixElement<T extends JimixElementModel> implements JimixWrapper {
     //Temporary identifier only
     private final ReadOnlyObjectProperty<UUID> uuid = new ReadOnlyObjectWrapper<>(UUID.randomUUID()).getReadOnlyProperty();
-    private final ReadOnlyObjectProperty<JimixElementModel> model;
+    private final ReadOnlyObjectProperty<T> model;
     private final BooleanProperty visible = new SimpleBooleanProperty(true);
 
     private final ReadOnlyObjectProperty<JimixProject> project;
     private final ReadOnlyObjectProperty<JimixLayer> layer;
 
-    public JimixElement(final JimixProject project, final JimixLayer layer, final JimixElementModel model) {
+    public JimixElement(final JimixProject project, final JimixLayer layer, final T model) {
         this.project = new ReadOnlyObjectWrapper<>(project).getReadOnlyProperty();
         this.layer = new ReadOnlyObjectWrapper<>(layer).getReadOnlyProperty();
         this.model = new ReadOnlyObjectWrapper<>(model).getReadOnlyProperty();
@@ -36,11 +37,11 @@ public final class JimixElement implements JimixWrapper {
         return uuid;
     }
 
-    public JimixElementModel getModel() {
+    public T getModel() {
         return model.get();
     }
 
-    public ReadOnlyObjectProperty<JimixElementModel> modelProperty() {
+    public ReadOnlyObjectProperty<T> modelProperty() {
         return model;
     }
 

@@ -14,7 +14,7 @@ public class RectangleElementBuilder implements Jimix2DElementBuilder<RectangleP
     private static final Logger LOGGER = LoggerFactory.getLogger(RectangleElementBuilder.class);
 
     @Override
-    public Node buildNode(RectanglePluginElement elementModel, final int x, final int y) {
+    public Node buildNode(RectanglePluginElement elementModel) {
         /*JimixScalerInstance scaler = elementModel.getScaler();
         if (scaler == null) {
             LOGGER.warn("No scaler set for image element, use default");
@@ -33,6 +33,6 @@ public class RectangleElementBuilder implements Jimix2DElementBuilder<RectangleP
             scaledImage = elementModel.getValue(); //Ignore scaling, use builtin JavaFX Scaling
         } */
 
-        return RectanglePluginElementUtils.buildShape(x, y, elementModel);
+        return RectanglePluginElementUtils.buildShape(elementModel);
     }
 }

@@ -67,7 +67,7 @@ public final class JimixProjectModel implements JimixModel<JimixProjectModel> {
     }
 
     @Override
-    public Observable[] getObservableValues() {
+    public Observable[] getObservables() {
         return new Observable[]{
                 layerList, width, height
         };
@@ -78,7 +78,7 @@ public final class JimixProjectModel implements JimixModel<JimixProjectModel> {
         public Observable[] call(JimixLayerModel param) {
             return new Observable[]{
                     param.nameProperty(), param.backgroundProperty(), param.opacityProperty(),
-                    param.blenderProperty(), param.maskProperty(), param.elementListProperty(),
+                    param.blenderProperty(), param.pictureElementListProperty(),
                     param.filterListProperty()
             };
         }
